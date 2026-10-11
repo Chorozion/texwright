@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage[most]{tcolorbox}
+\usepackage{mdframed}
+\usepackage{framed}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage{todonotes}
+\usepackage{pifont}
+\usepackage{amssymb}
+\definecolor{myblue}{rgb}{0.1,0.2,0.6}
+\definecolor{mygreen}{RGB}{34,139,34}
+\definecolor{mygray}{gray}{0.6}
+\colorlet{lightblue}{myblue!20}
+\sethlcolor{yellow}
+
+\newtcolorbox{infobox}[1][]{colback=blue!5!white, colframe=blue!75!black, fonttitle=\bfseries, title=#1}
+\newmdenv[linecolor=red,linewidth=2pt]{warningbox}
+
+\begin{document}
+\section{Highlights}
+This is \hl{highlighted}, \ul{underlined}, \st{struck out}, \uline{ulem underline}, \sout{ulem strike},
+\uwave{wavy}, \dashuline{dashed} and \textcolor{mygreen}{green text}, plus {\color{myblue} blue text}.
+Some \colorbox{lightblue}{boxed} and \fcolorbox{red}{yellow}{framed} text.
+\textcolor[HTML]{FF5733}{Orange via HTML.} \textcolor[rgb]{0.5,0,0.5}{Purple via rgb.}
+
+\todo{Check this number.}
+\todo[inline]{Rewrite this paragraph before submission.}
+\missingfigure{Plot of results}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=Key Idea]
+Gradient descent follows the negative gradient.
+\end{tcolorbox}
+
+\begin{infobox}[Note]
+Boxes can take titles.
+\end{infobox}
+
+\begin{mdframed}[backgroundcolor=gray!10, linecolor=black]
+Framed with mdframed.
+\end{mdframed}
+
+\begin{warningbox}
+Danger zone.
+\end{warningbox}
+
+\begin{framed}
+Framed with the framed package.
+\end{framed}
+
+\begin{shaded}
+Shaded background.
+\end{shaded}
+
+\begin{leftbar}
+Bar on the left.
+\end{leftbar}
+
+Checks: \checkmark, \ding{51}, \ding{55}, \ding{43}, \cmark, \xmark. Unicode: café, naïve, 日本, \texteuro 5, \pounds 3, \textregistered, \texttrademark, \copyright, \S 2, \P.
+Dashes -- and ---; quotes `single' and ``double''; ellipsis \ldots\ and \dots.
+
+\begin{tcolorbox}[enhanced, breakable, colback=white, colframe=myblue, sharp corners, boxrule=1pt]
+An enhanced breakable box.
+\tcblower
+Lower part.
+\end{tcolorbox}
+
+\tcbox[colback=red!10]{Inline tcbox}
+\end{document}

@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant O as Orchestrator
+    participant I as Inventory
+    participant B as Billing
+    participant N as Notifications
+    O->>O: Receive order
+    par Reserve stock
+        O->>I: Reserve items
+        I-->>O: Reserved
+    and Charge card
+        O->>B: Charge customer
+        B-->>O: Charged
+    and Notify
+        O-)N: Send "order placed" email
+    end
+    critical Commit order
+        O->>I: Commit reservation
+    option Commit failed
+        O->>B: Refund
+    end

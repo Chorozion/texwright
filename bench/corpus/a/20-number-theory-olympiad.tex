@@ -1,0 +1,155 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheoremstyle{problemstyle}
+  {\topsep}{\topsep}{\itshape}{}{\bfseries}{.}{0.5em}{}
+\theoremstyle{problemstyle}
+\newtheorem{problem}{Problem}
+
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\Z}{\mathbb{Z}}
+
+\title{Number Theory Training Set 3: Solutions}
+\author{Olympiad Training Program}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+These problems use three standard tools: the order of an element modulo a prime, factoring an equation into a product of two terms and comparing prime powers, and working with rational numbers modulo $p$. For a prime $p$ and an integer $a$ with $p \nmid a$, the \emph{order} $\ord_p(a)$ is the least positive integer $d$ with $a^d \equiv 1 \pmod p$. We use two facts repeatedly:
+\begin{equation}\label{eq:order}
+  a^m \equiv 1 \pmod p \iff \ord_p(a) \mid m,
+  \qquad\text{and in particular}\qquad
+  \ord_p(a) \mid p - 1
+\end{equation}
+by Fermat's little theorem.
+
+% ------------------------------------------------------------------
+\section*{Problem 1}
+
+\begin{problem}
+Find all positive integers $n$ such that $n \mid 2^n - 1$.
+\end{problem}
+
+\noindent\textbf{Answer.} $n = 1$ only.
+
+\begin{solution}
+Clearly $n = 1$ works. Suppose, for contradiction, that some $n > 1$ satisfies $n \mid 2^n - 1$. Since $2^n - 1$ is odd, $n$ is odd. Let $p$ be the \emph{smallest} prime divisor of $n$; then $p \ge 3$.
+
+From $p \mid n \mid 2^n - 1$ we get $2^n \equiv 1 \pmod p$. Let $d = \ord_p(2)$. By \eqref{eq:order}, $d \mid n$ and $d \mid p - 1$, so $d \mid \gcd(n, p - 1)$.
+
+Every prime factor of $n$ is at least $p$, while every prime factor of $p - 1$ is less than $p$. Hence $n$ and $p - 1$ share no prime factor, and $\gcd(n, p - 1) = 1$. Therefore $d = 1$, which means $2 \equiv 1 \pmod p$, that is, $p \mid 1$. This is impossible, so no $n > 1$ works.
+\end{solution}
+
+\paragraph{Remark.} The key idea, choosing the smallest prime factor so that $\gcd(n, p - 1) = 1$, solves many problems of the form ``$n \mid a^n - b$''. Contrast this with $n \mid 2^n + 1$, which has infinitely many solutions ($n = 1, 3, 9, 27, \dots$ and more): there the same argument only shows that the smallest prime factor of $n$ is $3$.
+
+% ------------------------------------------------------------------
+\section*{Problem 2}
+
+\begin{problem}
+Find all triples $(x, y, z)$ of nonnegative integers such that
+\[
+  2^x + 3^y = z^2.
+\]
+\end{problem}
+
+\noindent\textbf{Answer.} $(x, y, z) = (0, 1, 2)$, $(3, 0, 3)$ and $(4, 2, 5)$.
+
+\begin{solution}
+Since $z^2 \ge 2$, we have $z \ge 2$. One observation is used several times.
+
+\begin{lemma}\label{lem:gap}
+If two powers of a prime $q$ differ by $2$, then they are $1$ and $3$ (and $q = 3$), or $2$ and $4$ (and $q = 2$).
+\end{lemma}
+
+\begin{proof}
+If both powers were divisible by $q$, then $q \mid 2$, so $q = 2$; and if both were divisible by $4$, then $4 \mid 2$, which is false. So either the smaller power is $q^0 = 1$, forcing the larger to be $3$ and $q = 3$, or $q = 2$ and the smaller power is $2$, forcing the larger to be $4$.
+\end{proof}
+
+We now consider three cases.
+
+\paragraph{Case 1: $x = 0$.} The equation is $3^y = z^2 - 1 = (z - 1)(z + 1)$. Both factors are positive and divide a power of $3$, so both are powers of $3$. They differ by $2$, so by Lemma~\ref{lem:gap} they are $1$ and $3$. Hence $z - 1 = 1$, $z = 2$, and $3^y = 3$, giving $(0, 1, 2)$.
+
+\paragraph{Case 2: $y = 0$.} The equation is $2^x = z^2 - 1 = (z - 1)(z + 1)$. Here $x \ge 1$ (since $z^2 = 2$ is impossible), so $z$ is odd and both factors are powers of $2$ differing by $2$. By Lemma~\ref{lem:gap} they are $2$ and $4$, so $z = 3$ and $2^x = 8$, giving $(3, 0, 3)$.
+
+\paragraph{Case 3: $x \ge 1$ and $y \ge 1$.} Reduce modulo $3$. Since $3 \nmid 2^x$, we have $3 \nmid z$, so $z^2 \equiv 1 \pmod 3$. Then
+\[
+  2^x \equiv z^2 \equiv 1 \pmod 3.
+\]
+As $2 \equiv -1 \pmod 3$, this says $(-1)^x = 1$, so $x$ is even. Write $x = 2a$ with $a \ge 1$. Then
+\[
+  3^y = z^2 - 2^{2a} = (z - 2^a)(z + 2^a).
+\]
+Both factors are positive (their product is positive and $z + 2^a > 0$), so both are powers of $3$. Their difference is $2^{a+1}$, which is not divisible by $3$. If both factors were divisible by $3$, so would be their difference; hence the smaller factor is $3^0 = 1$:
+\[
+  z - 2^a = 1, \qquad z + 2^a = 3^y,
+  \qquad\text{so}\qquad
+  3^y = 2^{a+1} + 1.
+\]
+Since $a \ge 1$, the right side satisfies $2^{a+1} \equiv 0 \pmod 4$, so $3^y \equiv 1 \pmod 4$. As $3 \equiv -1 \pmod 4$, $y$ is even. Write $y = 2c$:
+\[
+  (3^c - 1)(3^c + 1) = 3^{2c} - 1 = 2^{a+1}.
+\]
+Again both factors are powers of $2$ that differ by $2$, so by Lemma~\ref{lem:gap} they are $2$ and $4$. Thus $3^c = 3$, $c = 1$, $y = 2$, and $2^{a+1} = 8$, so $a = 2$ and $x = 4$. Finally $z = 2^a + 1 = 5$, and indeed $2^4 + 3^2 = 16 + 9 = 25 = 5^2$.
+
+The three cases cover all nonnegative $(x, y)$ except $x = y = 0$, which gives $z^2 = 2$ and has no solution.
+\end{solution}
+
+% ------------------------------------------------------------------
+\section*{Problem 3}
+
+\begin{problem}[Wolstenholme]
+Let $p \ge 5$ be a prime, and write
+\[
+  1 + \frac{1}{2} + \frac{1}{3} + \cdots + \frac{1}{p - 1} = \frac{a}{b}
+\]
+with $\gcd(a, b) = 1$. Prove that $p^2 \mid a$.
+\end{problem}
+
+\begin{solution}
+Throughout, for a rational number $r = u/v$ with $p \nmid v$, we write $r \equiv 0 \pmod p$ to mean $p \mid u$. Such rationals can be reduced modulo $p$ like integers, with $1/v$ interpreted as the inverse of $v$ modulo $p$.
+
+Let $S = \sum_{k=1}^{p-1} \frac{1}{k}$. Pair the term for $k$ with the term for $p - k$:
+\[
+  2S = \sum_{k=1}^{p-1} \left( \frac{1}{k} + \frac{1}{p - k} \right) = \sum_{k=1}^{p-1} \frac{p}{k(p - k)} = p\,T,
+  \qquad\text{where}\qquad
+  T = \sum_{k=1}^{p-1} \frac{1}{k(p - k)}.
+\]
+Every denominator $k(p - k)$ is a product of positive integers less than $p$, so $T$ can be written as $u/v$ with $p \nmid v$.
+
+\emph{Claim: $T \equiv 0 \pmod p$.} Modulo $p$ we have $k(p - k) \equiv -k^2$, so
+\[
+  T \equiv -\sum_{k=1}^{p-1} \frac{1}{k^2} \pmod p.
+\]
+As $k$ runs over $1, 2, \dots, p - 1$, so does its inverse $k^{-1}$ modulo $p$, because inversion is a bijection on the nonzero residues. Hence
+\[
+  \sum_{k=1}^{p-1} \frac{1}{k^2} \equiv \sum_{j=1}^{p-1} j^2 = \frac{(p - 1)\,p\,(2p - 1)}{6} \pmod p.
+\]
+The integer $\frac{(p-1)p(2p-1)}{6}$ is divisible by $p$: the factor $p$ appears in the numerator, and $\gcd(p, 6) = 1$ because $p \ge 5$. Therefore $T \equiv 0 \pmod p$, proving the claim.
+
+\emph{Conclusion.} By the claim, $T = p\,u'/v$ for some integer $u'$ and some $v$ with $p \nmid v$. Then
+\[
+  \frac{a}{b} = S = \frac{p\,T}{2} = \frac{p^2 u'}{2v},
+  \qquad\text{so}\qquad
+  2v\,a = p^2 u'\, b.
+\]
+Since $p$ is odd and $p \nmid v$, we have $p \nmid 2v$, and therefore $p^2 \mid a$.
+\end{solution}
+
+\paragraph{Remarks.}
+\begin{enumerate}[label=(\arabic*)]
+  \item The hypothesis $p \ge 5$ is necessary. For $p = 3$, $1 + \frac12 = \frac32$ and $9 \nmid 3$.
+  \item For $p = 5$: $1 + \frac12 + \frac13 + \frac14 = \frac{25}{12}$, and indeed $25 \mid 25$. For $p = 7$ the sum is $\frac{49}{20}$.
+  \item An equivalent form of the result is $\binom{2p-1}{p-1} \equiv 1 \pmod{p^3}$ for $p \ge 5$, which is how Wolstenholme originally stated it in 1862.
+\end{enumerate}
+
+\end{document}

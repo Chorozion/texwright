@@ -1,0 +1,142 @@
+[
+  {
+    "file": "01-gd-convergence.md",
+    "kind": "research paper",
+    "format": "markdown",
+    "request": "Write me a research paper about the convergence of gradient descent on smooth convex functions, I'll turn it into a PDF.",
+    "assets": ["01-references.bib", "01-convergence.svg"]
+  },
+  {
+    "file": "02-linear-algebra-hw.md",
+    "kind": "homework solutions",
+    "format": "markdown",
+    "request": "Write me homework solutions for a linear algebra problem set on eigenvalues and diagonalization, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "03-group-theory-notes.tex",
+    "kind": "lecture notes",
+    "format": "latex",
+    "request": "Write me lecture notes for an introduction to group theory, with theorems and proofs, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "04-load-test-report.md",
+    "kind": "technical report",
+    "format": "markdown",
+    "request": "Write me a technical report on the load testing results of a web service, with tables, I'll turn it into a PDF.",
+    "assets": ["04-latency-vs-load.svg"]
+  },
+  {
+    "file": "05-data-engineer-cv.md",
+    "kind": "resume / CV (one page)",
+    "format": "markdown",
+    "request": "Write me a one-page résumé for a data engineer, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "06-robotics-cover-letter.md",
+    "kind": "cover letter",
+    "format": "markdown",
+    "request": "Write me a cover letter applying for a robotics internship, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "07-pendulum-lab-report.tex",
+    "kind": "lab report",
+    "format": "latex",
+    "request": "Write me a lab report on measuring g with a pendulum, with units and uncertainty, I'll turn it into a PDF.",
+    "assets": ["07-references.bib", "07-t-squared-vs-length.svg"]
+  },
+  {
+    "file": "08-probability-cheat-sheet.md",
+    "kind": "cheat sheet",
+    "format": "markdown",
+    "request": "Write me a cheat sheet of probability distributions and their moments, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "09-community-solar-proposal.md",
+    "kind": "project proposal",
+    "format": "markdown",
+    "request": "Write me a project proposal for a community solar program, with a budget table, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "10-todo-api-docs.md",
+    "kind": "API documentation",
+    "format": "markdown",
+    "request": "Write me API documentation for a REST API for a todo app, with code samples, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "11-calculus-ii-exam.tex",
+    "kind": "exam with answer key",
+    "format": "latex",
+    "request": "Write me a Calculus II exam with an answer key, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "12-public-key-crypto.md",
+    "kind": "blog-style explainer",
+    "format": "markdown",
+    "request": "Write me a blog-style explainer about how public-key cryptography works, with some math, I'll turn it into a PDF.",
+    "assets": ["12-diffie-hellman.svg"]
+  },
+  {
+    "file": "13-acid-base-equilibria.md",
+    "kind": "chemistry notes",
+    "format": "markdown",
+    "request": "Write me chemistry notes on acid-base equilibria, I'll turn it into a PDF.",
+    "assets": ["13-titration-curve.svg"]
+  },
+  {
+    "file": "14-lagrangian-mechanics.tex",
+    "kind": "physics problem solutions",
+    "format": "latex",
+    "request": "Write me solutions to classical mechanics problems using Lagrangians, I'll turn it into a PDF.",
+    "assets": ["14-pendulum-cart.svg"]
+  },
+  {
+    "file": "15-ab-test-analysis.md",
+    "kind": "statistics report",
+    "format": "markdown",
+    "request": "Write me a statistics report analyzing an A/B test, with a hypothesis test and confidence intervals, I'll turn it into a PDF.",
+    "assets": ["15-lift-ci.svg"]
+  },
+  {
+    "file": "16-meeting-minutes.md",
+    "kind": "meeting minutes",
+    "format": "markdown",
+    "request": "Write me meeting minutes for a release planning meeting, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "17-okr-memo.md",
+    "kind": "business memo",
+    "format": "markdown",
+    "request": "Write me a business memo with a quarterly OKR update, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "18-attention-survey.tex",
+    "kind": "survey paper section",
+    "format": "latex",
+    "request": "Write me a survey paper section about attention mechanisms in neural networks, with citations, I'll turn it into a PDF.",
+    "assets": ["18-references.bib"]
+  },
+  {
+    "file": "19-financial-summary.md",
+    "kind": "financial summary",
+    "format": "markdown",
+    "request": "Write me a quarterly financial summary for a small business, I'll turn it into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "20-number-theory-olympiad.tex",
+    "kind": "math olympiad solutions",
+    "format": "latex",
+    "request": "Write me solutions to three math olympiad number theory problems, I'll turn it into a PDF.",
+    "assets": []
+  }
+]

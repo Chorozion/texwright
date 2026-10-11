@@ -1,0 +1,154 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{physics}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{PHYS 4410: Quantum Mechanics I}
+\rhead{Problem Set 6}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\setlist[enumerate,1]{label=(\alph*), leftmargin=2em, itemsep=4pt}
+
+\newcounter{problem}
+\newcommand{\problem}[2]{%
+  \stepcounter{problem}%
+  \par\bigskip\noindent\textbf{Problem \theproblem: #1} \hfill \textit{(#2 points)}\par\smallskip}
+
+\newcommand{\ad}{\hat{a}^\dagger}
+\newcommand{\an}{\hat{a}}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Problem Set 6: Operators, Spin, and the Harmonic Oscillator}\\[6pt]
+  Due Friday, October 16, 2026, at the start of lecture
+\end{center}
+
+\noindent\textbf{Instructions.} Show all work. Answers without justification receive no credit. You may discuss problems with classmates, but write up your own solutions and list your collaborators at the top of the first page. Reading: Griffiths and Schroeter, Sections 3.5--3.6 and 4.4, and Sakurai, Sections 1.4 and 2.3.
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+\textbf{Useful results.}
+The Pauli matrices are
+\[
+  \sigma_x = \mqty(0 & 1 \\ 1 & 0), \qquad
+  \sigma_y = \mqty(0 & -i \\ i & 0), \qquad
+  \sigma_z = \mqty(1 & 0 \\ 0 & -1),
+\]
+and the spin operators are $\hat{S}_i = \frac{\hbar}{2}\sigma_i$, acting on the basis $\ket{+} \equiv \ket{+z}$, $\ket{-} \equiv \ket{-z}$.
+For the harmonic oscillator,
+\[
+  \an = \sqrt{\frac{m\omega}{2\hbar}}\left(\hat{x} + \frac{i}{m\omega}\hat{p}\right), \qquad
+  \comm{\an}{\ad} = 1, \qquad
+  \hat{H} = \hbar\omega\left(\ad\an + \tfrac12\right),
+\]
+\[
+  \an\ket{n} = \sqrt{n}\,\ket{n-1}, \qquad \ad\ket{n} = \sqrt{n+1}\,\ket{n+1}.
+\]
+The Robertson uncertainty relation is $\sigma_A\,\sigma_B \ge \frac{1}{2}\abs{\expval{\comm{\hat{A}}{\hat{B}}}}$.
+}}
+
+%-----------------------------------------------------------------------
+\problem{Pauli matrices and spin along an arbitrary axis}{20}
+
+\begin{enumerate}
+  \item Verify that $\sigma_i \sigma_j = \delta_{ij}\,\mathbb{I} + i\,\epsilon_{ijk}\,\sigma_k$ (sum over $k$). Use it to compute $\comm{\sigma_x}{\sigma_y}$ and $\acomm{\sigma_x}{\sigma_y}$.
+  \item Let $\vu{n} = (\sin\theta\cos\phi,\ \sin\theta\sin\phi,\ \cos\theta)$. Write the matrix of $\hat{S}_n = \vu{n}\cdot\hat{\vb{S}}$ in the $\{\ket{+}, \ket{-}\}$ basis and show that its eigenvalues are $\pm\hbar/2$.
+  \item Show that the normalized eigenvector with eigenvalue $+\hbar/2$ can be written
+  \[
+    \ket{+n} = \cos\frac{\theta}{2}\,\ket{+} + e^{i\phi}\sin\frac{\theta}{2}\,\ket{-}.
+  \]
+  \item A spin-$\frac12$ particle is prepared in $\ket{+z}$. Find the probability that a measurement of $\hat{S}_n$ yields $+\hbar/2$, and compute $\expval{\hat{S}_n}$ in this state. Check your answers for $\theta = 0$, $\pi/2$ and $\pi$.
+\end{enumerate}
+
+%-----------------------------------------------------------------------
+\problem{Hermitian operators}{15}
+
+Let $\hat{A}$ and $\hat{B}$ be Hermitian operators on a Hilbert space $\mathcal{H}$.
+\begin{enumerate}
+  \item Prove that every eigenvalue of $\hat{A}$ is real.
+  \item Prove that eigenvectors of $\hat{A}$ belonging to distinct eigenvalues are orthogonal.
+  \item Show that $i\comm{\hat{A}}{\hat{B}}$ is Hermitian, while $\comm{\hat{A}}{\hat{B}}$ itself is anti-Hermitian.
+  \item Under what condition is the product $\hat{A}\hat{B}$ Hermitian? Give an example from spin-$\frac12$ where it is not.
+\end{enumerate}
+
+%-----------------------------------------------------------------------
+\problem{Commutator identities}{15}
+
+\begin{enumerate}
+  \item Prove the product rule $\comm{\hat{A}\hat{B}}{\hat{C}} = \hat{A}\comm{\hat{B}}{\hat{C}} + \comm{\hat{A}}{\hat{C}}\hat{B}$.
+  \item Starting from $\comm{\hat{x}}{\hat{p}} = i\hbar$, use induction to show that $\comm{\hat{x}}{\hat{p}^{\,n}} = i\hbar\, n\, \hat{p}^{\,n-1}$ for every positive integer $n$.
+  \item Conclude that $\comm{\hat{x}}{f(\hat{p})} = i\hbar\, f'(\hat{p})$ for any function $f$ with a power series expansion.
+  \item For $\hat{H} = \hat{p}^2/2m + V(\hat{x})$, show that
+  \[
+    \sigma_x\,\sigma_H \ge \frac{\hbar}{2m}\abs{\expval{\hat{p}}}.
+  \]
+  Interpret this result using Ehrenfest's theorem, $\dv{t}\expval{\hat{x}} = \expval{\hat{p}}/m$.
+\end{enumerate}
+
+%-----------------------------------------------------------------------
+\problem{Harmonic oscillator with ladder operators}{25}
+
+\begin{enumerate}
+  \item Invert the definition of $\an$ to show
+  \[
+    \hat{x} = \sqrt{\frac{\hbar}{2m\omega}}\,\bigl(\an + \ad\bigr), \qquad
+    \hat{p} = i\sqrt{\frac{\hbar m\omega}{2}}\,\bigl(\ad - \an\bigr).
+  \]
+  \item Compute the matrix elements $\mel{m}{\hat{x}}{n}$ and $\mel{m}{\hat{p}}{n}$. Which are nonzero?
+  \item Without using any wavefunctions, show that
+  \[
+    \expval{\hat{x}^2}{n} = \frac{\hbar}{m\omega}\left(n + \frac12\right), \qquad
+    \expval{\hat{p}^2}{n} = \hbar m\omega\left(n + \frac12\right),
+  \]
+  and that $\expval{\hat{x}}{n} = \expval{\hat{p}}{n} = 0$.
+  \item Hence show that $\sigma_x\sigma_p = \hbar\left(n + \frac12\right)$ in the state $\ket{n}$. Which state saturates the Heisenberg bound?
+  \item Verify the virial theorem for the oscillator: in any stationary state, $\expval{T} = \expval{V} = \frac12 E_n$.
+  \item A particle is in the state $\ket{\psi(0)} = \frac{1}{\sqrt{2}}\bigl(\ket{0} + \ket{1}\bigr)$. Find $\expval{\hat{x}}$ as a function of time and show that it oscillates at angular frequency $\omega$.
+\end{enumerate}
+
+%-----------------------------------------------------------------------
+\problem{A two-level system}{15}
+
+A molecule has two degenerate configurations $\ket{1}$ and $\ket{2}$ (think of the nitrogen atom above or below the plane of hydrogens in $\mathrm{NH_3}$). Tunneling couples them, and the Hamiltonian in the $\{\ket{1}, \ket{2}\}$ basis is
+\[
+  \hat{H} = E_0\,\mathbb{I} - A\,\bigl(\dyad{1}{2} + \dyad{2}{1}\bigr)
+  \;\doteq\; \mqty(E_0 & -A \\ -A & E_0), \qquad A > 0.
+\]
+\begin{enumerate}
+  \item Find the energy eigenvalues and normalized eigenstates. Which state is the ground state?
+  \item At $t = 0$ the molecule is in $\ket{1}$. Find $\ket{\psi(t)}$.
+  \item Show that the probability of finding the molecule in $\ket{2}$ at time $t$ is
+  \[
+    P_2(t) = \abs{\braket{2}{\psi(t)}}^2 = \sin^2\!\left(\frac{A t}{\hbar}\right).
+  \]
+  \item For ammonia, the inversion splitting $2A$ corresponds to a photon frequency of about $23.9~\text{GHz}$. Estimate the time it takes the molecule to tunnel from $\ket{1}$ to $\ket{2}$.
+\end{enumerate}
+
+%-----------------------------------------------------------------------
+\problem{Orbital angular momentum}{10}
+
+\begin{enumerate}
+  \item Using $\comm{\hat{x}_i}{\hat{p}_j} = i\hbar\,\delta_{ij}$, show that $\comm{\hat{L}_x}{\hat{L}_y} = i\hbar\,\hat{L}_z$.
+  \item With $\hat{L}_\pm = \hat{L}_x \pm i\hat{L}_y$, show that $\hat{L}^2 = \hat{L}_\mp\hat{L}_\pm + \hat{L}_z^2 \pm \hbar\hat{L}_z$.
+  \item For a simultaneous eigenstate $\ket{\ell, m}$ of $\hat{L}^2$ and $\hat{L}_z$, show that $\expval{\hat{L}_x} = \expval{\hat{L}_y} = 0$ and
+  \[
+    \expval{\hat{L}_x^2}{\ell, m} = \frac{\hbar^2}{2}\bigl[\ell(\ell+1) - m^2\bigr].
+  \]
+  Why can $\expval{\hat{L}_x^2}$ never vanish when $\ell \ge 1$? What does this say about measuring all three components at once?
+\end{enumerate}
+
+\bigskip
+\noindent\textbf{Total: 100 points.} Problem 4(f) and Problem 5(d) will be discussed in Thursday's recitation; attempt them before then.
+
+\end{document}

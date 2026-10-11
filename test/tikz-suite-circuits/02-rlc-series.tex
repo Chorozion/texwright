@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage{circuitikz}
+\begin{document}
+
+\begin{center}
+\begin{circuitikz}[american voltages]
+\draw
+  (0,0) to[V, v=$V_s$] (0,4) % voltage source
+  to[R=$R$, i>^=$i(t)$] (4,4) % resistor
+  to[L=$L$] (4,0) % inductor
+  to[C=$C$] (0,0); % capacitor
+\end{circuitikz}
+\end{center}
+
+The series RLC circuit is described by
+\[ L\frac{di}{dt} + Ri + \frac{1}{C}\int i\,dt = V_s. \]
+
+\end{document}

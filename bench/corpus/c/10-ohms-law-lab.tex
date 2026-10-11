@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+
+\sisetup{per-mode=symbol, separate-uncertainty=true}
+
+\title{Lab 4: Ohm's Law and Non-Ohmic Devices}
+\author{PHYS 1120 \quad General Physics II Laboratory}
+\date{Fall 2026}
+
+\begin{document}
+\maketitle
+
+\section{Objectives}
+
+By the end of this lab you should be able to:
+\begin{enumerate}[label=\arabic*.]
+  \item build a series circuit with an ammeter and connect a voltmeter in parallel across a component;
+  \item measure the current--voltage ($I$--$V$) relationship of a resistor and determine its resistance from the slope of a graph;
+  \item propagate measurement uncertainties to a calculated resistance; and
+  \item distinguish an ohmic device (a resistor) from a non-ohmic one (an incandescent lamp).
+\end{enumerate}
+
+\section{Background}
+
+For many materials at constant temperature, the current $I$ through a conductor is proportional to the potential difference $V$ across it. This is \emph{Ohm's law}:
+\begin{equation}
+  V = IR, \label{eq:ohm}
+\end{equation}
+where the constant of proportionality $R$ is the resistance, measured in ohms (\si{\ohm}). One ohm is one volt per ampere: $\SI{1}{\ohm} = \SI{1}{\volt\per\ampere}$.
+
+A device that obeys Eq.~\eqref{eq:ohm} with constant $R$ is called \emph{ohmic}; its $V$--$I$ graph is a straight line through the origin. Many devices are not ohmic. In an incandescent lamp the filament heats up as the current increases, and the resistance of tungsten rises with temperature, so the $V$--$I$ graph curves upward.
+
+The power dissipated in a resistor is
+\begin{equation}
+  P = IV = I^2 R = \frac{V^2}{R}. \label{eq:power}
+\end{equation}
+Every resistor has a maximum power rating. Exceeding it makes the resistor hot enough to change its resistance or burn out, so check Eq.~\eqref{eq:power} before raising the voltage.
+
+\subsection*{Finding $R$ from a graph}
+
+If you plot $V$ on the vertical axis against $I$ on the horizontal axis, Eq.~\eqref{eq:ohm} predicts a line through the origin with slope $R$. For $N$ data points $(I_i, V_i)$, the least-squares slope of a line through the origin is
+\begin{equation}
+  R_\text{fit} = \frac{\sum_{i=1}^{N} I_i V_i}{\sum_{i=1}^{N} I_i^2}. \label{eq:fit}
+\end{equation}
+Your spreadsheet's linear fit (with intercept) is also acceptable; in that case, check that the intercept is close to zero.
+
+\subsection*{Uncertainty in a single measurement}
+
+When you calculate $R = V/I$ from one pair of readings, the relative uncertainties add in quadrature:
+\begin{equation}
+  \frac{\delta R}{R} = \sqrt{\left(\frac{\delta V}{V}\right)^2 + \left(\frac{\delta I}{I}\right)^2}. \label{eq:unc}
+\end{equation}
+\emph{Example.} With $V = \SI{5.00 \pm 0.01}{\volt}$ and $I = \SI{49.6 \pm 0.1}{\milli\ampere}$, $R = \SI{100.8}{\ohm}$ and
+\[
+  \frac{\delta R}{R} = \sqrt{(0.0020)^2 + (0.0020)^2} = 0.0028,
+\]
+so $R = \SI{100.8 \pm 0.3}{\ohm}$.
+
+\section{Equipment}
+
+\begin{itemize}
+  \item DC power supply, \SIrange{0}{12}{\volt}, with current limit
+  \item Two digital multimeters (one used as ammeter, one as voltmeter)
+  \item Resistors: \SI{100}{\ohm}, \SI{220}{\ohm}, and \SI{470}{\ohm}, all rated \SI{2}{\watt}, tolerance \SI{5}{\percent}
+  \item Miniature incandescent lamp, rated \SI{12}{\volt}, \SI{0.1}{\ampere}, in a socket
+  \item SPST switch, breadboard or terminal board, banana-plug leads
+\end{itemize}
+
+\section{Safety}
+
+The voltages in this lab are low, but resistors and lamps get hot.
+\begin{itemize}
+  \item Set the supply's current limit to \SI{0.2}{\ampere} before connecting anything.
+  \item Open the switch whenever you change the circuit.
+  \item Never connect the ammeter directly across the power supply or across a component. An ammeter has nearly zero resistance and will short the circuit and blow its fuse.
+  \item Do not touch the lamp or resistors immediately after a run.
+\end{itemize}
+
+\section{The circuit}
+
+Figure~\ref{fig:circuit} shows the circuit. In words: the positive terminal of the power supply connects through the switch to the ammeter, the ammeter connects to one end of the resistor, and the other end of the resistor returns to the negative terminal. The current passes through every component in turn, so they are \emph{in series}. The voltmeter connects across the two ends of the resistor only, \emph{in parallel} with it.
+
+\begin{figure}[H]
+  \centering
+  \includesvg[width=0.62\textwidth]{10-circuit}
+  \caption{Circuit for measuring the $I$--$V$ characteristic. The ammeter (A) is in series with the resistor $R$; the voltmeter (V) is in parallel with it.}
+  \label{fig:circuit}
+\end{figure}
+
+Set the ammeter to the \SI{200}{\milli\ampere} DC range with its leads in the \si{\milli\ampere} and COM jacks. Set the voltmeter to the \SI{20}{\volt} DC range. Have your instructor check the circuit before turning on the supply.
+
+\section{Procedure}
+
+\subsection*{Part A: A single resistor}
+
+\begin{enumerate}[label=A\arabic*.]
+  \item Build the circuit with the \SI{100}{\ohm} resistor. Measure the resistor with the multimeter's ohmmeter setting \emph{before} connecting it, and record the value.
+  \item Close the switch. Raise the supply from \SI{0}{\volt} to about \SI{1}{\volt}. Record the voltmeter and ammeter readings in Table~\ref{tab:partA}.
+  \item Repeat in steps of about \SI{1}{\volt} up to \SI{10}{\volt}. At \SI{10}{\volt} the \SI{100}{\ohm} resistor dissipates \SI{1}{\watt}, half its rating.
+  \item Reverse the supply leads and take three readings at about \SIlist{-2;-4;-6}{\volt}. Does the relationship still hold for negative voltages?
+\end{enumerate}
+
+\begin{table}[H]
+  \centering
+  \caption{Part A data for the \SI{100}{\ohm} resistor. Include the instrument uncertainty for each meter.}
+  \label{tab:partA}
+  \begin{tabular}{c c c c}
+    \toprule
+    Setting & $V$ (\si{\volt}) & $I$ (\si{\milli\ampere}) & $V/I$ (\si{\ohm}) \\
+    \midrule
+    1  & & & \\
+    2  & & & \\
+    3  & & & \\
+    4  & & & \\
+    5  & & & \\
+    6  & & & \\
+    7  & & & \\
+    8  & & & \\
+    9  & & & \\
+    10 & & & \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection*{Part B: Three resistors}
+
+\begin{enumerate}[label=B\arabic*.]
+  \item Repeat steps A1 to A3 for the \SI{220}{\ohm} and \SI{470}{\ohm} resistors, using five voltage settings between \SI{2}{\volt} and \SI{10}{\volt}.
+  \item Record the results in a table like Table~\ref{tab:partA}.
+\end{enumerate}
+
+\subsection*{Part C: The lamp}
+
+\begin{enumerate}[label=C\arabic*.]
+  \item Replace the resistor with the lamp. Measure its \emph{cold} resistance with the ohmmeter first.
+  \item Take readings from \SI{0}{\volt} to \SI{12}{\volt} in steps of \SI{0.5}{\volt} up to \SI{3}{\volt}, then in steps of \SI{1}{\volt}. The lamp's behavior changes fastest at low voltage, which is why the steps are smaller there.
+  \item Note the voltage at which the filament first visibly glows.
+\end{enumerate}
+
+\section{Analysis}
+
+\begin{enumerate}[label=\arabic*.]
+  \item For each resistor, plot $V$ (vertical) against $I$ in amperes (horizontal). Include error bars if they are larger than the plotted points.
+  \item Find $R_\text{fit}$ from the slope, using Eq.~\eqref{eq:fit} or a spreadsheet fit. Report it with an uncertainty and the correct number of significant figures.
+  \item Compare $R_\text{fit}$ with the ohmmeter reading and with the nominal (color-code) value by calculating the percent difference,
+  \[
+    \text{\% difference} = \frac{\lvert R_\text{fit} - R_\text{nominal} \rvert}{R_\text{nominal}} \times 100\%.
+  \]
+  Is the difference within the \SI{5}{\percent} manufacturer's tolerance?
+  \item For the lamp, plot $V$ against $I$, and separately plot $R = V/I$ against the power $P = IV$. Describe the shape of each graph.
+  \item Compare the lamp's cold resistance (from step C1) with its resistance at \SI{12}{\volt}. By what factor did it increase?
+\end{enumerate}
+
+\section{Questions}
+
+\begin{enumerate}[label=Q\arabic*.]
+  \item Why must the voltmeter be connected in parallel and the ammeter in series? What would happen to the readings if they were swapped?
+  \item A real voltmeter has a large but finite internal resistance, about \SI{10}{\mega\ohm} for your meters. Does it affect your measurement of the \SI{470}{\ohm} resistor? Estimate the size of the effect.
+  \item The resistivity of tungsten rises roughly in proportion to absolute temperature. Use your answer to Analysis step 5 to estimate the filament temperature at \SI{12}{\volt}, assuming room temperature is \SI{295}{\kelvin}.
+  \item Is the lamp ``disobeying'' Ohm's law, or is Ohm's law simply not a law in the same sense as conservation of charge? Explain in two or three sentences.
+\end{enumerate}
+
+\section*{Lab report checklist}
+
+Your report is due at the start of next week's lab and should include: the completed data tables; the three resistor graphs and the two lamp graphs, each with labeled axes and units; your fitted resistances with uncertainties and the comparison to nominal values; and answers to Q1 to Q4.
+
+\end{document}

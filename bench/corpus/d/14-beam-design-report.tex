@@ -1,0 +1,333 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=25mm]{geometry}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\sisetup{
+  per-mode = symbol,
+  group-separator = {\,},
+  group-minimum-digits = 4,
+  detect-all
+}
+\DeclareSIUnit{\kN}{\kilo\newton}
+\DeclareSIUnit{\kNm}{\kilo\newton\metre}
+
+\newcommand{\pass}{\textcolor{green!50!black}{\textbf{OK}}}
+\newcommand{\fail}{\textcolor{red!70!black}{\textbf{FAIL}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Project 2417 --- Riverside Works Mezzanine}
+\rhead{\small Calc.\ ref.\ 2417-S-003 Rev B}
+\cfoot{\small Page \thepage\ of \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\Large Hollin \& Marsh Structural Engineers}\\[2.5cm]
+  {\huge\bfseries Design Report}\\[0.6cm]
+  {\LARGE Level 2 Mezzanine Floor Beams,\\[2pt] Gridlines B--C / 1--6}\\[1.5cm]
+  {\large Project 2417: Riverside Works, conversion to offices}\\[0.3cm]
+  {\large Calculation reference 2417-S-003}\\[3cm]
+
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Prepared by & R.\ Adeyemi, CEng MIStructE \\
+    Checked by  & L.\ Fairbairn, CEng MIStructE \\
+    Approved by & D.\ Hollin, CEng FIStructE \\
+    Date        & 7 October 2026 \\
+    \bottomrule
+  \end{tabular}
+
+  \vfill
+  \begin{tabular}{@{}llp{8cm}@{}}
+    \multicolumn{3}{@{}l}{\textbf{Revision history}} \\
+    \midrule
+    Rev & Date & Description \\
+    \midrule
+    A & 18/09/2026 & First issue for comment \\
+    B & 07/10/2026 & Section increased after vibration check; Section~\ref{sec:selection} \\
+    \bottomrule
+  \end{tabular}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%======================================================================
+\section{Introduction}
+\label{sec:intro}
+
+This report sets out the design of the secondary steel floor beams supporting the new Level~2 mezzanine at Riverside Works. The mezzanine forms part of the conversion of a former warehouse into open-plan offices and spans between the existing primary girders on gridlines~B and~C.
+
+The scope of this report is limited to the typical internal secondary beam. Edge beams, the primary girders, the beam-to-girder connections and the composite slab are covered in separate calculations (refs.\ 2417-S-004 to S-007).
+
+\subsection{Description of the structure}
+
+The typical beam is simply supported between primary girders at a span of \qty{6.00}{\metre}, with beams at \qty{3.00}{\metre} centres. The floor is a \qty{130}{\milli\metre} composite slab on trapezoidal steel decking, spanning one way between secondary beams. The decking is fixed to the top flange of each beam with shot-fired pins at every trough before concrete is placed.
+
+For this design the beams are treated as \emph{non-composite}: no shear studs are provided, and the slab is relied on only for lateral restraint of the compression flange. This is conservative for strength and stiffness, and was the client's preference to allow future removal of floor bays.
+
+\subsection{Summary of outcome}
+
+A UB $305\times165\times40$ in S355 was initially selected and satisfies the strength and deflection criteria, but its natural frequency (\qty{4.8}{\hertz}) is below the \qty{5.0}{\hertz} required by the client's specification. The adopted section is \textbf{UB $\mathbf{356\times171\times45}$, grade S355}, which passes all checks with a governing utilisation of 0.70 (total deflection).
+
+%======================================================================
+\section{Basis of design}
+\label{sec:basis}
+
+\subsection{Codes and standards}
+
+\begin{itemize}[nosep]
+  \item BS EN 1990:2002+A1:2005, \emph{Basis of structural design}, with UK National Annex.
+  \item BS EN 1991-1-1:2002, \emph{Actions on structures: densities, self-weight, imposed loads for buildings}, with UK National Annex.
+  \item BS EN 1993-1-1:2005+A1:2014, \emph{Design of steel structures: general rules and rules for buildings}, with UK National Annex.
+  \item SCI P354, \emph{Design of Floors for Vibration: A New Approach} (2009), for guidance on floor dynamics.
+\end{itemize}
+
+\subsection{Materials and partial factors}
+
+Table~\ref{tab:materials} lists the material properties and partial factors used.
+
+\begin{table}[H]
+  \centering
+  \caption{Material properties and partial factors.}
+  \label{tab:materials}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Parameter & Symbol & Value \\
+    \midrule
+    Steel grade & --- & S355 to BS EN 10025-2 \\
+    Yield strength ($t \le \qty{16}{\milli\metre}$) & $f_y$ & \qty{355}{\newton\per\milli\metre\squared} \\
+    Elastic modulus & $E$ & \qty{210000}{\newton\per\milli\metre\squared} \\
+    Material factor (cross-sections) & $\gamma_{M0}$ & 1.00 \\
+    Material factor (buckling) & $\gamma_{M1}$ & 1.00 \\
+    Permanent action factor (unfavourable) & $\gamma_G$ & 1.35 \\
+    Variable action factor (unfavourable) & $\gamma_Q$ & 1.50 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Design criteria}
+
+\begin{enumerate}[label=(\alph*)]
+  \item Ultimate limit state: cross-section resistance in bending and shear to BS EN 1993-1-1 clauses 6.2.5 and 6.2.6.
+  \item Serviceability, imposed load deflection: $\delta_q \le L/360$.
+  \item Serviceability, total load deflection: $\delta_{\text{tot}} \le L/250$.
+  \item Floor dynamics: fundamental frequency $f_1 \ge \qty{5.0}{\hertz}$ (client specification for open-plan office floors; stricter than the \qty{3}{\hertz} minimum in SCI P354).
+\end{enumerate}
+
+%======================================================================
+\section{Loading}
+\label{sec:loading}
+
+Area loads are taken from the architect's floor build-up (drawing 2417-A-210 Rev~C) and from BS EN 1991-1-1 for an office (category~B). Movable partitions are allowed for as an equivalent uniformly distributed imposed load in accordance with clause 6.3.1.2(8), assuming partition self-weight not exceeding \qty{2.0}{\kN\per\metre}.
+
+\begin{table}[H]
+  \centering
+  \caption{Characteristic loads. Line loads are for a tributary width of \qty{3.00}{\metre}.}
+  \label{tab:loads}
+  \begin{tabular}{@{}lS[table-format=1.2]S[table-format=2.2]@{}}
+    \toprule
+    Item & {Area load (\unit{\kN\per\metre\squared})} & {Line load (\unit{\kN\per\metre})} \\
+    \midrule
+    \multicolumn{3}{@{}l}{\textit{Permanent actions, $g_k$}} \\
+    \quad Composite slab and decking (\qty{130}{\milli\metre}) & 2.80 & 8.40 \\
+    \quad Screed and floor finishes & 1.20 & 3.60 \\
+    \quad Ceiling and services & 0.50 & 1.50 \\
+    \quad Beam self-weight (UB $356\times171\times45$) & {---} & 0.44 \\
+    \midrule
+    \quad \textbf{Total permanent} & 4.50 & 13.94 \\
+    \midrule
+    \multicolumn{3}{@{}l}{\textit{Variable actions, $q_k$}} \\
+    \quad Office imposed load, category B & 3.00 & 9.00 \\
+    \quad Movable partitions allowance & 0.80 & 2.40 \\
+    \midrule
+    \quad \textbf{Total variable} & 3.80 & 11.40 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The design load at the ultimate limit state, using expression 6.10 of BS EN 1990, is
+\begin{equation}
+  w_{\text{Ed}} = \gamma_G\, g_k + \gamma_Q\, q_k = 1.35 \times 13.94 + 1.50 \times 11.40 = \qty{35.92}{\kN\per\metre}.
+\end{equation}
+Expressions 6.10a and 6.10b would give a slightly lower value; 6.10 is used for simplicity.
+
+%======================================================================
+\section{Analysis}
+\label{sec:analysis}
+
+The beam is analysed as simply supported with a uniformly distributed load (Figure~\ref{fig:beam}). The design actions are
+\begin{align}
+  M_{\text{Ed}} &= \frac{w_{\text{Ed}} L^2}{8} = \frac{35.92 \times 6.00^2}{8} = \qty{161.6}{\kNm}, \\
+  V_{\text{Ed}} &= \frac{w_{\text{Ed}} L}{2} = \frac{35.92 \times 6.00}{2} = \qty{107.8}{\kN}.
+\end{align}
+
+\begin{figure}[H]
+  \centering
+  \includesvg[width=0.85\textwidth]{14-beam-diagram}
+  \caption{Typical secondary beam: (a) ULS loading and support conditions, (b) shear force diagram, (c) bending moment diagram.}
+  \label{fig:beam}
+\end{figure}
+
+The characteristic end reactions, required for the connection design in calc.\ 2417-S-006, are \qty{41.8}{\kN} permanent and \qty{34.2}{\kN} variable per end; the ULS reaction is \qty{107.8}{\kN}.
+
+%======================================================================
+\section{Member design}
+\label{sec:design}
+
+\subsection{Section properties}
+
+Properties are taken from the manufacturer's section tables and are listed in Table~\ref{tab:sections} for the trial and adopted sections.
+
+\begin{table}[H]
+  \centering
+  \caption{Section properties.}
+  \label{tab:sections}
+  \begin{tabular}{@{}llS[table-format=3.1]S[table-format=3.1]@{}}
+    \toprule
+    Property & Unit & {UB $305\times165\times40$} & {UB $356\times171\times45$} \\
+    \midrule
+    Mass & \unit{\kilo\gram\per\metre} & 40.3 & 45.0 \\
+    Depth, $h$ & \unit{\milli\metre} & 303.4 & 351.4 \\
+    Width, $b$ & \unit{\milli\metre} & 165.0 & 171.1 \\
+    Web thickness, $t_w$ & \unit{\milli\metre} & 6.0 & 7.0 \\
+    Flange thickness, $t_f$ & \unit{\milli\metre} & 10.2 & 9.7 \\
+    Root radius, $r$ & \unit{\milli\metre} & 8.9 & 10.2 \\
+    Area, $A$ & \unit{\centi\metre\squared} & 51.3 & 57.3 \\
+    Second moment of area, $I_y$ & \unit{\centi\metre\tothe{4}} & {\num{8503}} & {\num{12066}} \\
+    Plastic modulus, $W_{pl,y}$ & \unit{\centi\metre\cubed} & 623.0 & 775.0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The calculations below are for the adopted UB $356\times171\times45$. Results for the trial section are summarised in Section~\ref{sec:selection}.
+
+\subsection{Cross-section classification}
+
+With $\varepsilon = \sqrt{235/f_y} = \sqrt{235/355} = 0.814$:
+
+\begin{itemize}[nosep]
+  \item Flange outstand: $c = (b - t_w - 2r)/2 = (171.1 - 7.0 - 20.4)/2 = \qty{71.9}{\milli\metre}$, so $c/t_f = 7.41$. Since $9\varepsilon = 7.32 < 7.41 \le 10\varepsilon = 8.14$, the flange is \textbf{Class 2}.
+  \item Web in bending: $c = h - 2t_f - 2r = \qty{311.6}{\milli\metre}$, so $c/t_w = 44.5 \le 72\varepsilon = 58.6$; the web is \textbf{Class 1}.
+\end{itemize}
+The section is therefore Class~2 and the plastic moment resistance may be used.
+
+\subsection{Bending resistance}
+
+\begin{equation}
+  M_{c,\text{Rd}} = \frac{W_{pl,y} f_y}{\gamma_{M0}} = \frac{\qty{775e3}{\milli\metre\cubed} \times \qty{355}{\newton\per\milli\metre\squared}}{1.0} = \qty{275.1}{\kNm}.
+\end{equation}
+\[
+  \frac{M_{\text{Ed}}}{M_{c,\text{Rd}}} = \frac{161.6}{275.1} = 0.59 \le 1.0 \qquad \pass
+\]
+
+\paragraph{Lateral--torsional buckling.} In the permanent condition the compression (top) flange is continuously restrained by the decking and slab, so lateral--torsional buckling need not be checked (BS EN 1993-1-1, clause 6.3.2.1). During construction, the decking is fixed to the beams before concrete is placed, and the construction-stage loads (wet concrete plus \qty{0.75}{\kN\per\metre\squared} construction load) are well below the permanent condition. The contractor's method statement must confirm that decking is fixed before any loading; this is noted on drawing 2417-S-110.
+
+\subsection{Shear resistance}
+
+The shear area for a rolled I-section loaded parallel to the web is
+\begin{equation}
+  A_v = A - 2bt_f + (t_w + 2r)t_f = 5730 - 2(171.1)(9.7) + (7.0 + 20.4)(9.7) = \qty{2676}{\milli\metre\squared},
+\end{equation}
+which exceeds $\eta h_w t_w = 1.0 \times 332.0 \times 7.0 = \qty{2324}{\milli\metre\squared}$. Then
+\begin{equation}
+  V_{pl,\text{Rd}} = \frac{A_v (f_y/\sqrt{3})}{\gamma_{M0}} = \frac{2676 \times 355/\sqrt{3}}{1.0} = \qty{548.6}{\kN},
+\end{equation}
+\[
+  \frac{V_{\text{Ed}}}{V_{pl,\text{Rd}}} = \frac{107.8}{548.6} = 0.20 \le 1.0 \qquad \pass
+\]
+Since $h_w/t_w = 47.4 < 72\varepsilon/\eta = 58.6$, shear buckling need not be checked. Because $V_{\text{Ed}} < 0.5\,V_{pl,\text{Rd}}$, there is no reduction of the moment resistance for shear; in any case maximum shear and maximum moment do not coincide in a simply supported beam.
+
+\subsection{Deflection}
+
+Deflections are calculated for the bare steel section using
+\begin{equation}
+  \delta = \frac{5 w L^4}{384 E I_y}.
+\end{equation}
+Under the characteristic variable load $q_k = \qty{11.40}{\kN\per\metre}$:
+\begin{equation}
+  \delta_q = \frac{5 \times 11.40 \times 6000^4}{384 \times 210\,000 \times 12\,066 \times 10^4} = \qty{7.6}{\milli\metre} = \frac{L}{790}
+  \qquad \le \frac{L}{360} = \qty{16.7}{\milli\metre} \quad \pass
+\end{equation}
+Under the total characteristic load $g_k + q_k = \qty{25.34}{\kN\per\metre}$:
+\begin{equation}
+  \delta_{\text{tot}} = \qty{16.9}{\milli\metre} = \frac{L}{355}
+  \qquad \le \frac{L}{250} = \qty{24.0}{\milli\metre} \quad \pass
+\end{equation}
+No precamber is required.
+
+\subsection{Floor vibration}
+
+The fundamental frequency of a simply supported beam can be estimated from its self-weight deflection by the well-known approximation
+\begin{equation}
+  f_1 \approx \frac{18}{\sqrt{\delta_{sw}}},
+\end{equation}
+where $\delta_{sw}$ is in millimetres and is calculated under the permanent load plus 10\% of the imposed load, which is the proportion assumed to be present in practice. For the adopted section,
+\[
+  w = 13.94 + 0.1 \times 11.40 = \qty{15.08}{\kN\per\metre}, \quad
+  \delta_{sw} = \qty{10.0}{\milli\metre}, \quad
+  f_1 = \frac{18}{\sqrt{10.0}} = \qty{5.7}{\hertz} \ge \qty{5.0}{\hertz} \quad \pass
+\]
+This simplified check considers the beam alone. A full response-factor assessment to SCI P354, accounting for the flexibility of the primary girders, is carried out in calc.\ 2417-S-008 for the whole floor.
+
+%======================================================================
+\section{Section selection}
+\label{sec:selection}
+
+Table~\ref{tab:summary} compares the two sections. The UB $305\times165\times40$, used in Revision~A, satisfies the strength and deflection criteria, although its total-load deflection is effectively at the limit. It fails the vibration criterion, with $f_1 = \qty{4.8}{\hertz}$. The next serial size, UB $356\times171\times45$, increases the second moment of area by 42\% for an extra \qty{4.7}{\kilo\gram\per\metre}, an increase in beam tonnage of about 12\%, and passes all checks with reasonable margin.
+
+\begin{table}[H]
+  \centering
+  \caption{Summary of design checks. Utilisation is action effect divided by resistance or limit; for vibration it is $\qty{5.0}{\hertz}/f_1$.}
+  \label{tab:summary}
+  \begin{tabularx}{\textwidth}{@{}X cc cc@{}}
+    \toprule
+    & \multicolumn{2}{c}{UB $305\times165\times40$} & \multicolumn{2}{c}{UB $356\times171\times45$} \\
+    \cmidrule(lr){2-3}\cmidrule(l){4-5}
+    Check & Utilisation & Result & Utilisation & Result \\
+    \midrule
+    Bending, $M_{\text{Ed}}/M_{c,\text{Rd}}$ & 0.73 & \pass & 0.59 & \pass \\
+    Shear, $V_{\text{Ed}}/V_{pl,\text{Rd}}$ & 0.26 & \pass & 0.20 & \pass \\
+    Imposed deflection, $\delta_q/(L/360)$ & 0.65 & \pass & 0.46 & \pass \\
+    Total deflection, $\delta_{\text{tot}}/(L/250)$ & 1.00 & \pass & 0.70 & \pass \\
+    Vibration, \qty{5.0}{\hertz}$/f_1$ & 1.05 & \fail & 0.88 & \pass \\
+    \midrule
+    \textbf{Governing} & \textbf{1.05} & \fail & \textbf{0.70} & \pass \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+For the trial section, $\delta_{\text{tot}} = \qty{23.9}{\milli\metre}$ against a limit of \qty{24.0}{\milli\metre}, which leaves no allowance for future changes in finishes or use. This was a secondary reason for increasing the section.
+
+%======================================================================
+\section{Conclusions and recommendations}
+\label{sec:conclusions}
+
+\begin{enumerate}
+  \item The typical secondary beam on gridlines B--C, spanning \qty{6.00}{\metre} at \qty{3.00}{\metre} centres, shall be \textbf{UB $356\times171\times45$ in grade S355}, designed as non-composite and simply supported.
+  \item The governing criterion is total-load deflection (utilisation 0.70). Bending utilisation is 0.59 and the simplified natural frequency is \qty{5.7}{\hertz}.
+  \item The decking must be fixed to the top flanges before concrete is placed, to provide lateral restraint during construction.
+  \item End connections shall be designed for an ULS reaction of \qty{107.8}{\kN} (calc.\ 2417-S-006). Fin-plate connections to the primary girders are anticipated.
+  \item If the client later wishes to reduce steel weight, composite design with shear studs would allow the UB $305\times165\times40$ to be reinstated, but would remove the ability to dismantle floor bays easily. This should be discussed at the next design team meeting.
+\end{enumerate}
+
+\end{document}

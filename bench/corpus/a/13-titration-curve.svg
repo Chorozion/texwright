@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="580" height="440" viewBox="0 0 580 440" font-family="Helvetica, Arial, sans-serif" font-size="12">
+  <rect width="580" height="440" fill="#ffffff"/>
+
+  <!-- grid: pH every 2 units, volume every 10 mL -->
+  <g stroke="#ececec" stroke-width="1">
+    <line x1="70" y1="331.4" x2="530" y2="331.4"/>
+    <line x1="70" y1="282.9" x2="530" y2="282.9"/>
+    <line x1="70" y1="234.3" x2="530" y2="234.3"/>
+    <line x1="70" y1="185.7" x2="530" y2="185.7"/>
+    <line x1="70" y1="137.1" x2="530" y2="137.1"/>
+    <line x1="70" y1="88.6" x2="530" y2="88.6"/>
+    <line x1="70" y1="40" x2="530" y2="40"/>
+    <line x1="162" y1="40" x2="162" y2="380"/>
+    <line x1="254" y1="40" x2="254" y2="380"/>
+    <line x1="346" y1="40" x2="346" y2="380"/>
+    <line x1="438" y1="40" x2="438" y2="380"/>
+    <line x1="530" y1="40" x2="530" y2="380"/>
+  </g>
+
+  <!-- axes -->
+  <g stroke="#000000" stroke-width="1.2">
+    <line x1="70" y1="380" x2="530" y2="380"/>
+    <line x1="70" y1="40" x2="70" y2="380"/>
+  </g>
+
+  <g text-anchor="middle">
+    <text x="70" y="397">0</text>
+    <text x="162" y="397">10</text>
+    <text x="254" y="397">20</text>
+    <text x="346" y="397">30</text>
+    <text x="438" y="397">40</text>
+    <text x="530" y="397">50</text>
+  </g>
+  <g text-anchor="end">
+    <text x="62" y="384">0</text>
+    <text x="62" y="335.4">2</text>
+    <text x="62" y="286.9">4</text>
+    <text x="62" y="238.3">6</text>
+    <text x="62" y="189.7">8</text>
+    <text x="62" y="141.1">10</text>
+    <text x="62" y="92.6">12</text>
+    <text x="62" y="44">14</text>
+  </g>
+
+  <text x="300" y="424" text-anchor="middle" font-size="13">Volume of 0.100 M NaOH added (mL)</text>
+  <text x="26" y="210" text-anchor="middle" font-size="13" transform="rotate(-90 26 210)">pH</text>
+
+  <!-- phenolphthalein range 8.2 to 10.0 -->
+  <rect x="70" y="137.1" width="460" height="43.7" fill="#f8d7e8" fill-opacity="0.45"/>
+  <text x="524" y="152" text-anchor="end" font-size="11" fill="#a0306a">phenolphthalein range</text>
+
+  <!-- buffer region shading 0 to 25 mL is implicit; mark half-equivalence and equivalence -->
+  <line x1="185" y1="380" x2="185" y2="264.8" stroke="#888888" stroke-dasharray="4,3"/>
+  <line x1="70" y1="264.8" x2="185" y2="264.8" stroke="#888888" stroke-dasharray="4,3"/>
+  <line x1="300" y1="380" x2="300" y2="168.2" stroke="#888888" stroke-dasharray="4,3"/>
+
+  <!-- titration curve -->
+  <polyline fill="none" stroke="#1b5e9e" stroke-width="2.2"
+            points="70,310.3 79.2,298.4 93,288 116,279.5 162,269 185,264.8 208,260.5 254,250.1 277,241.6 290.8,231.1 295.4,223.6 298,213.9 300,168.2 302,122.6 304.6,112.9 309.2,105.8 323,96.3 346,89.6 392,83.2 438,79.8 530,76"/>
+
+  <!-- key points -->
+  <circle cx="185" cy="264.8" r="4.5" fill="#ffffff" stroke="#d35400" stroke-width="2"/>
+  <circle cx="300" cy="168.2" r="4.5" fill="#ffffff" stroke="#d35400" stroke-width="2"/>
+
+  <text x="192" y="290" font-size="11">half-equivalence</text>
+  <text x="192" y="304" font-size="11">12.5 mL, pH = pK<tspan dy="3" font-size="8">a</tspan><tspan dy="-3"> = 4.74</tspan></text>
+  <text x="310" y="180" font-size="11">equivalence point</text>
+  <text x="310" y="194" font-size="11">25.0 mL, pH = 8.72</text>
+</svg>

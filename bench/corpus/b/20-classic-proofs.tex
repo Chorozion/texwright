@@ -1,0 +1,263 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\title{Three Classical Proofs:\\The Irrationality of $\sqrt{2}$ and $e$, and the Infinitude of the Primes}
+\author{Notes for an Introduction to Proof course}
+\date{October 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We give complete, self-contained proofs of three classical results: $\sqrt{2}$ is irrational, $e$ is irrational, and there are infinitely many prime numbers. Each argument is broken into lemmas so that the logical structure is visible, and for $\sqrt{2}$ and the primes we give a second proof that uses a different idea. The only prerequisites are the well-ordering principle for the natural numbers and, for $e$, the series definition of the exponential function.
+\end{abstract}
+
+\section{Conventions}
+\label{sec:conventions}
+
+Throughout, $\N = \{1, 2, 3, \dots\}$ and $\Z$ denotes the integers. A real number $x$ is \emph{rational} if $x = a/b$ for some $a \in \Z$ and $b \in \N$, and \emph{irrational} otherwise. For integers $d$ and $n$ we write $d \mid n$ if $n = dk$ for some $k \in \Z$. An integer $p \ge 2$ is \emph{prime} if its only positive divisors are $1$ and $p$.
+
+We use the following axiom freely.
+
+\begin{quote}
+\textbf{Well-ordering principle.} Every nonempty subset of $\N$ has a least element.
+\end{quote}
+
+\section{The irrationality of \texorpdfstring{$\sqrt{2}$}{sqrt 2}}
+\label{sec:sqrt2}
+
+\begin{lemma}
+\label{lem:parity}
+Let $n \in \Z$. If $n^2$ is even, then $n$ is even.
+\end{lemma}
+
+\begin{proof}
+We prove the contrapositive. If $n$ is odd, then $n = 2k + 1$ for some $k \in \Z$, and
+\[
+  n^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1,
+\]
+which is odd.
+\end{proof}
+
+\begin{lemma}[Lowest terms]
+\label{lem:lowest-terms}
+Every rational number $x$ can be written as $x = a/b$ with $a \in \Z$, $b \in \N$, and $a$ and $b$ not both even.
+\end{lemma}
+
+\begin{proof}
+The set $D = \{ b \in \N : x b \in \Z \}$ is nonempty because $x$ is rational. By the well-ordering principle it has a least element $b$; set $a = xb$. If $a$ and $b$ were both even, then $b/2 \in \N$ and $x \cdot (b/2) = a/2 \in \Z$, so $b/2 \in D$ with $b/2 < b$, contradicting the minimality of $b$.
+\end{proof}
+
+\begin{theorem}
+\label{thm:sqrt2}
+$\sqrt{2}$ is irrational.
+\end{theorem}
+
+\begin{proof}
+Suppose, for contradiction, that $\sqrt{2}$ is rational. By \cref{lem:lowest-terms}, $\sqrt{2} = a/b$ with $b \in \N$ and $a, b$ not both even. Squaring and clearing denominators gives
+\begin{equation}
+  a^2 = 2b^2.
+  \label{eq:a2-2b2}
+\end{equation}
+Thus $a^2$ is even, so $a$ is even by \cref{lem:parity}; write $a = 2c$. Substituting into \eqref{eq:a2-2b2} gives $4c^2 = 2b^2$, that is, $b^2 = 2c^2$. Then $b^2$ is even, so $b$ is even, again by \cref{lem:parity}. Hence $a$ and $b$ are both even, a contradiction.
+\end{proof}
+
+The following second proof avoids parity altogether and uses the well-ordering principle directly. Its idea, sometimes attributed to the Pythagoreans in geometric form, is \emph{infinite descent}: from one representation we manufacture a strictly smaller one.
+
+\begin{proof}[Second proof of \cref{thm:sqrt2}]
+Suppose $\sqrt{2}$ is rational. Then the set $D = \{ b \in \N : b\sqrt{2} \in \N \}$ is nonempty, so it has a least element $b$. Let $a = b\sqrt{2} \in \N$. Since $1 < \sqrt{2} < 2$, we have $b < a < 2b$, so $b' = a - b$ satisfies $0 < b' < b$. Now
+\[
+  b'\sqrt{2} = (a - b)\sqrt{2} = a\sqrt{2} - b\sqrt{2} = \frac{a^2}{b} - a = \frac{2b^2}{b} - a = 2b - a,
+\]
+and $2b - a$ is a positive integer because $a < 2b$. Hence $b' \in D$ and $b' < b$, contradicting the choice of $b$.
+\end{proof}
+
+The first proof generalizes to every prime once we replace \cref{lem:parity} by Euclid's lemma.
+
+\begin{lemma}[Euclid's lemma]
+\label{lem:euclid}
+If $p$ is prime and $p \mid mn$ for integers $m$ and $n$, then $p \mid m$ or $p \mid n$.
+\end{lemma}
+
+We omit the proof, which follows from B\'ezout's identity; see \cite[Theorem~3]{hardywright2008}.
+
+\begin{corollary}
+\label{cor:sqrtp}
+For every prime $p$, $\sqrt{p}$ is irrational.
+\end{corollary}
+
+\begin{proof}
+Suppose $\sqrt{p} = a/b$ with $a, b$ not both divisible by $p$; such a representation exists because the argument of \cref{lem:lowest-terms} works with $p$ in place of $2$. Then $a^2 = p b^2$, so $p \mid a^2$ and therefore $p \mid a$ by \cref{lem:euclid}. Writing $a = pc$ gives $b^2 = p c^2$, so $p \mid b$ by the same reasoning. This contradicts the choice of $a$ and $b$.
+\end{proof}
+
+\begin{remark}
+More generally, $\sqrt{n}$ is irrational for every $n \in \N$ that is not a perfect square. The cleanest route is through unique factorization: if $\sqrt{n} = a/b$ then $a^2 = n b^2$, and comparing the exponent of each prime on both sides shows that every exponent in $n$ is even.
+\end{remark}
+
+\section{The irrationality of \texorpdfstring{$e$}{e}}
+\label{sec:e}
+
+We take as our definition
+\begin{equation}
+  e = \sum_{k=0}^{\infty} \frac{1}{k!} = 1 + 1 + \frac{1}{2} + \frac{1}{6} + \frac{1}{24} + \cdots,
+  \label{eq:e-series}
+\end{equation}
+which converges by comparison with a geometric series. The proof below is due to Fourier and is the one given in most textbooks \cite{aigner2018}.
+
+\begin{lemma}[Tail estimate]
+\label{lem:tail}
+For every $n \in \N$,
+\[
+  0 < \sum_{k=n+1}^{\infty} \frac{n!}{k!} < \frac{1}{n}.
+\]
+\end{lemma}
+
+\begin{proof}
+Every term is positive, which gives the lower bound. For $k \ge n + 1$,
+\[
+  \frac{n!}{k!} = \frac{1}{(n+1)(n+2)\cdots k} \le \frac{1}{(n+1)^{k-n}},
+\]
+with strict inequality for $k \ge n + 2$. Summing the geometric series,
+\[
+  \sum_{k=n+1}^{\infty} \frac{n!}{k!} < \sum_{j=1}^{\infty} \frac{1}{(n+1)^j} = \frac{1/(n+1)}{1 - 1/(n+1)} = \frac{1}{n}. \qedhere
+\]
+\end{proof}
+
+\begin{theorem}
+\label{thm:e}
+$e$ is irrational.
+\end{theorem}
+
+\begin{proof}
+Suppose, for contradiction, that $e = a/b$ with $a, b \in \N$. Consider the number
+\[
+  x = b!\left( e - \sum_{k=0}^{b} \frac{1}{k!} \right).
+\]
+On the one hand, $x$ is an integer: $b!\,e = a \cdot (b-1)!$ is an integer, and so is $b!/k!$ for each $0 \le k \le b$.
+
+On the other hand, by \eqref{eq:e-series},
+\[
+  x = \sum_{k=b+1}^{\infty} \frac{b!}{k!},
+\]
+so \cref{lem:tail} with $n = b$ gives $0 < x < 1/b \le 1$. There is no integer strictly between $0$ and $1$, which is a contradiction.
+\end{proof}
+
+\begin{remark}
+The same idea, with more work, shows that $e^r$ is irrational for every nonzero rational $r$, and in fact that $e$ is transcendental (Hermite, 1873). By contrast, the irrationality of $e + \pi$ and of $e\pi$ is still an open problem \cite{niven1956}.
+\end{remark}
+
+\section{The infinitude of the primes}
+\label{sec:primes}
+
+\begin{lemma}
+\label{lem:prime-divisor}
+Every integer $n \ge 2$ has a prime divisor.
+\end{lemma}
+
+\begin{proof}
+Suppose not, and let $n$ be the least integer $n \ge 2$ with no prime divisor; it exists by the well-ordering principle. Then $n$ is not itself prime, since $n \mid n$. So $n = de$ with $1 < d < n$. By minimality, $d$ has a prime divisor $p$, and then $p \mid d \mid n$, a contradiction.
+\end{proof}
+
+\begin{theorem}[Euclid]
+\label{thm:euclid}
+There are infinitely many prime numbers.
+\end{theorem}
+
+\begin{proof}
+It suffices to show that every finite list of primes $p_1, p_2, \dots, p_k$ omits some prime. Let
+\[
+  N = p_1 p_2 \cdots p_k + 1.
+\]
+Since $N \ge 3$, \cref{lem:prime-divisor} gives a prime $q$ with $q \mid N$. If $q$ were one of the $p_i$, then $q$ would divide both $N$ and $p_1 p_2 \cdots p_k$, hence their difference, which is $1$. That is impossible since $q \ge 2$. So $q$ is a prime not on the list.
+\end{proof}
+
+\begin{remark}
+A common misreading of this proof is that $N$ itself must be prime. It need not be: $2 \cdot 3 \cdot 5 \cdot 7 \cdot 11 \cdot 13 + 1 = 30031 = 59 \cdot 509$. The proof only needs some prime factor of $N$ to be new.
+\end{remark}
+
+Our second proof, attributed to Goldbach, produces infinitely many integers that are pairwise coprime, so that each contributes a different prime.
+
+\begin{definition}
+For $n \ge 0$, the $n$th \emph{Fermat number} is $F_n = 2^{2^n} + 1$. The first few are $3, 5, 17, 257, 65537$.
+\end{definition}
+
+\begin{lemma}
+\label{lem:fermat-product}
+For every $n \ge 1$,
+\begin{equation}
+  \prod_{k=0}^{n-1} F_k = F_n - 2.
+  \label{eq:fermat-product}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By induction on $n$. For $n = 1$, both sides equal $3$. Assume \eqref{eq:fermat-product} holds for $n$. Then
+\begin{align*}
+  \prod_{k=0}^{n} F_k
+    &= (F_n - 2)\,F_n
+     = \bigl(2^{2^n} - 1\bigr)\bigl(2^{2^n} + 1\bigr) \\
+    &= 2^{2^{n+1}} - 1
+     = F_{n+1} - 2. \qedhere
+\end{align*}
+\end{proof}
+
+\begin{corollary}
+\label{cor:fermat-coprime}
+Distinct Fermat numbers are relatively prime.
+\end{corollary}
+
+\begin{proof}
+Let $m < n$ and suppose $d$ is a positive common divisor of $F_m$ and $F_n$. By \cref{lem:fermat-product}, $F_m$ divides $F_n - 2$, so $d$ divides both $F_n$ and $F_n - 2$, and therefore $d \mid 2$. Every Fermat number is odd, so $d = 1$.
+\end{proof}
+
+\begin{proof}[Second proof of \cref{thm:euclid}]
+By \cref{lem:prime-divisor}, each $F_n$ has a prime divisor $q_n$. If $q_m = q_n$ for some $m \ne n$, that prime would be a common divisor of $F_m$ and $F_n$ greater than $1$, contradicting \cref{cor:fermat-coprime}. Hence $q_0, q_1, q_2, \dots$ are pairwise distinct, and there are infinitely many primes.
+\end{proof}
+
+\begin{remark}
+Euler gave a third, analytic proof by showing that $\sum_{p} 1/p$ diverges, which says much more: the primes are not merely infinite but dense enough that the sum of their reciprocals is unbounded. Many further proofs are collected in \cite{aigner2018}, and Euclid's original appears as Proposition~20 of Book~IX of the \emph{Elements} \cite{heath1956}.
+\end{remark}
+
+\section*{Summary of the logical structure}
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+Result & Depends on & Method \\
+\hline
+\Cref{thm:sqrt2} (first proof) & \Cref{lem:parity,lem:lowest-terms} & Contradiction \\
+\Cref{thm:sqrt2} (second proof) & Well-ordering & Infinite descent \\
+\Cref{cor:sqrtp} & \Cref{lem:euclid}, \cref{lem:lowest-terms} & Contradiction \\
+\Cref{thm:e} & \Cref{lem:tail} & Squeezing an integer into $(0, 1)$ \\
+\Cref{thm:euclid} (first proof) & \Cref{lem:prime-divisor} & Construction \\
+\Cref{thm:euclid} (second proof) & \Cref{lem:prime-divisor,lem:fermat-product}, \cref{cor:fermat-coprime} & Pairwise coprime sequence \\
+\hline
+\end{tabular}
+\end{center}
+
+\bibliographystyle{plain}
+\bibliography{20-references}
+
+\end{document}

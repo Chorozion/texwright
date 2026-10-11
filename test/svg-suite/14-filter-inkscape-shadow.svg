@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220">
+  <defs>
+    <filter id="f" style="color-interpolation-filters:sRGB" x="-0.2" y="-0.2" width="1.5" height="1.5">
+      <feFlood flood-opacity="0.5" flood-color="rgb(0,0,0)" result="flood"/>
+      <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1"/>
+      <feGaussianBlur in="composite1" stdDeviation="3" result="blur"/>
+      <feOffset dx="6" dy="6" result="offset"/>
+      <feComposite in="SourceGraphic" in2="offset" operator="over" result="composite2"/>
+    </filter>
+  </defs>
+  <rect width="400" height="220" fill="#ffeaa7"/>
+  <path d="M 60 170 L 120 40 L 180 170 Z" fill="#0984e3" filter="url(#f)"/>
+  <text x="290" y="130" text-anchor="middle" font-family="Verdana, sans-serif" font-size="48" fill="#d63031" filter="url(#f)">Hi!</text>
+</svg>

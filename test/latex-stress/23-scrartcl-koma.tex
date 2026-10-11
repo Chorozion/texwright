@@ -1,0 +1,42 @@
+\documentclass[paper=a4, fontsize=11pt, parskip=half]{scrartcl}
+\usepackage[ngerman,english]{babel}
+\usepackage{scrlayer-scrpage}
+\usepackage{csquotes}
+\KOMAoptions{DIV=12}
+\setkomafont{disposition}{\bfseries}
+\addtokomafont{section}{\Large}
+\ihead{Project Proposal}
+\ohead{\pagemark}
+\subject{Project Proposal}
+\title{Smart Irrigation with LoRaWAN}
+\subtitle{A pilot study}
+\author{Jonas Weber}
+\publishers{Supervised by Prof.\ Dr.\ K. Schulz}
+\date{\today}
+
+\begin{document}
+\maketitle
+\addsec{Summary}
+We propose a low-power sensor network for irrigation.
+
+\section{Objectives}
+\minisec{Primary}
+Reduce water use by \SI{20}{\percent}.
+\minisec{Secondary}
+Collect soil data.
+
+\begin{otherlanguage}{ngerman}
+\enquote{Wasser ist Leben.}
+\end{otherlanguage}
+
+\section{Budget}
+\begin{tabular}{lr}
+Sensors & 1\,200\,\euro \\
+Gateway & 400\,\euro \\
+\end{tabular}
+
+\begin{labeling}{Gateway}
+\item[Node] A sensor node.
+\item[Gateway] Forwards packets.
+\end{labeling}
+\end{document}

@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant Alice
+    participant Bob
+    Alice->>Bob: Hello Bob, how are you?
+    Bob->>Bob: Think
+    create participant Carl
+    Alice->>Carl: Hi Carl!
+    create actor D as Donald
+    Carl->>D: Hi!
+    destroy Carl
+    Alice-xCarl: We are too many
+    destroy Bob
+    Bob->>Alice: I agree
+    Alice->>+Alice: Recursion
+    Alice->>+Alice: Deeper
+    Alice-->>-Alice: return
+    Alice-->>-Alice: return

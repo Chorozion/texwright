@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="460.8pt" height="345.6pt" viewBox="0 0 460.8 345.6" version="1.1">
+ <defs><style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style></defs>
+ <g id="figure_1">
+  <g id="patch_1"><path d="M 0 345.6 L 460.8 345.6 L 460.8 0 L 0 0 z" style="fill: #ffffff"/></g>
+  <g id="axes_1">
+   <g id="patch_2"><path d="M 57.6 307.584 L 414.72 307.584 L 414.72 41.472 L 57.6 41.472 z" style="fill: #ffffff"/></g>
+   <g id="line2d_1"><path d="M 73.832727 295.488 L 106.298182 276.4 L 138.763636 241.9 L 171.229091 199.2 L 203.694545 156.2 L 236.16 119.3 L 268.625455 92.6 L 301.090909 74.1 L 333.556364 62.7 L 366.021818 56.5 L 398.487273 53.568" clip-path="url(#p1)" style="fill: none; stroke: #1f77b4; stroke-width: 1.5; stroke-linecap: square"/></g>
+   <g id="line2d_2"><path d="M 73.832727 120 L 106.298182 130 L 138.763636 160 L 171.229091 200 L 203.694545 230 L 236.16 250 L 268.625455 262 L 301.090909 270 L 333.556364 276 L 366.021818 280 L 398.487273 282" clip-path="url(#p1)" style="fill: none; stroke-dasharray: 5.55,2.4; stroke-dashoffset: 0; stroke: #ff7f0e; stroke-width: 1.5"/></g>
+   <g id="patch_3"><path d="M 57.6 307.584 L 57.6 41.472" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/></g>
+   <g id="patch_4"><path d="M 57.6 307.584 L 414.72 307.584" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/></g>
+   <g id="text_1"><text style="font: 10px 'DejaVu Sans', Arial, sans-serif; text-anchor: middle" x="236.16" y="335.9">time (s)</text></g>
+   <g id="text_2"><text style="font: 10px 'DejaVu Sans', Arial, sans-serif; text-anchor: middle" transform="translate(24 174.5) rotate(-90)">amplitude</text></g>
+   <g id="text_3"><text style="font: 12px 'DejaVu Sans', Arial, sans-serif; text-anchor: middle" x="236.16" y="35.472">Step response</text></g>
+   <g id="legend_1"><path d="M 300 70 L 405 70 Q 408 70 408 73 L 408 110 Q 408 113 405 113 L 300 113 Q 297 113 297 110 L 297 73 Q 297 70 300 70 z" style="fill: #ffffff; opacity: 0.8; stroke: #cccccc; stroke-linejoin: miter"/>
+    <path d="M 303 82 L 323 82" style="fill: none; stroke: #1f77b4; stroke-width: 1.5"/><text style="font: 10px 'DejaVu Sans', Arial, sans-serif" x="331" y="85.5">output</text>
+    <path d="M 303 101 L 323 101" style="fill: none; stroke-dasharray: 5.55,2.4; stroke: #ff7f0e; stroke-width: 1.5"/><text style="font: 10px 'DejaVu Sans', Arial, sans-serif" x="331" y="104.5">error</text></g>
+  </g>
+ </g>
+ <defs><clipPath id="p1"><rect x="57.6" y="41.472" width="357.12" height="266.112"/></clipPath></defs>
+</svg>

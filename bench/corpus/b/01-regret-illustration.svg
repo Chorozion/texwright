@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 320" width="520" height="320" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <rect width="520" height="320" fill="#ffffff"/>
+  <!-- current subtour -->
+  <polygon points="80,150 160,60 300,50 420,110 380,240 200,250" fill="#f3f6fb" stroke="#4a5a75" stroke-width="2"/>
+  <!-- vertex v: best position in edge (B,C) solid; second best in edge (C,D) dashed -->
+  <line x1="160" y1="60" x2="235" y2="25" stroke="#1f6fb2" stroke-width="2.5"/>
+  <line x1="235" y1="25" x2="300" y2="50" stroke="#1f6fb2" stroke-width="2.5"/>
+  <line x1="235" y1="25" x2="420" y2="110" stroke="#c0392b" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <!-- vertex u: two near-equal positions in edges (D,E) and (E,F) -->
+  <line x1="420" y1="110" x2="420" y2="285" stroke="#1f6fb2" stroke-width="2.5"/>
+  <line x1="420" y1="285" x2="380" y2="240" stroke="#1f6fb2" stroke-width="2.5"/>
+  <line x1="420" y1="285" x2="200" y2="250" stroke="#c0392b" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <!-- tour vertices -->
+  <g fill="#4a5a75">
+    <circle cx="80" cy="150" r="5"/>
+    <circle cx="160" cy="60" r="5"/>
+    <circle cx="300" cy="50" r="5"/>
+    <circle cx="420" cy="110" r="5"/>
+    <circle cx="380" cy="240" r="5"/>
+    <circle cx="200" cy="250" r="5"/>
+  </g>
+  <!-- outside vertices -->
+  <circle cx="235" cy="25" r="7" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
+  <circle cx="420" cy="285" r="7" fill="#ffffff" stroke="#111111" stroke-width="2.2"/>
+  <text x="246" y="20" font-style="italic" font-size="17">v</text>
+  <text x="432" y="300" font-style="italic" font-size="17">u</text>
+  <!-- annotations -->
+  <text x="88" y="30" fill="#1f6fb2">c₁(v) = 12</text>
+  <text x="345" y="60" fill="#c0392b">c₂(v) = 139</text>
+  <text x="428" y="190" fill="#1f6fb2" font-size="13">c₁(u) = 99</text>
+  <text x="240" y="296" fill="#c0392b">c₂(u) = 103</text>
+  <text x="190" y="165" fill="#4a5a75" font-size="13">current subtour T</text>
+  <!-- legend -->
+  <g font-size="12" fill="#333333">
+    <line x1="14" y1="282" x2="44" y2="282" stroke="#1f6fb2" stroke-width="2.5"/>
+    <text x="50" y="286">best position</text>
+    <line x1="14" y1="302" x2="44" y2="302" stroke="#c0392b" stroke-width="1.8" stroke-dasharray="6,4"/>
+    <text x="50" y="306">second-best position</text>
+  </g>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240" viewBox="0 0 400 240">
+  <g font-family="Arial, Helvetica, sans-serif" font-size="20">
+    <text x="20" y="35">Plain <tspan font-weight="bold">bold</tspan> <tspan font-style="italic">italic</tspan> <tspan fill="#d63031">red</tspan></text>
+    <text x="380" y="35" text-anchor="end">end-anchored</text>
+    <text x="20" y="75">E = mc<tspan baseline-shift="super" font-size="13">2</tspan> and H<tspan baseline-shift="sub" font-size="13">2</tspan>O</text>
+    <text x="20" y="115" text-decoration="underline">underlined</text>
+    <text x="200" y="115" text-decoration="line-through">struck</text>
+    <text x="20" y="155" letter-spacing="6">S P A C E D</text>
+    <text x="20" y="195">line one<tspan x="20" dy="24">line two</tspan></text>
+    <text x="300" y="200" transform="rotate(-30 300 200)" font-size="18">rotated</text>
+  </g>
+</svg>

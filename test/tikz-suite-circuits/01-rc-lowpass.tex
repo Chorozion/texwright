@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage[american]{circuitikz}
+\begin{document}
+
+\section*{RC Low-Pass Filter}
+
+The circuit below is a first-order RC low-pass filter. The cutoff frequency is $f_c = \frac{1}{2\pi RC}$.
+
+\begin{figure}[h]
+\centering
+\begin{circuitikz}
+  \draw (0,0) to[sV, l=$v_{in}$] (0,3)
+        to[R, l=$R$] (3,3)
+        to[C, l=$C$, v^>=$v_{out}$] (3,0)
+        -- (0,0);
+  \draw (3,3) to[short, -o] (5,3);
+  \draw (3,0) to[short, -o] (5,0);
+  \draw (5,3) node[right] {$+$};
+  \draw (5,0) node[right] {$-$};
+  \node[ground] at (0,0) {};
+\end{circuitikz}
+\caption{RC low-pass filter.}
+\end{figure}
+
+\end{document}

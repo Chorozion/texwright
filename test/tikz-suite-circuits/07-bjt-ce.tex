@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage[american]{circuitikz}
+\begin{document}
+
+\section*{Common-Emitter Amplifier}
+
+\begin{center}
+\begin{circuitikz}
+  % Transistor
+  \draw (0,0) node[npn](Q1){$Q_1$};
+
+  % Collector
+  \draw (Q1.C) to[R, l_=$R_C$] ++(0,2) node[vcc]{$V_{CC}$};
+  \draw (Q1.C) to[short, *-o] ++(1.5,0) node[right]{$v_{out}$};
+
+  % Emitter
+  \draw (Q1.E) to[R, l=$R_E$] ++(0,-2) node[ground]{};
+
+  % Base bias and input coupling
+  \draw (Q1.B) to[short, -*] ++(-1,0) coordinate(b);
+  \draw (b) to[R, l=$R_{B1}$] ++(0,2.77) -| (Q1.C |- 0,2.77);
+  \draw (b) to[R, l_=$R_{B2}$] ++(0,-2.77) node[ground]{};
+  \draw (b) to[C, l_=$C_{in}$, -o] ++(-2,0) node[left]{$v_{in}$};
+\end{circuitikz}
+\end{center}
+
+\end{document}

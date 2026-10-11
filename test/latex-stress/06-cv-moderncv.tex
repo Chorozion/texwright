@@ -1,0 +1,39 @@
+\documentclass[11pt,a4paper,sans]{moderncv}
+\moderncvstyle{classic}
+\moderncvcolor{blue}
+\usepackage[scale=0.75]{geometry}
+
+\name{Maria}{Gonzalez}
+\title{Senior Data Scientist}
+\address{123 Main Street}{Springfield, IL 62701}{USA}
+\phone[mobile]{+1~(555)~123~4567}
+\email{maria@example.com}
+\homepage{www.mariagonzalez.dev}
+\social[linkedin]{mariagonzalez}
+\social[github]{mgonzalez}
+\quote{Turning data into decisions.}
+
+\begin{document}
+\makecvtitle
+
+\section{Experience}
+\cventry{2020--Present}{Senior Data Scientist}{Acme Corp}{Chicago}{}{
+\begin{itemize}
+\item Led a team of five building forecasting models.
+\item Reduced churn by 12\% using survival analysis.
+\end{itemize}}
+\cventry{2016--2020}{Data Analyst}{Beta LLC}{Remote}{}{Built dashboards in Tableau and SQL.}
+
+\section{Education}
+\cventry{2014--2016}{M.Sc. Statistics}{University of Chicago}{Chicago}{\textit{GPA 3.9}}{Thesis on Bayesian hierarchical models.}
+
+\section{Skills}
+\cvitem{Languages}{Python, R, SQL}
+\cvitem{Tools}{Spark, Airflow, dbt}
+\cvdoubleitem{Spanish}{Native}{English}{Fluent}
+\cvlistitem{Certified AWS ML Specialist}
+\cvitemwithcomment{German}{Basic}{A2 level}
+
+\section{Publications}
+\cvline{2022}{\emph{Forecasting at Scale}, Journal of Applied Stats.}
+\end{document}

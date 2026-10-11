@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220">
+  <defs>
+    <radialGradient id="spot" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff" stop-opacity="0.9"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4834d4"/><stop offset="1" stop-color="#be2edd"/></linearGradient>
+  </defs>
+  <rect width="400" height="220" rx="16" fill="url(#bg)"/>
+  <circle cx="120" cy="80" r="90" fill="url(#spot)"/>
+  <rect x="200" y="120" width="170" height="70" rx="10" fill="#ffffff" fill-opacity="0.2" stroke="#ffffff" stroke-opacity="0.6" stroke-width="2"/>
+  <text x="285" y="164" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#ffffff" fill-opacity="0.9">Glass card</text>
+</svg>

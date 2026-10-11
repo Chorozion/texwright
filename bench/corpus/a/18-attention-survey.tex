@@ -1,0 +1,175 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[round, authoryear]{natbib}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+\usepackage{cleveref}
+
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\rowmax}{rowmax}
+\DeclareMathOperator{\rowsum}{rowsum}
+\DeclareMathOperator{\diag}{diag}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\mQ}{\mathbf{Q}}
+\newcommand{\mK}{\mathbf{K}}
+\newcommand{\mV}{\mathbf{V}}
+\newcommand{\mO}{\mathbf{O}}
+\newcommand{\mW}{\mathbf{W}}
+\newcommand{\mX}{\mathbf{X}}
+
+\title{Attention Mechanisms in Neural Networks\\[0.3em]
+  \large Section 3 of \emph{A Survey of Sequence Modeling Architectures}}
+\author{}
+\date{Draft, October 2026}
+
+\begin{document}
+
+\maketitle
+
+\setcounter{section}{2}
+
+\section{Attention Mechanisms}
+\label{sec:attention}
+
+Attention lets a model compute each output as a weighted combination of a set of inputs, with weights that depend on the content of the inputs themselves. It was introduced to relieve the fixed-length bottleneck of recurrent encoder--decoder models \citep{bahdanau2015neural}, became the sole sequence-mixing operation of the Transformer \citep{vaswani2017attention}, and is now the computational core of most large language and vision models. This section develops the mechanism from its origins in machine translation (\cref{sec:origins}), states the scaled dot-product and multi-head formulations (\cref{sec:sdpa,sec:mha}), analyzes their cost (\cref{sec:complexity}), and surveys methods that reduce that cost (\cref{sec:efficient}).
+
+\subsection{Origins: alignment in neural machine translation}
+\label{sec:origins}
+
+In the sequence-to-sequence model, an encoder RNN reads a source sentence into hidden states $\bm{h}_1, \dots, \bm{h}_n$, and a decoder generates the target conditioned only on the final state $\bm{h}_n$. Translation quality degraded sharply on long sentences, since a single vector had to summarize the whole source. \citet{bahdanau2015neural} proposed that at each decoding step $t$, the decoder state $\bm{s}_{t-1}$ should \emph{query} all encoder states, producing a context vector
+\begin{equation}
+  \bm{c}_t = \sum_{j=1}^{n} \alpha_{tj}\, \bm{h}_j,
+  \qquad
+  \alpha_{tj} = \frac{\exp(e_{tj})}{\sum_{k=1}^{n} \exp(e_{tk})},
+  \label{eq:context}
+\end{equation}
+where the alignment score $e_{tj}$ is computed by a small feed-forward network:
+\begin{equation}
+  e_{tj} = \bm{v}^\top \tanh\left( \mW_s \bm{s}_{t-1} + \mW_h \bm{h}_j \right).
+  \label{eq:additive}
+\end{equation}
+This is \emph{additive} attention. \citet{luong2015effective} compared several cheaper scoring functions, including the dot product $e_{tj} = \bm{s}_t^\top \bm{h}_j$ and the bilinear form $e_{tj} = \bm{s}_t^\top \mW \bm{h}_j$, and found that multiplicative scores performed comparably while being far faster to compute as matrix products. The weights $\alpha_{tj}$ also gave the first widely used window into what a neural translation model was doing: plotted as a matrix, they recover a soft word alignment between source and target.
+
+\subsection{Scaled dot-product attention}
+\label{sec:sdpa}
+
+\citet{vaswani2017attention} abstracted attention into an operation on three matrices: queries $\mQ \in \R^{m \times d_k}$, keys $\mK \in \R^{n \times d_k}$ and values $\mV \in \R^{n \times d_v}$. Each query is compared with every key, and the resulting weights are used to average the values:
+\begin{equation}
+  \operatorname{Attention}(\mQ, \mK, \mV) = \softmax\!\left( \frac{\mQ\mK^\top}{\sqrt{d_k}} \right) \mV,
+  \label{eq:sdpa}
+\end{equation}
+where the softmax is applied to each row. The scaling factor $1/\sqrt{d_k}$ matters. If the components of a query $\bm{q}$ and a key $\bm{k}$ are independent with mean $0$ and variance $1$, then $\bm{q}^\top\bm{k} = \sum_{i=1}^{d_k} q_i k_i$ has mean $0$ and variance $d_k$. Without scaling, the logits grow with $d_k$, the softmax saturates toward a one-hot vector, and its gradients vanish. Dividing by $\sqrt{d_k}$ keeps the logits at unit variance regardless of head dimension.
+
+In \emph{self-attention}, the queries, keys and values are all linear projections of the same sequence $\mX \in \R^{n \times d}$:
+\begin{equation}
+  \mQ = \mX\mW^Q, \qquad \mK = \mX\mW^K, \qquad \mV = \mX\mW^V.
+\end{equation}
+For autoregressive models, a \emph{causal mask} prevents position $i$ from attending to positions $j > i$. It is implemented by adding a matrix $\mathbf{M}$ with $M_{ij} = 0$ for $j \le i$ and $M_{ij} = -\infty$ otherwise to the logits before the softmax.
+
+\subsection{Multi-head attention}
+\label{sec:mha}
+
+A single attention distribution per position forces the model to average over every relationship it might want to capture. Multi-head attention runs $h$ attention operations in parallel on lower-dimensional projections and concatenates the results:
+\begin{align}
+  \operatorname{MultiHead}(\mX) &= \operatorname{Concat}(\mathrm{head}_1, \dots, \mathrm{head}_h)\, \mW^O, \label{eq:mha} \\
+  \mathrm{head}_i &= \operatorname{Attention}\!\left( \mX\mW_i^Q,\; \mX\mW_i^K,\; \mX\mW_i^V \right), \notag
+\end{align}
+with $\mW_i^Q, \mW_i^K \in \R^{d \times d_k}$, $\mW_i^V \in \R^{d \times d_v}$ and $\mW^O \in \R^{h d_v \times d}$. The usual choice $d_k = d_v = d/h$ keeps the total cost close to that of a single full-width head. Analyses of trained models find heads that specialize in positional patterns, syntactic relations and rare-token copying, although many heads can be pruned with little loss.
+
+\paragraph{Sharing keys and values.} During autoregressive decoding, the keys and values of all previous tokens are cached, and the memory traffic of reading this \emph{KV cache} dominates inference cost for long contexts. Multi-query attention \citep{shazeer2019fast} shares a single key and value head across all query heads, shrinking the cache by a factor of $h$. Grouped-query attention \citep{ainslie2023gqa} interpolates between the two, sharing each key--value head among a group of $g$ query heads, and recovers most of the quality of full multi-head attention.
+
+\paragraph{Position information.} Attention is permutation-equivariant: reordering the rows of $\mX$ reorders the output rows in the same way. Order must therefore be injected explicitly. The original Transformer added fixed sinusoidal embeddings to the input. Most recent models instead use rotary position embeddings \citep{su2024roformer}, which rotate pairs of query and key dimensions by an angle proportional to position so that $\bm{q}_i^\top\bm{k}_j$ depends only on the offset $i - j$, or additive linear biases on the logits \citep{press2022alibi}, which extrapolate more gracefully to sequences longer than those seen in training.
+
+\subsection{Computational cost}
+\label{sec:complexity}
+
+For self-attention over $n$ tokens with model width $d$, computing $\mQ\mK^\top$ and multiplying by $\mV$ each take $O(n^2 d)$ time, and the attention matrix occupies $O(n^2)$ memory per head. The projections take $O(n d^2)$. For short sequences the projections and feed-forward layers dominate; once $n$ exceeds a few times $d$, the quadratic term does. \Cref{tab:complexity} compares self-attention with the alternatives it displaced and with the efficient variants discussed below.
+
+\begin{table}[t]
+  \centering
+  \caption{Per-layer cost for a sequence of length $n$ and width $d$. ``Path length'' is the maximum number of layers a signal must traverse between two positions. $w$ is a window size, $k$ a projection rank, and $r$ a number of random features.}
+  \label{tab:complexity}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Layer type & Time & Memory (activations) & Path length \\
+    \midrule
+    Recurrent & $O(n d^2)$ & $O(n d)$ & $O(n)$ \\
+    Convolution (kernel $w$) & $O(w\, n d^2)$ & $O(n d)$ & $O(n / w)$ \\
+    Full self-attention & $O(n^2 d)$ & $O(n^2 + n d)$ & $O(1)$ \\
+    Sliding window \citep{beltagy2020longformer} & $O(n w d)$ & $O(n w)$ & $O(n / w)$ \\
+    Strided sparse \citep{child2019generating} & $O(n \sqrt{n}\, d)$ & $O(n \sqrt{n})$ & $O(1)$ \\
+    Low rank \citep{wang2020linformer} & $O(n k d)$ & $O(n k)$ & $O(1)$ \\
+    Random features \citep{choromanski2021rethinking} & $O(n r d)$ & $O(n r + r d)$ & $O(1)$ \\
+    IO-aware exact \citep{dao2022flashattention} & $O(n^2 d)$ & $O(n d)$ & $O(1)$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Efficient attention}
+\label{sec:efficient}
+
+The quadratic cost motivated a large literature, surveyed in detail by \citet{tay2022efficient}. Approaches fall into four broad families.
+
+\paragraph{Sparse patterns.} Restricting each query to a subset of keys reduces cost to $O(n \cdot |\text{subset}|)$. \citet{child2019generating} used fixed strided and local patterns. Longformer \citep{beltagy2020longformer} and BigBird \citep{zaheer2020bigbird} combine a sliding window with a few global tokens that attend everywhere; BigBird adds random connections and shows that the resulting sparse model remains a universal approximator.
+
+\paragraph{Low-rank projections.} Linformer \citep{wang2020linformer} observes that attention matrices are approximately low rank and projects the keys and values along the sequence dimension to a fixed length $k \ll n$. This gives linear cost but makes causal masking awkward.
+
+\paragraph{Kernel methods and linear attention.} Writing the softmax kernel as $\exp(\bm{q}^\top\bm{k}) \approx \phi(\bm{q})^\top\phi(\bm{k})$ for some feature map $\phi\colon \R^{d_k} \to \R^{r}$ allows the computation to be reassociated:
+\begin{equation}
+  \bm{o}_i = \frac{\sum_j \phi(\bm{q}_i)^\top \phi(\bm{k}_j)\, \bm{v}_j}{\sum_j \phi(\bm{q}_i)^\top \phi(\bm{k}_j)}
+  = \frac{\phi(\bm{q}_i)^\top \left( \sum_j \phi(\bm{k}_j)\, \bm{v}_j^\top \right)}{\phi(\bm{q}_i)^\top \sum_j \phi(\bm{k}_j)}.
+  \label{eq:linear-attn}
+\end{equation}
+The bracketed sums are computed once in $O(n r d)$ time, so the cost is linear in $n$. \citet{katharopoulos2020transformers} used $\phi(x) = \operatorname{elu}(x) + 1$ and showed that the causal version is equivalent to a recurrent network with a matrix-valued state. Performer \citep{choromanski2021rethinking} used positive random features that give an unbiased estimate of the softmax kernel. In practice these approximations have tended to underperform exact attention on language modeling at scale, though they motivated later state-space and linear-recurrent architectures.
+
+\paragraph{Exact attention with better memory access.} FlashAttention \citep{dao2022flashattention} takes a different view: on modern accelerators, standard attention is limited by reads and writes of the $n \times n$ matrix to high-bandwidth memory rather than by arithmetic. It computes exact attention in tiles that fit in on-chip SRAM and never materializes the full matrix. The key ingredient is the \emph{online softmax} \citep{milakov2018online}, which maintains a running maximum and normalizer per row so that partial results from different key blocks can be rescaled and combined. \Cref{alg:flash} gives the forward pass in the loop order of FlashAttention-2 \citep{dao2024flashattention2}. Its time complexity is unchanged, but extra memory falls from $O(n^2)$ to $O(n)$, and wall-clock speedups of 2--4$\times$ over optimized baselines are typical.
+
+\begin{algorithm}[t]
+  \caption{Tiled exact attention with online softmax (forward pass)}
+  \label{alg:flash}
+  \begin{algorithmic}[1]
+    \Require $\mQ, \mK, \mV \in \R^{n \times d}$; block sizes $B_r, B_c$
+    \Ensure $\mO = \softmax(\mQ\mK^\top / \sqrt{d})\,\mV$
+    \State Split $\mQ$ into $T_r = \lceil n / B_r \rceil$ row blocks $\mQ_1, \dots, \mQ_{T_r}$
+    \State Split $\mK, \mV$ into $T_c = \lceil n / B_c \rceil$ blocks $\mK_1, \dots, \mK_{T_c}$ and $\mV_1, \dots, \mV_{T_c}$
+    \For{$i = 1$ \textbf{to} $T_r$} \Comment{in parallel across thread blocks}
+      \State Load $\mQ_i$ into on-chip memory
+      \State $\mO_i \gets \mathbf{0} \in \R^{B_r \times d}$, \quad $\bm{\ell}_i \gets \mathbf{0} \in \R^{B_r}$, \quad $\bm{m}_i \gets -\bm{\infty} \in \R^{B_r}$
+      \For{$j = 1$ \textbf{to} $T_c$}
+        \State Load $\mK_j, \mV_j$ into on-chip memory
+        \State $\mathbf{S}_{ij} \gets \mQ_i \mK_j^\top / \sqrt{d}$ \Comment{$B_r \times B_c$ scores}
+        \State $\bm{m}^{\text{new}} \gets \max\bigl(\bm{m}_i,\ \rowmax(\mathbf{S}_{ij})\bigr)$
+        \State $\tilde{\mathbf{P}}_{ij} \gets \exp\bigl(\mathbf{S}_{ij} - \bm{m}^{\text{new}}\bigr)$ \Comment{broadcast over columns}
+        \State $\bm{\ell}_i \gets e^{\bm{m}_i - \bm{m}^{\text{new}}} \odot \bm{\ell}_i + \rowsum(\tilde{\mathbf{P}}_{ij})$
+        \State $\mO_i \gets \diag\bigl(e^{\bm{m}_i - \bm{m}^{\text{new}}}\bigr)\, \mO_i + \tilde{\mathbf{P}}_{ij} \mV_j$
+        \State $\bm{m}_i \gets \bm{m}^{\text{new}}$
+      \EndFor
+      \State $\mO_i \gets \diag(\bm{\ell}_i)^{-1} \mO_i$ \Comment{normalize once at the end}
+      \State Write $\mO_i$ to main memory
+    \EndFor
+    \State \Return $\mO$
+  \end{algorithmic}
+\end{algorithm}
+
+To see why \cref{alg:flash} is exact, consider one row with scores split into two blocks $\bm{s}^{(1)}$ and $\bm{s}^{(2)}$. With $m = \max(m_1, m_2)$ for the blockwise maxima $m_1$ and $m_2$,
+\begin{equation}
+  \sum_k e^{s_k - m} = e^{m_1 - m} \sum_{k \in (1)} e^{s^{(1)}_k - m_1} + e^{m_2 - m} \sum_{k \in (2)} e^{s^{(2)}_k - m_2},
+\end{equation}
+so normalizers computed against stale maxima can be corrected by a single multiplicative factor. The same factor corrects the unnormalized output accumulator, which is exactly what lines 11 and 12 do.
+
+\subsection{Open problems}
+\label{sec:open}
+
+Three questions remain active. First, \emph{length generalization}: models trained on contexts of length $n$ often degrade sharply beyond $n$, and position encodings that extrapolate reliably are still an empirical matter. Second, \emph{effective context use}: models with nominal context windows of hundreds of thousands of tokens often retrieve information from the middle of the context less reliably than from its ends. Third, the \emph{quality gap of sub-quadratic methods}: whether linear-time sequence mixers can match softmax attention on tasks that require precise recall over long contexts, or whether hybrid architectures that keep a few attention layers are the practical optimum, is unresolved.
+
+\bibliographystyle{plainnat}
+\bibliography{18-references}
+
+\end{document}

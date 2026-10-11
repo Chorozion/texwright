@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{forest}
+\usepackage{amsmath}
+\begin{document}
+
+\begin{figure}[h]
+\centering
+\begin{forest}
+  for tree={
+    s sep=8mm,
+    l sep=6mm,
+    align=center,
+    draw,
+    rounded corners,
+    fill=blue!5,
+    edge={->, thick},
+  }
+  [{$E$\\$x + y \cdot 2$}, fill=yellow!20
+    [{$E$}, edge label={node[midway, left, font=\scriptsize]{lhs}}
+      [$x$, circle]
+    ]
+    [$+$, draw=none, fill=none]
+    [{$T$}, edge label={node[midway, right, font=\scriptsize]{rhs}}
+      [$y$, circle]
+      [$\cdot$, draw=none, fill=none]
+      [$2$, circle, name=two]
+    ]
+  ]
+  \draw[red, dashed, ->] (two) to[bend right] (!r);
+\end{forest}
+\caption{Parse tree for $x + y \cdot 2$.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{forest}
+  where n children=0{tier=word}{}
+  [CP
+    [C$'$
+      [C [that]]
+      [TP
+        [DP, roof [the old man]]
+        [T$'$
+          [T [will]]
+          [VP [V [leave]]]
+        ]
+      ]
+    ]
+  ]
+\end{forest}
+\caption{X-bar tree with a roof and the words on one tier.}
+\end{figure}
+
+\end{document}

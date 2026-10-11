@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage[american]{circuitikz}
+\begin{document}
+
+\begin{figure}[h]
+\centering
+\begin{circuitikz}
+\draw (0,0) node[op amp, noinv input up] (OA) {};
+\draw (OA.+) to[short, -o] ++(-1.5,0) node[left] {$v_i$};
+\draw (OA.-) -- ++(0,-1.5) coordinate (fb);
+\draw (fb) to[R=$R_1$] ++(0,-2) node[ground] {};
+\draw (fb) -- ++(2.5,0) coordinate (fbr);
+\draw (fbr) to[R=$R_2$] (fbr |- OA.out) -- (OA.out);
+\draw (OA.out) to[short, *-o] ++(1.5,0) node[right] {$v_o$};
+\end{circuitikz}
+\caption{Non-inverting amplifier with gain $1 + R_2/R_1$.}
+\end{figure}
+
+\end{document}

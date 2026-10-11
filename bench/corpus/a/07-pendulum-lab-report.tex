@@ -1,0 +1,176 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{caption}
+\usepackage[colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
+
+\sisetup{
+  separate-uncertainty = true,
+  multi-part-units = single,
+  per-mode = symbol
+}
+
+\title{Determination of the Gravitational Acceleration\\Using a Simple Pendulum}
+\author{Elena Vasquez\thanks{Lab partner: Tom Brennan. PHYS 1210 (Section 04), Instructor: Dr.~R.~Okonkwo.}}
+\date{September 30, 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We measured the local gravitational acceleration $g$ by timing a simple pendulum at six lengths between \SI{0.250}{\meter} and \SI{1.000}{\meter}. A least-squares straight-line fit of the squared period $T^2$ against length $L$ gives a slope of \SI{4.030 \pm 0.008}{\second\squared\per\meter}, which corresponds to $g = \SI{9.797 \pm 0.020}{\meter\per\second\squared}$. After correcting for the finite release amplitude, we obtain $g = \SI{9.806 \pm 0.021}{\meter\per\second\squared}$, in agreement with the predicted local value of \SI{9.803}{\meter\per\second\squared} to within $0.2$ standard uncertainties.
+\end{abstract}
+
+\section{Introduction}
+
+A simple pendulum, a point mass on a massless inextensible string, oscillates with a period that depends only on its length and the gravitational acceleration when the amplitude is small. That makes it one of the simplest ways to measure $g$ in a teaching laboratory, and the method has a long history in geodesy~\cite{nelson1986}. The goal of this experiment was to measure $g$ with a relative uncertainty below \SI{0.5}{\percent} and to compare the result with the value predicted for the laboratory's location.
+
+\section{Theory}
+
+For small angular displacements $\theta$, the equation of motion of a simple pendulum of length $L$ is
+\begin{equation}
+  \ddot{\theta} + \frac{g}{L}\,\theta = 0,
+  \label{eq:sho}
+\end{equation}
+which describes simple harmonic motion with period
+\begin{equation}
+  T_0 = 2\pi\sqrt{\frac{L}{g}}.
+  \label{eq:period}
+\end{equation}
+Squaring Eq.~\eqref{eq:period} gives a relation that is linear in $L$:
+\begin{equation}
+  T_0^2 = \frac{4\pi^2}{g}\,L.
+  \label{eq:linear}
+\end{equation}
+A plot of $T^2$ against $L$ should therefore be a straight line through the origin with slope $k = 4\pi^2/g$, so
+\begin{equation}
+  g = \frac{4\pi^2}{k}, \qquad \frac{\delta g}{g} = \frac{\delta k}{k}.
+  \label{eq:g-from-slope}
+\end{equation}
+Fitting the slope has two advantages over computing $g$ from each length separately. It averages over all the data, and a constant offset in the length measurement shows up as a nonzero intercept instead of biasing $g$.
+
+\paragraph{Finite-amplitude correction.} For a release angle $\theta_0$ the exact period is longer than $T_0$:
+\begin{equation}
+  T = T_0\left(1 + \frac{\theta_0^2}{16} + \frac{11\,\theta_0^4}{3072} + \cdots\right).
+  \label{eq:amplitude}
+\end{equation}
+At $\theta_0 = \ang{5} = \SI{0.0873}{\radian}$ the leading correction is $\theta_0^2/16 = \num{4.8e-4}$, so $T^2$ is too large by about \SI{0.095}{\percent} and $g$ obtained from Eq.~\eqref{eq:linear} is too small by the same fraction.
+
+\paragraph{Physical pendulum correction.} The bob is a sphere of radius $r$, not a point mass. Treating the system as a physical pendulum multiplies $T_0^2$ by $1 + \frac{2r^2}{5L^2}$. For our bob and shortest length this factor is $1 + \num{1.0e-3}$, and for $L \ge \SI{0.55}{\meter}$ it is below $1 + \num{2.2e-4}$. We include it in the uncertainty budget rather than correcting for it.
+
+\section{Apparatus and Method}
+
+The pendulum consisted of a steel ball (diameter \SI{25.4}{\milli\meter}, mass \SI{66.8}{\gram}) suspended from a rigid clamp by braided fishing line of negligible mass and stretch. The length $L$ was measured from the suspension point to the center of the ball with a steel meter rule, with an estimated uncertainty of $\delta L = \SI{1}{\milli\meter}$. A protractor fixed behind the clamp was used to set a release angle of $\theta_0 \approx \ang{5}$.
+
+For each of six lengths, we released the ball from rest and used a handheld stopwatch (resolution \SI{0.01}{\second}) to time 20 complete oscillations, starting and stopping as the ball passed through its lowest point. Timing many oscillations reduces the effect of reaction time on the period by a factor of 20. Each measurement was repeated five times, and we recorded the mean $\bar{t}_{20}$ and the sample standard deviation $\sigma_t$. The uncertainty in the period is the standard error of the mean divided by 20:
+\begin{equation}
+  \delta T = \frac{\sigma_t}{20\sqrt{5}}, \qquad \delta(T^2) = 2T\,\delta T.
+  \label{eq:period-uncertainty}
+\end{equation}
+
+\section{Results}
+
+Table~\ref{tab:data} lists the measurements. The last column gives $g_i = 4\pi^2 L/T^2$ computed separately for each length.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Timing data for 20 oscillations, five trials per length, with derived period and $T^2$.}
+  \label{tab:data}
+  \begin{tabular}{
+      S[table-format=1.3]
+      S[table-format=2.2]
+      S[table-format=1.2]
+      S[table-format=1.4]
+      S[table-format=1.4]
+      S[table-format=1.4]
+      S[table-format=1.3]
+    }
+    \toprule
+    {$L$ (\si{\meter})} & {$\bar{t}_{20}$ (\si{\second})} & {$\sigma_t$ (\si{\second})} &
+    {$T$ (\si{\second})} & {$\delta T$ (\si{\second})} & {$T^2$ (\si{\second\squared})} &
+    {$g_i$ (\si{\meter\per\second\squared})} \\
+    \midrule
+    0.250 & 20.11 & 0.06 & 1.0055 & 0.0013 & 1.0110 & 9.762 \\
+    0.400 & 25.37 & 0.05 & 1.2685 & 0.0011 & 1.6091 & 9.814 \\
+    0.550 & 29.81 & 0.07 & 1.4905 & 0.0016 & 2.2216 & 9.774 \\
+    0.700 & 33.58 & 0.05 & 1.6790 & 0.0011 & 2.8190 & 9.803 \\
+    0.850 & 37.06 & 0.06 & 1.8530 & 0.0013 & 3.4336 & 9.773 \\
+    1.000 & 40.14 & 0.08 & 2.0070 & 0.0018 & 4.0280 & 9.801 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Figure~\ref{fig:fit} shows $T^2$ against $L$ with a least-squares straight line. The error bars, $\delta(T^2) \le \SI{0.007}{\second\squared}$, are smaller than the plotted markers. The residuals are scattered without trend, with a standard deviation of \SI{0.005}{\second\squared}.
+
+\begin{figure}[htbp]
+  \centering
+  \includesvg[width=0.75\textwidth]{07-t-squared-vs-length}
+  \caption{Squared period against pendulum length. The line is the least-squares fit $T^2 = kL + b$ with $k = \SI{4.030 \pm 0.008}{\second\squared\per\meter}$ and $b = \SI{0.002 \pm 0.005}{\second\squared}$.}
+  \label{fig:fit}
+\end{figure}
+
+The fit parameters are
+\begin{align}
+  k &= \SI{4.0297 \pm 0.0081}{\second\squared\per\meter}, \\
+  b &= \SI{0.0018 \pm 0.0055}{\second\squared}.
+\end{align}
+The intercept is consistent with zero, as Eq.~\eqref{eq:linear} predicts, which indicates no significant systematic offset in our length measurements. From Eq.~\eqref{eq:g-from-slope},
+\begin{equation}
+  g = \frac{4\pi^2}{\SI{4.0297}{\second\squared\per\meter}} = \SI{9.797}{\meter\per\second\squared},
+  \qquad
+  \delta g = g\,\frac{\delta k}{k} = \SI{0.020}{\meter\per\second\squared}.
+\end{equation}
+
+\section{Analysis and Discussion}
+
+\subsection{Uncertainty budget}
+
+Table~\ref{tab:budget} lists the contributions to the uncertainty in $g$. The statistical uncertainty of the slope dominates. It is consistent with the timing uncertainties in Table~\ref{tab:data}: propagating $\delta(T^2) \approx \SI{0.003}{\second\squared}$ through the fit would give $\delta k \approx \SI{0.005}{\second\squared\per\meter}$, slightly smaller than the scatter-based estimate we report, which suggests a small additional source of random error such as variation in the release angle.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Uncertainty budget for $g$ (relative standard uncertainties).}
+  \label{tab:budget}
+  \begin{tabular}{l S[table-format=1.3] l}
+    \toprule
+    Source & {Relative uncertainty (\si{\percent})} & Treatment \\
+    \midrule
+    Slope of $T^2$ vs.\ $L$ (statistical) & 0.20 & from fit residuals \\
+    Length scale (meter rule calibration) & 0.05 & Type B, uniform \\
+    Finite amplitude ($\theta_0 = \ang{5} \pm \ang{1}$) & 0.04 & corrected; residual listed \\
+    Finite bob size & 0.02 & not corrected \\
+    Stopwatch calibration & 0.01 & checked against GPS clock \\
+    \midrule
+    Combined (quadrature) & 0.21 & \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Comparison with the expected value}
+
+Applying the amplitude correction of Eq.~\eqref{eq:amplitude}, which raises $g$ by \SI{0.095}{\percent}, gives our final result:
+\begin{equation}
+  \boxed{g = \SI{9.806 \pm 0.021}{\meter\per\second\squared}}
+\end{equation}
+The predicted gravitational acceleration at the laboratory's latitude and elevation is \SI{9.803}{\meter\per\second\squared}~\cite{ngs-gravity}. The difference, \SI{0.003}{\meter\per\second\squared}, is $0.14$ times our combined uncertainty, so the two values agree.
+
+The individual values $g_i$ in Table~\ref{tab:data} have a mean of \SI{9.788}{\meter\per\second\squared} and a standard deviation of \SI{0.021}{\meter\per\second\squared}. The value from $L = \SI{0.250}{\meter}$ is the lowest. At that length a \SI{1}{\milli\meter} error in $L$ produces a \SI{0.4}{\percent} error in $g_i$, four times more than at \SI{1}{\meter}, and the finite-size correction is largest there. This is a good illustration of why the slope method is preferable to averaging $g_i$.
+
+\subsection{Sources of error and improvements}
+
+Human reaction time was the largest random error. A photogate timer would reduce $\sigma_t$ from about \SI{0.06}{\second} to below \SI{1}{\milli\second} and would let us time single periods, which would also allow us to measure the amplitude dependence of Eq.~\eqref{eq:amplitude} directly. Air drag reduced the amplitude by roughly \SI{20}{\percent} over 20 oscillations. Its direct effect on the period is negligible at our level of precision, but the shrinking amplitude means the effective $\theta_0$ is slightly smaller than the release angle, so our amplitude correction is a slight overestimate. Following \cite{taylor1997}, we treated this as part of the \ang{1} uncertainty in $\theta_0$.
+
+\section{Conclusion}
+
+Using the slope of $T^2$ against $L$ for a simple pendulum, we measured $g = \SI{9.806 \pm 0.021}{\meter\per\second\squared}$, a relative uncertainty of \SI{0.21}{\percent}, which meets our goal of \SI{0.5}{\percent}. The result agrees with the predicted local value. The zero intercept confirms that our length measurements had no significant offset, and the uncertainty is limited by manual timing.
+
+\bibliographystyle{plain}
+\bibliography{07-references}
+
+\end{document}

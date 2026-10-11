@@ -1,0 +1,57 @@
+\documentclass[11pt,article,oneside]{memoir}
+\usepackage{amsmath,amsthm}
+\usepackage{marginnote}
+\usepackage{sidenotes}
+\usepackage{epigraph}
+\chapterstyle{bianchi}
+\setsecnumdepth{subsection}
+\settocdepth{section}
+
+\newtheorem{prop}{Proposition}
+\newtheorem*{thm*}{Theorem}
+
+\begin{document}
+\chapter{Lecture 1: Groups}
+\epigraph{Symmetry is what we see at a glance.}{\textit{Blaise Pascal}}
+
+\section{Definitions}
+A group is a set with an operation.\marginpar{Margin note here.} Sometimes we write\marginnote{Another note.} it multiplicatively.
+\sidenote{A sidenote.}
+
+\begin{prop}\label{prop:id}
+The identity is unique.
+\end{prop}
+\begin{proof}[Sketch]
+If $e, e'$ are identities then $e = ee' = e'$.
+\end{proof}
+
+\begin{thm*}[Lagrange]
+The order of a subgroup divides the order of the group.
+\end{thm*}
+
+\begin{proof}
+See Proposition~\ref{prop:id}.
+\renewcommand{\qedsymbol}{$\square$}
+\end{proof}
+
+\section{Examples}
+Footnotes with marks: first\footnotemark{} and second\footnotemark{}.
+\footnotetext{First note.}
+\footnotetext{Second note.}
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+Left side.
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+Right side.
+\end{minipage}
+\end{center}
+
+\noindent\begin{tabular}{@{}p{0.5\textwidth}p{0.5\textwidth}@{}}
+Cell one & Cell two
+\end{tabular}
+
+\vspace{\baselineskip}
+\hrule
+\end{document}

@@ -1,0 +1,93 @@
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[margin=0.6in,top=0.5in,bottom=0.5in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{accent}{RGB}{0,84,120}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+% Section headings: bold accent color with a rule underneath
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0em}{}[{\color{accent}\titlerule[0.6pt]}]
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+
+% Compact bullet lists
+\setlist[itemize]{leftmargin=1.2em, itemsep=1pt, topsep=2pt, parsep=0pt, label=\textbullet}
+
+% \cventry{Title}{Dates}{Organization}{Location}
+\newcommand{\cventry}[4]{%
+  \textbf{#1} \hfill #2\\
+  \textit{#3} \hfill \textit{#4}\par\vspace{1pt}%
+}
+
+\begin{document}
+
+%----------------------------------------------------------------- Header
+\begin{center}
+  {\LARGE\bfseries Maria L. Santos, MSN, APRN, FNP-BC}\\[4pt]
+  Columbus, OH \quad$\cdot$\quad (614) 555-0142 \quad$\cdot$\quad
+  \href{mailto:maria.santos@example.com}{maria.santos@example.com} \quad$\cdot$\quad
+  \href{https://www.linkedin.com/in/example-msantos}{linkedin.com/in/example-msantos}
+\end{center}
+
+%----------------------------------------------------------------- Summary
+\section{Profile}
+Board-certified family nurse practitioner with five years of primary and urgent care practice and seven years of emergency nursing. Manages a panel of about 1,400 patients across the lifespan, with particular strength in diabetes, hypertension, and preventive care for underserved and Spanish-speaking populations. Experienced preceptor and quality-improvement lead.
+
+%----------------------------------------------------------------- Licensure
+\section{Licensure and Certification}
+\begin{tabularx}{\linewidth}{@{}X r@{}}
+Advanced Practice Registered Nurse, Certified Nurse Practitioner (APRN-CNP), Ohio Board of Nursing & Active, exp.\ 2027 \\
+Family Nurse Practitioner, Board Certified (FNP-BC), ANCC & 2019--2029 \\
+DEA Registration, Schedules II--V & Active \\
+BLS, ACLS, and PALS, American Heart Association & Current \\
+\end{tabularx}
+
+%----------------------------------------------------------------- Experience
+\section{Clinical Experience}
+
+\cventry{Family Nurse Practitioner}{Jul 2021 -- Present}{Riverside Community Health Center (FQHC)}{Columbus, OH}
+\begin{itemize}
+  \item Provide comprehensive primary care to a panel of about 1,400 patients aged 2 to 94, averaging 20 to 24 visits per day in person and by telehealth.
+  \item Led a hypertension quality-improvement project (team-based titration protocol, home BP cuffs, monthly registry review) that raised the clinic's controlled-BP rate from 58\% to 71\% in 14 months.
+  \item Manage type 2 diabetes for about 260 patients; 64\% of the cohort now has HbA1c below 8\%, up from 49\% at baseline.
+  \item Perform office procedures including laceration repair, incision and drainage, joint injections, and skin biopsies.
+  \item Precept two FNP students per year from The Ohio State University and Otterbein University.
+\end{itemize}
+
+\cventry{Nurse Practitioner, Urgent Care}{Aug 2019 -- Jun 2021}{Lakeview Urgent Care}{Westerville, OH}
+\begin{itemize}
+  \item Evaluated and treated 30 to 40 patients per shift with acute illness and injury, including fracture management, splinting, and interpretation of X-rays and ECGs.
+  \item Staffed COVID-19 testing and treatment clinic during 2020--2021 surges; developed the site's monoclonal antibody referral workflow.
+  \item Maintained a 94th-percentile patient satisfaction score (Press Ganey) across 2020.
+\end{itemize}
+
+\cventry{Registered Nurse, Emergency Department}{Jun 2012 -- Jul 2019}{St.\ Anne's Regional Medical Center, Level II Trauma Center}{Columbus, OH}
+\begin{itemize}
+  \item Provided triage and critical care in a 48-bed ED with about 72,000 annual visits; charge nurse from 2016.
+  \item Member of the sepsis response team; helped cut median time to antibiotics from 142 to 88 minutes.
+\end{itemize}
+
+%----------------------------------------------------------------- Education
+\section{Education}
+\cventry{Master of Science in Nursing, Family Nurse Practitioner}{2019}{The Ohio State University}{Columbus, OH}
+\cventry{Bachelor of Science in Nursing, \textit{cum laude}}{2012}{Ohio University}{Athens, OH}
+
+%----------------------------------------------------------------- Skills
+\section{Skills and Activities}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\textbf{Languages} & English (native), Spanish (professional working proficiency; certified medical interpreter, 2018) \\
+\textbf{Systems} & Epic (Ambulatory and ASAP), athenahealth, eClinicalWorks; population health registries \\
+\textbf{Presentations} & ``Team-Based Hypertension Control in an FQHC,'' poster, Ohio Association of Advanced Practice Nurses Annual Conference, 2024 \\
+\textbf{Memberships} & American Association of Nurse Practitioners (AANP); Ohio Association of Advanced Practice Nurses \\
+\end{tabularx}
+
+\end{document}

@@ -1,0 +1,32 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+
+\begin{document}
+
+\tdplotsetmaincoords{70}{110}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=2.5, tdplot_main_coords]
+  % sphere outline
+  \shade[ball color=blue!10, opacity=0.4] (0,0,0) circle (1cm);
+  % equator
+  \draw[dashed, gray] (0,0,0) circle (1);
+  % axes
+  \draw[thick,->] (0,0,0) -- (1.5,0,0) node[anchor=north east]{$x$};
+  \draw[thick,->] (0,0,0) -- (0,1.5,0) node[anchor=north west]{$y$};
+  \draw[thick,->] (0,0,0) -- (0,0,1.5) node[anchor=south]{$z$};
+  % a point on the sphere
+  \tdplotsetcoord{P}{1}{50}{60}
+  \draw[-stealth, red, thick] (0,0,0) -- (P) node[above right]{$P$};
+  \draw[dashed, red] (0,0,0) -- (Pxy);
+  \draw[dashed, red] (P) -- (Pxy);
+  \fill[red] (P) circle (0.6pt);
+  % angles
+  \tdplotdrawarc{(0,0,0)}{0.4}{0}{60}{anchor=north}{$\phi$}
+\end{tikzpicture}
+\caption{Spherical coordinates on the unit sphere.}
+\end{figure}
+
+\end{document}

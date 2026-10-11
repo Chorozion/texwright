@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 350" width="560" height="350" font-family="Helvetica, Arial, sans-serif" font-size="12">
+  <rect width="560" height="350" fill="#ffffff"/>
+
+  <!-- horizontal gridlines -->
+  <g stroke="#ececec">
+    <line x1="70" y1="227.5" x2="515" y2="227.5"/>
+    <line x1="70" y1="165"   x2="515" y2="165"/>
+    <line x1="70" y1="102.5" x2="515" y2="102.5"/>
+    <line x1="70" y1="40"    x2="515" y2="40"/>
+  </g>
+
+  <!-- axes -->
+  <line x1="70" y1="290" x2="515" y2="290" stroke="#333333" stroke-width="1.2"/>
+  <line x1="70" y1="290" x2="70" y2="35" stroke="#333333" stroke-width="1.2"/>
+
+  <!-- y labels -->
+  <g text-anchor="end" fill="#333333">
+    <text x="64" y="294">$0</text>
+    <text x="64" y="231.5">$20,000</text>
+    <text x="64" y="169">$40,000</text>
+    <text x="64" y="106.5">$60,000</text>
+    <text x="64" y="44">$80,000</text>
+  </g>
+
+  <!-- x ticks and labels -->
+  <g stroke="#333333">
+    <line x1="70" y1="290" x2="70" y2="295"/>
+    <line x1="143.3" y1="290" x2="143.3" y2="295"/>
+    <line x1="216.7" y1="290" x2="216.7" y2="295"/>
+    <line x1="290" y1="290" x2="290" y2="295"/>
+    <line x1="363.3" y1="290" x2="363.3" y2="295"/>
+    <line x1="436.7" y1="290" x2="436.7" y2="295"/>
+    <line x1="510" y1="290" x2="510" y2="295"/>
+  </g>
+  <g text-anchor="middle" fill="#333333">
+    <text x="70" y="310">0</text>
+    <text x="143.3" y="310">5</text>
+    <text x="216.7" y="310">10</text>
+    <text x="290" y="310">15</text>
+    <text x="363.3" y="310">20</text>
+    <text x="436.7" y="310">25</text>
+    <text x="510" y="310">30</text>
+  </g>
+  <text x="290" y="335" text-anchor="middle" font-size="13" fill="#333333">Years</text>
+
+  <!-- shaded gap between the two curves -->
+  <path d="M70.0,258.8 L84.7,256.6 L99.3,254.2 L114.0,251.7 L128.7,249.0 L143.3,246.2 L158.0,243.1 L172.7,239.8 L187.3,236.3 L202.0,232.5 L216.7,228.5 L231.3,224.2 L246.0,219.6 L260.7,214.7 L275.3,209.4 L290.0,203.8 L304.7,197.7 L319.3,191.3 L334.0,184.4 L348.7,177.0 L363.3,169.1 L378.0,160.6 L392.7,151.5 L407.3,141.9 L422.0,131.5 L436.7,120.4 L451.3,108.5 L466.0,95.8 L480.7,82.2 L495.3,67.7 L510.0,52.1 L510.0,193.1 Z" fill="#2e7d32" fill-opacity="0.10"/>
+
+  <!-- simple interest -->
+  <polyline points="70.0,258.8 510.0,193.1" fill="none" stroke="#757575" stroke-width="2.2" stroke-dasharray="6,4"/>
+
+  <!-- compound interest -->
+  <polyline fill="none" stroke="#2e7d32" stroke-width="2.6" points="70.0,258.8 84.7,256.6 99.3,254.2 114.0,251.7 128.7,249.0 143.3,246.2 158.0,243.1 172.7,239.8 187.3,236.3 202.0,232.5 216.7,228.5 231.3,224.2 246.0,219.6 260.7,214.7 275.3,209.4 290.0,203.8 304.7,197.7 319.3,191.3 334.0,184.4 348.7,177.0 363.3,169.1 378.0,160.6 392.7,151.5 407.3,141.9 422.0,131.5 436.7,120.4 451.3,108.5 466.0,95.8 480.7,82.2 495.3,67.7 510.0,52.1"/>
+
+  <!-- end labels -->
+  <circle cx="510" cy="52.1" r="3.5" fill="#2e7d32"/>
+  <circle cx="510" cy="193.1" r="3.5" fill="#757575"/>
+  <text x="502" y="44" text-anchor="end" fill="#2e7d32" font-weight="bold">Compound: $76,123</text>
+  <text x="502" y="212" text-anchor="end" fill="#555555" font-weight="bold">Simple: $31,000</text>
+  <text x="430" y="160" text-anchor="middle" fill="#2e7d32" font-size="11">interest on interest</text>
+</svg>

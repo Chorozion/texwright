@@ -1,0 +1,31 @@
+stateDiagram-v2
+    [*] --> Received
+    Received --> fork_state
+    state fork_state <<fork>>
+    fork_state --> Fulfilment
+    fork_state --> Billing
+    state Fulfilment {
+        [*] --> Picking
+        Picking --> Packed
+        Packed --> [*]
+    }
+    state Billing {
+        [*] --> Invoiced
+        Invoiced --> Settled : payment
+        Settled --> [*]
+    }
+    state join_state <<join>>
+    Fulfilment --> join_state
+    Billing --> join_state
+    join_state --> Complete
+    Complete --> [*]
+    state Monitoring {
+        [*] --> Healthy
+        Healthy --> Degraded : errors > 1%
+        Degraded --> Healthy : recovered
+        --
+        [*] --> Quiet
+        Quiet --> Alerting : threshold
+        Alerting --> Quiet : ack
+    }
+    Complete --> Monitoring

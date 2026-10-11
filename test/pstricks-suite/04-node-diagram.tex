@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage{pstricks}
+\usepackage{pst-node}
+\begin{document}
+\begin{center}
+\begin{pspicture}(0,0)(9,4)
+  \psset{nodesep=3pt,arrows=->,linewidth=0.8pt}
+  \cnode(1,2){0.5}{q0}\rput(1,2){$q_0$}
+  \cnode(4.5,3.2){0.5}{q1}\rput(4.5,3.2){$q_1$}
+  \cnode(4.5,0.8){0.5}{q2}\rput(4.5,0.8){$q_2$}
+  \cnode[doubleline=true](8,2){0.5}{q3}\rput(8,2){$q_3$}
+  \pnode(0,2){start}
+  \ncline{start}{q0}
+  \ncline{q0}{q1}\naput{$a$}
+  \ncline{q0}{q2}\nbput{$b$}
+  \ncarc[arcangle=20]{q1}{q2}\naput{$a$}
+  \ncarc[arcangle=20]{q2}{q1}\naput{$b$}
+  \ncline{q1}{q3}\naput{$b$}
+  \ncline{q2}{q3}\nbput{$a$}
+  \nccircle[angleA=0]{->}{q3}{0.4}\naput{$a,b$}
+\end{pspicture}
+\end{center}
+\end{document}

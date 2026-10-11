@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{chemfig}
+\usepackage[version=4]{mhchem}
+\usepackage{siunitx}
+\usepackage{amsmath}
+
+\begin{document}
+\section{Reactions}
+Combustion of methane: \ce{CH4 + 2O2 -> CO2 + 2H2O}.
+Equilibrium: \ce{N2 + 3H2 <=> 2NH3} with $\Delta H = \SI{-92.4}{\kilo\joule\per\mole}$.
+Ions: \ce{SO4^2-}, \ce{Fe^3+}, \ce{[Cu(NH3)4]^2+}. Isotopes: \ce{^{14}_{6}C}.
+
+\begin{equation}
+  \ce{A + B ->[catalyst] C}
+\end{equation}
+
+The structure of ethanol is \chemfig{H_3C-CH_2-OH}.
+
+\begin{figure}[h]
+\centering
+\chemfig{*6((=O)-N(-CH_3)-*5(-N=-N(-CH_3)-=)--(=O)-N(-H_3C)-)}
+\caption{Caffeine.}
+\end{figure}
+
+\schemestart
+A \arrow B \arrow C
+\schemestop
+
+Concentration \SI{0.1}{\mol\per\litre} (\SI{0.1}{M}), $\text{pH} = 7$, $K_a = \num{1.8e-5}$.
+\end{document}

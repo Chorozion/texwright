@@ -1,0 +1,51 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.6in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\definecolor{accent}{RGB}{0,82,147}
+\titleformat{\section}{\large\bfseries\color{accent}}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\setlist[itemize]{noitemsep, topsep=2pt, leftmargin=*}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+\newcommand{\job}[4]{\textbf{#1} \hfill #2 \\ \textit{#3} \hfill \textit{#4}}
+
+\begin{document}
+\begin{center}
+{\LARGE \textbf{Alex Chen}} \\[4pt]
+\faEnvelope\ \href{mailto:alex@example.com}{alex@example.com} \quad
+\faPhone\ (555) 987-6543 \quad
+\faGithub\ \href{https://github.com/alexchen}{github.com/alexchen} \quad
+\faLinkedin\ \url{linkedin.com/in/alexchen}
+\end{center}
+
+\section{Summary}
+Backend engineer with 7 years of experience in distributed systems.
+
+\section{Experience}
+\job{Staff Engineer}{2021 -- Present}{Globex}{San Francisco, CA}
+\begin{itemize}[label=\textbullet]
+  \item Designed a sharded event store handling 2M writes/s.
+  \item Mentored 6 engineers; ran the on-call rotation.
+\end{itemize}
+
+\job{Software Engineer}{2017 -- 2021}{Initech}{Austin, TX}
+\begin{itemize}[leftmargin=1.5em, itemsep=1pt]
+  \item Migrated monolith to services, cutting deploy time by 80\%.
+\end{itemize}
+
+\section{Skills}
+\begin{multicols}{3}
+\begin{itemize}[nosep]
+\item Go \item Rust \item Python \item Kafka \item Postgres \item Kubernetes
+\end{itemize}
+\end{multicols}
+
+\section{Education}
+\textbf{B.S. Computer Science}, University of Texas at Austin \hfill 2017
+\end{document}

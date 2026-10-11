@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage{pstricks,pst-node}
+\begin{document}
+\begin{figure}[h]
+\centering
+\begin{pspicture}(-3,-0.5)(5,9)
+  \psset{framearc=0.3,linewidth=0.8pt,nodesep=2pt}
+  \rput(1,8.5){\ovalnode{start}{Start}}
+  \rput(1,7){\rnode{read}{\psframebox{Read input $n$}}}
+  \rput(1,5.3){\dianode{test}{$n > 1$?}}
+  \rput(1,3.6){\rnode{step}{\psframebox[fillstyle=solid,fillcolor=yellow!30]{$n \gets n - 1$}}}
+  \rput(4,5.3){\rnode{out}{\psframebox{Output}}}
+  \rput(1,2){\ovalnode{stop}{Stop}}
+  \ncline{->}{start}{read}
+  \ncline{->}{read}{test}
+  \ncline{->}{test}{step}\nbput{yes}
+  \ncline{->}{test}{out}\naput{no}
+  \ncangle[angleA=180,angleB=180,armB=1.2cm]{->}{step}{read}
+  \ncangle[angleA=-90,angleB=0]{->}{out}{stop}
+\end{pspicture}
+\caption{A small flowchart.}\label{fig:flow}
+\end{figure}
+\end{document}

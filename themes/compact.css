@@ -1,0 +1,19 @@
+/* @extends modern */
+/* texwright theme: compact. The modern theme, tighter, for handouts, memos and agent reports. */
+
+body { font-size: 9.5pt; line-height: 1.42; }
+p { margin: 0 0 0.5em; }
+.tw-titleblock { margin-bottom: 1em; padding-bottom: 0.6em; }
+.tw-title { font-size: 18pt; }
+.tw-heading { margin: 1.1em 0 0.4em; }
+h2.tw-heading { font-size: 13pt; }
+h3.tw-heading { font-size: 11pt; }
+ul, ol { margin: 0.3em 0; padding-left: 1.6em; }
+li { margin: 0.1em 0; }
+figure { margin: 0.7em 0; }
+.tw-equation { margin: 0.45em 0; }
+th, td { padding: 0.2em 0.55em; }
+pre.tw-code { padding: 0.45em 0.7em; font-size: 8.3pt; }
+.tw-plain-head th { font-weight: normal; }
+td[rowspan], th[rowspan] { vertical-align: middle; }
+tr.tw-rule-above > td { border-top: 0.4pt solid var(--tw-rule, #000); }

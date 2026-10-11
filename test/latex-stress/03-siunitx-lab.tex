@@ -1,0 +1,46 @@
+\documentclass{article}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[version=4]{mhchem}
+\usepackage{gensymb}
+\usepackage{textcomp}
+\sisetup{separate-uncertainty=true, per-mode=symbol}
+
+\title{Lab Report: Specific Heat of Metals}
+\author{Jane Doe \and John Roe}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+We measured the specific heat of aluminium at \SI{25}{\celsius} and \SI{9.81}{\metre\per\second\squared}.
+The sample mass was \qty{125.3(2)}{\gram} and the water volume \qty{250}{\milli\litre}.
+The thermometer resolution is \num{0.1}; Avogadro's number is \num{6.022e23}.
+Angles were measured at \ang{30} and \ang{12;30;0}. Temperatures rose \SIrange{20}{80}{\celsius}.
+Room temperature was 22\degree C, or 22\,\textdegree C, about \SI{295}{\kelvin}.
+The unit of power is \si{\watt} and of energy \unit{\kilo\joule\per\mole}.
+
+The reaction is \ce{2H2 + O2 -> 2H2O} and the salt \ce{CuSO4.5H2O}.
+
+\section{Results}
+\begin{table}[H]
+  \centering
+  \caption{Measured specific heats.}
+  \label{tab:heat}
+  \begin{tabular}{l S[table-format=3.1] S[table-format=1.3]}
+    \toprule
+    {Metal} & {Mass (\si{\gram})} & {$c$ (\si{\joule\per\gram\per\kelvin})} \\
+    \midrule
+    Aluminium & 125.3 & 0.897 \\
+    Copper    & 210.0 & 0.385 \\
+    Iron      & 180.5 & 0.449 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Using $Q = mc\Delta T$ with $\Delta T = \SI{12.5}{\kelvin}$, we find $Q = \SI{1.40e3}{\joule}$.
+Table~\ref{tab:heat} shows values within \SI{2}{\percent} of literature, \tablenum{0.897}.
+
+\end{document}

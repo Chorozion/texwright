@@ -1,0 +1,142 @@
+[
+  {
+    "file": "01-resume-instructional-design.md",
+    "kind": "resume",
+    "format": "markdown",
+    "request": "I'm a high school science teacher trying to move into instructional design. Can you write me a one-page resume? Make up reasonable details I can edit later.",
+    "assets": []
+  },
+  {
+    "file": "02-bayesian-coin.md",
+    "kind": "research-note",
+    "format": "markdown",
+    "request": "Write a short research note on Bayesian inference for a coin's bias: Beta priors, posteriors, credible intervals, the posterior predictive, and a Bayes factor for fairness. Include a figure and references.",
+    "assets": ["02-references.bib", "02-posterior.svg"]
+  },
+  {
+    "file": "03-discrete-math-homework.tex",
+    "kind": "homework",
+    "format": "latex",
+    "request": "Can you typeset my discrete math homework solutions in LaTeX? Induction proofs, a few set identity proofs, and counting problems (stars and bars, inclusion-exclusion, pigeonhole).",
+    "assets": []
+  },
+  {
+    "file": "04-intro-ml-handout.md",
+    "kind": "lecture-handout",
+    "format": "markdown",
+    "request": "Turn my intro to machine learning lecture slides into a handout students can print: key definitions, the main formulas, evaluation metrics, and a small scikit-learn example.",
+    "assets": []
+  },
+  {
+    "file": "05-postmortem-database-outage.md",
+    "kind": "incident-postmortem",
+    "format": "markdown",
+    "request": "Write a blameless postmortem for last month's database outage. The primary's disk filled up because of an abandoned replication slot and failover didn't help. Include a timeline table, root cause, contributing factors, and action items with owners.",
+    "assets": []
+  },
+  {
+    "file": "06-coral-bleaching-poster.md",
+    "kind": "poster",
+    "format": "markdown",
+    "request": "Draft the text for our conference poster on the 2025 coral bleaching survey: bleaching versus degree heating weeks at two depths, a results table by genus, a figure, and references.",
+    "assets": ["06-references.bib", "06-bleaching-dhw.svg"]
+  },
+  {
+    "file": "07-inequalities-training.tex",
+    "kind": "training-notes",
+    "format": "latex",
+    "request": "Write training notes for our math olympiad team on AM-GM and Cauchy-Schwarz, with proofs, lots of worked aligned derivations, a strategy checklist, and exercises with hints. LaTeX please.",
+    "assets": ["07-references.bib"]
+  },
+  {
+    "file": "08-recipe-collection.md",
+    "kind": "recipe-collection",
+    "format": "markdown",
+    "request": "can you put together a little recipe collection, like 5 easy weeknight recipes, with nutrition info per serving? want to print it as a PDF",
+    "assets": []
+  },
+  {
+    "file": "09-license-agreement-summary.md",
+    "kind": "contract-summary",
+    "format": "markdown",
+    "request": "Summarize the key terms of the Northpeak software license and services agreement for our leadership team: license scope, fees, SLA, liability, data terms, termination, key dates, and anything we should push back on before signing.",
+    "assets": []
+  },
+  {
+    "file": "10-ohms-law-lab.tex",
+    "kind": "lab-handout",
+    "format": "latex",
+    "request": "Write a physics lab handout for an Ohm's law experiment with a resistor and an incandescent lamp: background, a circuit diagram, safety, procedure, data tables, analysis, and questions. Use proper units. LaTeX.",
+    "assets": ["10-circuit.svg"]
+  },
+  {
+    "file": "11-supply-demand-notes.md",
+    "kind": "course-notes",
+    "format": "markdown",
+    "request": "Can you write up my econ 101 notes on supply and demand and elasticity? Include the formulas, a worked example, and a supply and demand graph.",
+    "assets": ["11-supply-demand.svg"]
+  },
+  {
+    "file": "12-short-story-low-water.md",
+    "kind": "short-story",
+    "format": "markdown",
+    "request": "Write a short literary story I can print as a little booklet. Give it an epigraph and section breaks.",
+    "assets": []
+  },
+  {
+    "file": "13-simplex-method-tutorial.md",
+    "kind": "tutorial",
+    "format": "markdown",
+    "request": "Write a tutorial on linear programming and the simplex method with a fully worked example. Show every tableau, the ratio tests, shadow prices, and the matrix form with B inverse.",
+    "assets": ["13-references.bib"]
+  },
+  {
+    "file": "14-diabetes-patient-handout.md",
+    "kind": "patient-handout",
+    "format": "markdown",
+    "request": "Make a plain-language handout for patients newly diagnosed with type 2 diabetes: target numbers, eating and exercise, medications, low blood sugar, sick days, foot care, and checkups. Use tables where they help.",
+    "assets": []
+  },
+  {
+    "file": "15-referee-report.tex",
+    "kind": "referee-report",
+    "format": "latex",
+    "request": "Help me write a referee report for a continual learning paper I'm reviewing. It proposes sparse routed LoRA adapters for rehearsal-free class-incremental learning. I have concerns about the baselines, task-ID leakage, and their proposition. Numbered major and minor comments, LaTeX.",
+    "assets": ["15-references.bib"]
+  },
+  {
+    "file": "16-project-status-report.md",
+    "kind": "status-report",
+    "format": "markdown",
+    "request": "Write this period's status report for the customer self-service portal project: executive summary, a Gantt-style timeline table, milestones, risks, budget, and decisions we need from the steering committee.",
+    "assets": []
+  },
+  {
+    "file": "17-statistics-formula-reference.md",
+    "kind": "formula-reference",
+    "format": "markdown",
+    "request": "can you make me a statistics formula sheet as a PDF? regression, ANOVA, the common tests, confidence intervals, effect sizes. dense is fine",
+    "assets": []
+  },
+  {
+    "file": "18-academic-cover-letter.tex",
+    "kind": "cover-letter",
+    "format": "latex",
+    "request": "Write a cover letter for an assistant professor position in quantitative and computational biology. I'm a postdoc working on stochastic gene expression and antibiotic persistence. LaTeX, proper letter format.",
+    "assets": []
+  },
+  {
+    "file": "19-wedding-program.md",
+    "kind": "event-program",
+    "format": "markdown",
+    "request": "quick one: can you make a wedding program for Ellie and Sam's wedding, Oct 24 at Hollow Creek Farm? order of ceremony, wedding party, reception schedule, menu",
+    "assets": []
+  },
+  {
+    "file": "20-fd-vs-fem-poisson.md",
+    "kind": "research-paper",
+    "format": "markdown",
+    "request": "Write a short research paper comparing finite differences and finite elements for the Poisson equation, with the methods' equations, a convergence plot, results tables, a discussion, and citations.",
+    "assets": ["20-references.bib", "20-convergence.svg"]
+  }
+]

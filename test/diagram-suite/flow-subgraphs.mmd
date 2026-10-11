@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph client [Client side]
+        ui[Web UI] --> state[State store]
+    end
+    subgraph server [Server]
+        direction TB
+        router[Router] --> handlers[Handlers]
+        subgraph data [Data layer]
+            repo[Repository] --> sql[(SQL)]
+        end
+        handlers --> repo
+    end
+    state -- REST calls --> router
+    handlers -. events .-> ui
+    classDef hot fill:#fde2e2,stroke:#c0392b,color:#7b1d1d
+    class sql hot

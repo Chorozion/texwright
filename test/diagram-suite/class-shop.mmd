@@ -1,0 +1,42 @@
+classDiagram
+    direction TB
+    class Customer {
+        +String name
+        +String email
+        -List~Order~ orders
+        +placeOrder(Cart cart) Order
+        +history() List~Order~
+    }
+    class Order {
+        +int id
+        +Date placedAt
+        +OrderStatus status
+        +total() Money
+        +cancel() bool
+    }
+    class OrderLine {
+        +int quantity
+        +Money unitPrice
+        +subtotal() Money
+    }
+    class Product {
+        +String sku
+        +String title
+        +Money price
+    }
+    class Payable {
+        <<interface>>
+        +pay(Money amount) Receipt
+    }
+    class OrderStatus {
+        <<enumeration>>
+        PENDING
+        PAID
+        SHIPPED
+        CANCELLED
+    }
+    Customer "1" --> "0..*" Order : places
+    Order "1" *-- "1..*" OrderLine : contains
+    OrderLine "*" --> "1" Product
+    Order ..|> Payable
+    Order ..> OrderStatus

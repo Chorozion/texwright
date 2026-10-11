@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{booktabs,tabularx,longtable,multirow,makecell,array}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage{threeparttable}
+\usepackage{caption}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\definecolor{headerblue}{HTML}{1F4E79}
+\definecolor{lightgray}{gray}{0.9}
+
+\begin{document}
+\section{Comparison}
+
+\begin{table}[ht]
+\centering
+\caption{Model comparison on three benchmarks.}
+\label{tab:models}
+\begin{threeparttable}
+\begin{tabular}{@{}l c c c@{}}
+\toprule
+\multirow{2}{*}{Model} & \multicolumn{3}{c}{Accuracy (\%)} \\
+\cmidrule(lr){2-4}
+ & A & B & C\tnote{a} \\
+\midrule
+\rowcolor{lightgray} Baseline & 71.2 & 65.0 & 80.1 \\
+Ours & \textbf{78.4} & \textbf{70.3} & \cellcolor{yellow}82.0 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item[a] Evaluated on the test split only.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\arrayrulecolor{headerblue}
+\begin{tabularx}{\textwidth}{|l|Y|Y|}
+\hline
+\rowcolor{headerblue}\textcolor{white}{Feature} & \textcolor{white}{Plan A} & \textcolor{white}{Plan B} \\
+\hline
+Storage & \makecell{10 GB\\ (expandable)} & 100 GB \\
+\hline
+Support & Email & \thead{Phone \\ and email} \\
+\hline
+\end{tabularx}
+\caption*{Plans as of 2024.}
+\end{table}
+
+\begin{longtable}{p{3cm} p{8cm}}
+\caption{Glossary}\label{tab:gloss}\\
+\toprule
+Term & Definition \\
+\midrule
+\endfirsthead
+\toprule
+Term & Definition \\
+\midrule
+\endhead
+API & Application programming interface. \\
+SDK & Software development kit. \\
+CLI & Command-line interface. \\
+\bottomrule
+\end{longtable}
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l<{:} r}
+Total & 42 \\
+Mean & 3.5 \\
+\end{tabular}
+\end{center}
+
+\begin{table}[h]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllllll}
+\hline
+a & b & c & d & e & f & g \\
+\hline
+\end{tabular}}
+\captionof{table}{A wide table, resized.}
+\end{table}
+\end{document}

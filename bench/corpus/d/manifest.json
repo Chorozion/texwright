@@ -1,0 +1,142 @@
+[
+  {
+    "file": "01-regression-lab.md",
+    "kind": "statistics lab report",
+    "format": "markdown",
+    "request": "Write up my regression lab on the mtcars data as a proper lab report with the regression output tables and a figure, in Markdown I'll turn into a PDF.",
+    "assets": ["01-references.bib", "01-scatter.svg", "01-residuals.svg"]
+  },
+  {
+    "file": "02-runge-kutta-hw.tex",
+    "kind": "numerical analysis homework",
+    "format": "latex",
+    "request": "Type up my numerical analysis homework solutions on Runge-Kutta methods in LaTeX, including pseudocode for the algorithms, so I can compile it to a PDF.",
+    "assets": []
+  },
+  {
+    "file": "03-product-launch.md",
+    "kind": "press release",
+    "format": "markdown",
+    "request": "Draft a press release announcing the launch of our new soil sensor that I can turn into a PDF for the media kit.",
+    "assets": []
+  },
+  {
+    "file": "04-electromagnetism-notes.tex",
+    "kind": "physics lecture notes",
+    "format": "latex",
+    "request": "Write lecture notes in LaTeX on Maxwell's equations in differential form, with the vector calculus and a diagram, for me to compile into a PDF handout.",
+    "assets": ["04-gauss-ampere.svg"]
+  },
+  {
+    "file": "05-churn-model-report.md",
+    "kind": "data science project report",
+    "format": "markdown",
+    "request": "Turn our churn model project into a README-style report with code blocks and results that I can export to PDF for stakeholders.",
+    "assets": ["05-feature-importance.svg"]
+  },
+  {
+    "file": "06-thesis-chapter.tex",
+    "kind": "PhD thesis chapter",
+    "format": "latex",
+    "request": "Write the PL-condition chapter of my thesis in LaTeX with theorems, lemmas, full proofs and a bibliography, ready to compile to PDF.",
+    "assets": ["06-references.bib"]
+  },
+  {
+    "file": "07-meeting-agenda.md",
+    "kind": "meeting agenda and decision log",
+    "format": "markdown",
+    "request": "Put together the agenda, notes and decision log for our Q4 platform planning meeting as Markdown I'll convert to a PDF and circulate.",
+    "assets": []
+  },
+  {
+    "file": "08-cv-mechanical.tex",
+    "kind": "resume / CV",
+    "format": "latex",
+    "request": "Make me a clean one-to-two page LaTeX CV for a senior mechanical engineer in thermal systems that I can compile to PDF.",
+    "assets": []
+  },
+  {
+    "file": "09-chemistry-study-guide.md",
+    "kind": "chemistry study guide",
+    "format": "markdown",
+    "request": "Write a study guide on chemical equilibrium with reactions, equilibrium constants and worked examples that I can turn into a PDF for my class.",
+    "assets": []
+  },
+  {
+    "file": "10-rl-conference-paper.tex",
+    "kind": "conference paper",
+    "format": "latex",
+    "request": "Write a conference-style paper in LaTeX on our adaptive critic-ensemble method for reinforcement learning, with the algorithm, results tables, a learning-curve figure and citations, to compile to PDF.",
+    "assets": ["10-references.bib", "10-learning-curves.svg"]
+  },
+  {
+    "file": "11-travel-itinerary.md",
+    "kind": "travel itinerary",
+    "format": "markdown",
+    "request": "Plan a nine-day Portugal trip itinerary with a day-by-day schedule and a budget table that I can print as a PDF.",
+    "assets": []
+  },
+  {
+    "file": "12-math-quiz.tex",
+    "kind": "high-school math quiz with answer key",
+    "format": "latex",
+    "request": "Create a high-school quiz on quadratics and right-triangle trig in LaTeX with an answer key at the end, so I can compile and print it.",
+    "assets": []
+  },
+  {
+    "file": "13-literature-review.md",
+    "kind": "literature review",
+    "format": "markdown",
+    "request": "Write a literature review on spacing and retrieval practice with lots of citations, as pandoc Markdown with a bib file that I'll turn into a PDF.",
+    "assets": ["13-references.bib"]
+  },
+  {
+    "file": "14-beam-design-report.tex",
+    "kind": "engineering design report",
+    "format": "latex",
+    "request": "Write up the floor beam design calculations as an engineering design report in LaTeX with units, tables and a loading diagram, for me to compile to PDF.",
+    "assets": ["14-beam-diagram.svg"]
+  },
+  {
+    "file": "15-recipe-chapter.md",
+    "kind": "recipe book chapter",
+    "format": "markdown",
+    "request": "Write the soups chapter of my cookbook in Markdown that I'll turn into a PDF, with an introduction and several full recipes.",
+    "assets": []
+  },
+  {
+    "file": "16-business-letter.tex",
+    "kind": "formal business letter",
+    "format": "latex",
+    "request": "Write a formal letter in LaTeX to our castings supplier about late deliveries and quality problems, requesting a corrective action plan, that I can compile to PDF and send.",
+    "assets": []
+  },
+  {
+    "file": "17-linear-algebra-cheatsheet.md",
+    "kind": "linear algebra cheat sheet",
+    "format": "markdown",
+    "request": "Make a dense linear algebra cheat sheet for the final exam in Markdown that I'll turn into a PDF.",
+    "assets": []
+  },
+  {
+    "file": "18-probability-handout.tex",
+    "kind": "probability lecture handout",
+    "format": "latex",
+    "request": "Write a lecture handout in LaTeX (not slides) on conditional probability and Bayes' theorem with examples, exercises and solutions, to compile to PDF.",
+    "assets": []
+  },
+  {
+    "file": "19-incident-runbook.md",
+    "kind": "incident runbook",
+    "format": "markdown",
+    "request": "Write an incident runbook for our payments API with severity levels, commands and an escalation flow diagram, as Markdown I'll export to PDF.",
+    "assets": ["19-escalation-flow.svg"]
+  },
+  {
+    "file": "20-gnn-survey.tex",
+    "kind": "short survey paper",
+    "format": "latex",
+    "request": "Write a short survey on graph neural networks in LaTeX with a separate .bib file, ready to compile to PDF.",
+    "assets": ["20-references.bib"]
+  }
+]

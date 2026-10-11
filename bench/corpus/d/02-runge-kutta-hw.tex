@@ -1,0 +1,336 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{MATH 4610 --- Numerical Analysis II}
+\rhead{Homework 5}
+\cfoot{\thepage}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\Oh}{\mathcal{O}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Homework 5: Runge--Kutta Methods}\\[6pt]
+  Daniel Okafor \quad\textbullet\quad MATH 4610, Fall 2026 \quad\textbullet\quad Due Wednesday, October 14
+\end{center}
+
+\noindent Throughout, we consider the initial value problem
+\begin{equation}\label{eq:ivp}
+  y'(t) = f\bigl(t, y(t)\bigr), \qquad y(t_0) = y_0,
+\end{equation}
+with $f$ smooth enough for every Taylor expansion we write down. An
+$s$-stage explicit Runge--Kutta method with step size $h$ is
+\begin{equation}\label{eq:rk}
+  k_i = f\Bigl(t_n + c_i h,\; y_n + h\sum_{j=1}^{i-1} a_{ij} k_j\Bigr),
+  \quad i = 1,\dots,s, \qquad
+  y_{n+1} = y_n + h \sum_{i=1}^{s} b_i k_i,
+\end{equation}
+which we summarise by its Butcher tableau
+\[
+  \renewcommand{\arraystretch}{1.2}
+  \begin{array}{c|c}
+    \mathbf{c} & A \\ \hline
+               & \mathbf{b}^{\top}
+  \end{array}
+\]
+with $A = (a_{ij})$ strictly lower triangular. We always assume the row-sum
+condition $c_i = \sum_j a_{ij}$.
+
+%----------------------------------------------------------------------
+\begin{problem}[Two-stage methods]\label{prob:two-stage}
+Consider the general explicit two-stage method
+\[
+  k_1 = f(t_n, y_n), \quad
+  k_2 = f(t_n + c_2 h,\; y_n + a_{21} h k_1), \quad
+  y_{n+1} = y_n + h(b_1 k_1 + b_2 k_2).
+\]
+\begin{enumerate}[label=(\alph*)]
+  \item Derive the conditions on $b_1, b_2, c_2, a_{21}$ for the method to have order two.
+  \item Show that the midpoint method, Heun's method and Ralston's method all belong to this family, and give their tableaux.
+  \item Show that no member of the family has order three.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+(a) Write $f$, $f_t$, $f_y$ for $f$ and its partial derivatives evaluated at $(t_n, y_n)$, and suppose $y_n = y(t_n)$. Differentiating $y' = f(t,y)$ once gives $y'' = f_t + f_y f$, so the exact solution satisfies
+\[
+  y(t_n + h) = y_n + h f + \frac{h^2}{2}\bigl(f_t + f f_y\bigr) + \Oh(h^3).
+\]
+Expanding $k_2$ in two variables,
+\[
+  k_2 = f + c_2 h f_t + a_{21} h f f_y + \Oh(h^2),
+\]
+so
+\[
+  y_{n+1} = y_n + h (b_1 + b_2) f + h^2 b_2 \bigl(c_2 f_t + a_{21} f f_y\bigr) + \Oh(h^3).
+\]
+Matching coefficients of $h f$, $h^2 f_t$ and $h^2 f f_y$ gives the order-two conditions
+\begin{equation}\label{eq:order2}
+  b_1 + b_2 = 1, \qquad b_2 c_2 = \tfrac12, \qquad b_2 a_{21} = \tfrac12.
+\end{equation}
+The last two force $a_{21} = c_2$ (the row-sum condition), and then $b_2 = 1/(2c_2)$ and $b_1 = 1 - 1/(2c_2)$. So the order-two two-stage methods form a one-parameter family indexed by $c_2 \neq 0$.
+
+(b) The three named methods correspond to $c_2 = \tfrac12$, $1$ and $\tfrac23$:
+\[
+  \renewcommand{\arraystretch}{1.25}
+  \underbrace{\begin{array}{c|cc}
+    0 & & \\
+    \tfrac12 & \tfrac12 & \\ \hline
+    & 0 & 1
+  \end{array}}_{\text{midpoint}}
+  \qquad\qquad
+  \underbrace{\begin{array}{c|cc}
+    0 & & \\
+    1 & 1 & \\ \hline
+    & \tfrac12 & \tfrac12
+  \end{array}}_{\text{Heun}}
+  \qquad\qquad
+  \underbrace{\begin{array}{c|cc}
+    0 & & \\
+    \tfrac23 & \tfrac23 & \\ \hline
+    & \tfrac14 & \tfrac34
+  \end{array}}_{\text{Ralston}}
+\]
+Each satisfies~\eqref{eq:order2}; for example, for Ralston $b_2 c_2 = \tfrac34\cdot\tfrac23 = \tfrac12$.
+
+(c) Apply any member of the family to the test equation $y' = y$, $y(0) = 1$. One step gives
+\[
+  y_1 = 1 + h(b_1 + b_2) + h^2 b_2 a_{21} = 1 + h + \frac{h^2}{2},
+\]
+whereas $y(h) = e^h = 1 + h + h^2/2 + h^3/6 + \Oh(h^4)$. The local error is $h^3/6 + \Oh(h^4)$ regardless of the free parameter, so the local error is never $\Oh(h^4)$ and the method is never of order three. (More generally, the elementary differential $f_y^2 f$ appears in $y'''$ with coefficient $1$, and a two-stage method has no way to produce it.)
+\end{solution}
+
+%----------------------------------------------------------------------
+\begin{problem}[Classical RK4]\label{prob:rk4}
+The classical fourth-order Runge--Kutta method has tableau
+\[
+  \renewcommand{\arraystretch}{1.25}
+  \begin{array}{c|cccc}
+    0        &          &          &   & \\
+    \tfrac12 & \tfrac12 &          &   & \\
+    \tfrac12 & 0        & \tfrac12 &   & \\
+    1        & 0        & 0        & 1 & \\ \hline
+             & \tfrac16 & \tfrac13 & \tfrac13 & \tfrac16
+  \end{array}
+\]
+Verify that it satisfies all eight order conditions for order four.
+\end{problem}
+
+\begin{solution}
+The eight conditions, indexed by the rooted trees with at most four vertices, are listed in Table~\ref{tab:order-conditions} together with their values for RK4. We used
+\[
+  \mathbf{c} = \bigl(0, \tfrac12, \tfrac12, 1\bigr)^{\!\top}, \qquad
+  A\mathbf{c} = \bigl(0, 0, \tfrac14, \tfrac12\bigr)^{\!\top}, \qquad
+  A\mathbf{c}^2 = \bigl(0, 0, \tfrac18, \tfrac14\bigr)^{\!\top}, \qquad
+  A^2\mathbf{c} = \bigl(0, 0, 0, \tfrac14\bigr)^{\!\top},
+\]
+where $\mathbf{c}^2$ means the componentwise square.
+
+\begin{table}[ht]
+  \centering
+  \caption{Order conditions up to order four, evaluated for classical RK4.}
+  \label{tab:order-conditions}
+  \begin{tabular}{@{}clcc@{}}
+    \toprule
+    Order & Condition & Required & RK4 value \\
+    \midrule
+    1 & $\sum_i b_i$                      & $1$            & $\tfrac16 + \tfrac13 + \tfrac13 + \tfrac16 = 1$ \\[2pt]
+    2 & $\sum_i b_i c_i$                  & $\tfrac12$     & $\tfrac16 + \tfrac16 + \tfrac16 = \tfrac12$ \\[2pt]
+    3 & $\sum_i b_i c_i^2$                & $\tfrac13$     & $\tfrac1{12} + \tfrac1{12} + \tfrac16 = \tfrac13$ \\
+      & $\sum_{i,j} b_i a_{ij} c_j$       & $\tfrac16$     & $\tfrac13\cdot\tfrac14 + \tfrac16\cdot\tfrac12 = \tfrac16$ \\[2pt]
+    4 & $\sum_i b_i c_i^3$                & $\tfrac14$     & $\tfrac1{24} + \tfrac1{24} + \tfrac16 = \tfrac14$ \\
+      & $\sum_{i,j} b_i c_i a_{ij} c_j$   & $\tfrac18$     & $\tfrac13\cdot\tfrac12\cdot\tfrac14 + \tfrac16\cdot 1\cdot\tfrac12 = \tfrac18$ \\
+      & $\sum_{i,j} b_i a_{ij} c_j^2$     & $\tfrac1{12}$  & $\tfrac13\cdot\tfrac18 + \tfrac16\cdot\tfrac14 = \tfrac1{12}$ \\
+      & $\sum_{i,j,k} b_i a_{ij} a_{jk} c_k$ & $\tfrac1{24}$ & $\tfrac16\cdot\tfrac14 = \tfrac1{24}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+All eight hold, so RK4 has order (at least) four. It does not have order five: applied to $y' = \lambda y$ it reproduces the Taylor series of $e^{h\lambda}$ only through the $z^4/24$ term (see Problem~\ref{prob:stability}).
+\end{solution}
+
+%----------------------------------------------------------------------
+\begin{problem}[Absolute stability]\label{prob:stability}
+\begin{enumerate}[label=(\alph*)]
+  \item Find the stability function $R(z)$ of RK4, where $y_{n+1} = R(h\lambda) y_n$ when the method is applied to $y' = \lambda y$.
+  \item Determine the interval of absolute stability on the negative real axis.
+  \item For $y' = -50y$, what is the largest step size for which RK4 is absolutely stable? Compare with forward Euler.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+(a) With $f(t,y) = \lambda y$ and $z = h\lambda$, the stages are
+\begin{align*}
+  h k_1 &= z y_n, \\
+  h k_2 &= z\bigl(1 + \tfrac{z}{2}\bigr) y_n, \\
+  h k_3 &= z\bigl(1 + \tfrac{z}{2} + \tfrac{z^2}{4}\bigr) y_n, \\
+  h k_4 &= z\bigl(1 + z + \tfrac{z^2}{2} + \tfrac{z^3}{4}\bigr) y_n,
+\end{align*}
+and combining them with weights $\tfrac16, \tfrac13, \tfrac13, \tfrac16$ gives
+\[
+  R(z) = 1 + z + \frac{z^2}{2} + \frac{z^3}{6} + \frac{z^4}{24}.
+\]
+This is the degree-four Taylor polynomial of $e^z$, as it must be for any four-stage method of order four.
+
+(b) For real $z<0$ we need $|R(z)| \le 1$. Since $R(z) > 0$ for all real $z$ (its minimum on $\R$ is about $0.27$, attained near $z \approx -1.6$), the binding condition is $R(z) \le 1$, i.e.
+\[
+  z\Bigl(1 + \frac{z}{2} + \frac{z^2}{6} + \frac{z^3}{24}\Bigr) \le 0.
+\]
+For $z<0$ this requires the cubic in parentheses to be non-negative. Its only real root, found by Newton's method from $z_0 = -3$, is $z^\ast \approx -2.7853$. The interval of absolute stability on the real axis is therefore
+\[
+  -2.7853 \le h\lambda \le 0.
+\]
+
+(c) With $\lambda = -50$ we need $50h \le 2.7853$, i.e.\ $h \le 0.0557$. Forward Euler has $R(z) = 1 + z$ and is stable for $-2 \le z \le 0$, so it needs $h \le 0.04$. RK4 allows a step about 39\% larger, but each step costs four function evaluations instead of one, so for a problem this stiff neither method is attractive and an implicit method should be used.
+\end{solution}
+
+%----------------------------------------------------------------------
+\begin{problem}[Implementation and convergence]\label{prob:impl}
+Implement forward Euler, Heun's method and RK4 and apply them to
+\begin{equation}\label{eq:test}
+  y' = y - t^2 + 1, \qquad 0 \le t \le 2, \qquad y(0) = 0.5,
+\end{equation}
+whose exact solution is $y(t) = (t+1)^2 - \tfrac12 e^{t}$. Report the error at $t = 2$ for $h = 0.2, 0.1, 0.05, 0.025$ and estimate the observed order of convergence.
+\end{problem}
+
+\begin{solution}
+Algorithm~\ref{alg:rk4} gives the RK4 integrator in the vector-valued form we implemented (the scalar case is $m = 1$). Euler and Heun were implemented the same way with the obvious changes to the stage computations.
+
+\begin{algorithm}[ht]
+  \caption{Classical RK4 with fixed step size}
+  \label{alg:rk4}
+  \begin{algorithmic}[1]
+    \Require $f:\R\times\R^m\to\R^m$, initial time $t_0$, final time $T$, initial value $\mathbf{y}_0\in\R^m$, number of steps $N$
+    \Ensure Approximations $\mathbf{w}_n \approx \mathbf{y}(t_n)$ for $n = 0,\dots,N$
+    \State $h \gets (T - t_0)/N$
+    \State $t \gets t_0$, \quad $\mathbf{w}_0 \gets \mathbf{y}_0$
+    \For{$n = 0, 1, \dots, N-1$}
+      \State $\mathbf{k}_1 \gets f(t,\; \mathbf{w}_n)$
+      \State $\mathbf{k}_2 \gets f(t + h/2,\; \mathbf{w}_n + \tfrac{h}{2}\mathbf{k}_1)$
+      \State $\mathbf{k}_3 \gets f(t + h/2,\; \mathbf{w}_n + \tfrac{h}{2}\mathbf{k}_2)$
+      \State $\mathbf{k}_4 \gets f(t + h,\; \mathbf{w}_n + h\,\mathbf{k}_3)$
+      \State $\mathbf{w}_{n+1} \gets \mathbf{w}_n + \tfrac{h}{6}\bigl(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4\bigr)$
+      \State $t \gets t_0 + (n+1)h$ \Comment{avoid accumulating round-off in $t$}
+    \EndFor
+    \State \Return $(\mathbf{w}_0, \dots, \mathbf{w}_N)$
+  \end{algorithmic}
+\end{algorithm}
+
+The exact value is $y(2) = 9 - \tfrac12 e^2 \approx 5.3054719505$. Table~\ref{tab:errors} lists the global errors $|w_N - y(2)|$. The observed order between consecutive rows is
+\[
+  p_{\text{obs}} = \log_2 \frac{E(h)}{E(h/2)}.
+\]
+
+\begin{table}[ht]
+  \centering
+  \caption{Global error at $t = 2$ for problem~\eqref{eq:test}, and observed order of convergence.}
+  \label{tab:errors}
+  \begin{tabular}{@{}r rr rr rr@{}}
+    \toprule
+    & \multicolumn{2}{c}{Euler} & \multicolumn{2}{c}{Heun} & \multicolumn{2}{c}{RK4} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+    $h$ & Error & $p_{\text{obs}}$ & Error & $p_{\text{obs}}$ & Error & $p_{\text{obs}}$ \\
+    \midrule
+    0.200 & $4.397\times10^{-1}$ & ---  & $7.242\times10^{-2}$ & ---  & $1.089\times10^{-4}$ & ---  \\
+    0.100 & $2.420\times10^{-1}$ & 0.86 & $1.890\times10^{-2}$ & 1.94 & $6.990\times10^{-6}$ & 3.96 \\
+    0.050 & $1.275\times10^{-1}$ & 0.92 & $4.820\times10^{-3}$ & 1.97 & $4.421\times10^{-7}$ & 3.98 \\
+    0.025 & $6.550\times10^{-2}$ & 0.96 & $1.216\times10^{-3}$ & 1.99 & $2.779\times10^{-8}$ & 3.99 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The observed orders approach $1$, $2$ and $4$ respectively, as theory predicts. The efficiency gap is large: RK4 with $h = 0.2$ (40 function evaluations) is more accurate than Heun with $h = 0.025$ (160 evaluations) by an order of magnitude, and more accurate than Euler with $h = 0.025$ (80 evaluations) by nearly three orders.
+
+For reference, Table~\ref{tab:traj} shows the RK4 trajectory with $h = 0.2$. The error grows steadily along the trajectory, which is expected because $\partial f/\partial y = 1 > 0$ amplifies earlier local errors by a factor of about $e^{h}$ per step.
+
+\begin{table}[ht]
+  \centering
+  \caption{RK4 with $h = 0.2$ on problem~\eqref{eq:test}.}
+  \label{tab:traj}
+  \begin{tabular}{@{}cccc@{}}
+    \toprule
+    $t_n$ & $w_n$ & $y(t_n)$ & $|w_n - y(t_n)|$ \\
+    \midrule
+    0.0 & 0.5000000 & 0.5000000 & 0 \\
+    0.4 & 1.2140762 & 1.2140877 & $1.14\times10^{-5}$ \\
+    0.8 & 2.1272027 & 2.1272295 & $2.69\times10^{-5}$ \\
+    1.2 & 3.1798942 & 3.1799415 & $4.74\times10^{-5}$ \\
+    1.6 & 4.2834095 & 4.2834838 & $7.43\times10^{-5}$ \\
+    2.0 & 5.3053630 & 5.3054720 & $1.09\times10^{-4}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\end{solution}
+
+%----------------------------------------------------------------------
+\begin{problem}[Adaptive step size]\label{prob:adaptive}
+Embedded pairs compute two solutions of different orders from the same stages and use their difference as an error estimate.
+\begin{enumerate}[label=(\alph*)]
+  \item Write pseudocode for an adaptive integrator based on the Runge--Kutta--Fehlberg 4(5) pair, using the step-size update $h_{\text{new}} = q\,h$ with $q = 0.84\,(\varepsilon/\hat{E})^{1/4}$.
+  \item Explain where the exponent $1/4$ comes from.
+  \item Run your code on~\eqref{eq:test} with tolerances $\varepsilon = 10^{-4}, 10^{-6}, 10^{-8}$ and report the number of accepted and rejected steps and the actual error at $t = 2$.
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+(a) Algorithm~\ref{alg:rkf45} is the controller we used. Here $\mathbf{w}^{(4)}$ and $\mathbf{w}^{(5)}$ are the fourth- and fifth-order results built from the six Fehlberg stages; we propagate the fourth-order value, as in Fehlberg's original method. The error estimate $\hat{E}$ is per unit step, so the tolerance controls the error committed per unit of $t$.
+
+\begin{algorithm}[ht]
+  \caption{Adaptive RKF45 integration}
+  \label{alg:rkf45}
+  \begin{algorithmic}[1]
+    \Require $f$, $t_0$, $T$, $\mathbf{y}_0$, tolerance $\varepsilon$, initial step $h$, bounds $0 < q_{\min} < 1 < q_{\max}$
+    \State $t \gets t_0$, \quad $\mathbf{w} \gets \mathbf{y}_0$
+    \While{$t < T$}
+      \State $h \gets \min(h,\; T - t)$ \Comment{do not step past $T$}
+      \State compute stages $\mathbf{k}_1,\dots,\mathbf{k}_6$ from $(t, \mathbf{w}, h)$
+      \State $\mathbf{w}^{(4)} \gets \mathbf{w} + \sum_{i} b_i \mathbf{k}_i$, \quad $\mathbf{w}^{(5)} \gets \mathbf{w} + \sum_i \hat{b}_i \mathbf{k}_i$
+      \State $\hat{E} \gets \lVert \mathbf{w}^{(5)} - \mathbf{w}^{(4)} \rVert_\infty / h$
+      \If{$\hat{E} \le \varepsilon$}
+        \State $t \gets t + h$, \quad $\mathbf{w} \gets \mathbf{w}^{(4)}$ \Comment{accept}
+        \State record $(t, \mathbf{w})$
+      \EndIf
+      \State $q \gets 0.84\,(\varepsilon/\hat{E})^{1/4}$
+      \State $q \gets \min\bigl(\max(q, q_{\min}),\, q_{\max}\bigr)$ \Comment{limit how fast $h$ changes}
+      \State $h \gets q\,h$ \Comment{new step for retry or next step}
+    \EndWhile
+  \end{algorithmic}
+\end{algorithm}
+
+(b) The local error of the fourth-order formula behaves like $C h^5$, so the per-unit-step estimate behaves like $\hat{E} \approx C h^4$. If we want the next step $qh$ to satisfy $C (qh)^4 \approx \varepsilon$, then $q^4 \hat{E} \approx \varepsilon$ and $q = (\varepsilon/\hat{E})^{1/4}$. The factor $0.84 \approx 2^{-1/4}$ is a safety margin that aims for half the tolerance, which cuts down on rejected steps.
+
+(c) We used $h = 0.25$ initially, $q_{\min} = 0.1$ and $q_{\max} = 4$. Results:
+
+\begin{center}
+  \begin{tabular}{@{}ccccc@{}}
+    \toprule
+    $\varepsilon$ & Accepted & Rejected & $f$-evaluations & $|w(2) - y(2)|$ \\
+    \midrule
+    $10^{-4}$ & 5  & 0 & 30  & $9.68\times10^{-5}$ \\
+    $10^{-6}$ & 14 & 3 & 102 & $1.85\times10^{-6}$ \\
+    $10^{-8}$ & 42 & 3 & 270 & $2.00\times10^{-8}$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+The final errors are of the same order as $\varepsilon$, which is what one hopes for but not what the method guarantees: the controller bounds local, not global, error. At $\varepsilon = 10^{-6}$ the error slightly exceeds the tolerance because the solution grows like $e^t$ and amplifies earlier local errors. Comparing with Table~\ref{tab:errors}, the adaptive code reaches $2\times10^{-8}$ with 270 evaluations, while fixed-step RK4 needs $h = 0.025$ (320 evaluations) to get $2.8\times10^{-8}$. The saving is modest here because the solution is smooth everywhere; on problems with fast transients the adaptive code wins by much more.
+\end{solution}
+
+\end{document}

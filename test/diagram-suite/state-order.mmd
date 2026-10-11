@@ -1,0 +1,21 @@
+stateDiagram-v2
+    [*] --> Cart
+    Cart --> Checkout : proceed
+    Checkout --> PaymentCheck
+    state PaymentCheck <<choice>>
+    PaymentCheck --> Paid : approved
+    PaymentCheck --> Cart : declined
+    state Paid {
+        [*] --> Packing
+        Packing --> Shipped : label printed
+        Shipped --> Delivered : signed for
+        Delivered --> [*]
+    }
+    Paid --> Closed
+    Cart --> Abandoned : 30 days idle
+    Abandoned --> [*]
+    Closed --> [*]
+    note right of Cart
+        Items are held for
+        30 minutes
+    end note

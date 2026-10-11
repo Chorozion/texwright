@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant C as Customer
+    participant S as Shop
+    participant P as Payment gateway
+    participant Bk as Bank
+    C->>S: Checkout cart
+    activate S
+    S->>P: Create payment intent
+    activate P
+    Note right of P: Amount and currency<br>are validated here
+    P->>Bk: Authorise card
+    activate Bk
+    Bk-->>P: Approved
+    deactivate Bk
+    P-->>S: Intent confirmed
+    deactivate P
+    Note over S,P: Webhook arrives later
+    P-)S: payment.succeeded event
+    S-->>C: Order confirmation
+    deactivate S
+    Note left of C: Receipt by email

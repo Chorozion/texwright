@@ -1,0 +1,139 @@
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,allcolors=blue!50!black]{hyperref}
+\usepackage{cleveref}
+
+\newtheorem{proposition}{Proposition}
+
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\h}{\mathbf{h}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\e}{\mathbf{e}}
+
+\title{Ring-Aware Message Passing for Molecular Property Prediction}
+\author{
+  Hana Takeda$^{1}$ \and Oluwaseun Adeyemi$^{1}$ \and Pieter van der Berg$^{2}$\\[4pt]
+  \small $^{1}$Department of Computer Science, Northgate University\\
+  \small $^{2}$Computational Chemistry Group, Lindholm Institute\\
+  \small \texttt{\{htakeda, oadeyemi\}@northgate.example.edu}
+}
+\date{Submitted to the Workshop on Machine Learning for Molecules, 2027}
+
+\begin{document}
+
+\maketitle
+
+%======================================================================
+\section*{Abstract}
+%======================================================================
+
+Graph neural networks (GNNs) that pass messages along chemical bonds are bounded in expressive power by the 1-Weisfeiler--Leman (1-WL) test, which cannot count cycles. Rings, however, determine much of a molecule's chemistry: aromaticity, strain, rigidity, and the shape of pharmacophores. We propose Ring-Aware Message Passing (RAMP), a lightweight extension of message passing networks in which each ring in the smallest set of smallest rings becomes an additional node that exchanges messages with its member atoms at every layer. RAMP adds a number of nodes linear in the number of rings, requires no three-dimensional coordinates, and distinguishes graph pairs that 1-WL cannot, such as decalin and bicyclopentyl. On ZINC-12k, RAMP reduces the test mean absolute error of a GIN backbone from 0.252 to 0.086, close to cellular networks that use far more expensive higher-order structures. On four MoleculeNet classification tasks with scaffold splits, RAMP improves ROC-AUC over a directed message passing baseline by 0.6 to 2.1 points. Ablations show that the gain comes from bidirectional atom--ring messages rather than from ring-size features alone. RAMP is a drop-in layer for existing message passing architectures, and code will be released with the camera-ready version.
+
+\medskip
+\noindent\textbf{Keywords:} graph neural networks, molecular property prediction, expressivity, message passing, cheminformatics
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+%======================================================================
+\section{Introduction}
+%======================================================================
+
+Message passing neural networks (MPNNs) have become the standard architecture for learning on molecular graphs \cite{gilmer2017,yang2019}. At each layer, every atom aggregates information from its bonded neighbors. This local view is efficient, but it limits what the network can detect. \citet{xu2019} and \citet{morris2019} showed that MPNNs are at most as powerful as the 1-WL graph isomorphism test, and 1-WL cannot determine whether a graph contains a cycle of a given length. Two molecules with identical local neighborhoods but different ring systems therefore receive identical embeddings.
+
+Several remedies exist. Graph substructure networks precompute counts of small subgraphs as node features \cite{bouritsas2023}; cellular isomorphism networks lift the graph to a cell complex in which rings are 2-cells with their own messages \cite{bodnar2021}. Both are more expressive than 1-WL and perform well on molecular benchmarks, but they require choosing substructure vocabularies or building higher-order complexes. Our aim is a simpler mechanism specific to chemistry: rings are already a well-defined, chemically meaningful structure, computable in linear time for typical molecules, so we give them their own representations directly.
+
+%======================================================================
+\section{Method}
+%======================================================================
+
+Let a molecule be a graph $G = (V, E)$ with atom features $\h_v^{(0)}$ and bond features $\e_{vw}$. Let $\R(G)$ be its smallest set of smallest rings (SSSR), computed with RDKit, and for each ring $C \in \R(G)$ let $\rr_C^{(0)}$ encode its size, aromaticity, and heteroatom count. A standard MPNN layer computes
+\begin{equation}
+  \mathbf{m}_v^{(t+1)} = \sum_{w \in \N(v)} M_t\bigl(\h_v^{(t)}, \h_w^{(t)}, \e_{vw}\bigr), \qquad
+  \h_v^{(t+1)} = U_t\bigl(\h_v^{(t)}, \mathbf{m}_v^{(t+1)}\bigr).
+  \label{eq:mpnn}
+\end{equation}
+
+RAMP adds two message channels per layer (\cref{fig:ramp}). First, each ring aggregates the states of its member atoms:
+\begin{equation}
+  \rr_C^{(t+1)} = \phi_t\Bigl(\rr_C^{(t)},\ \sum_{u \in C} \h_u^{(t)}\Bigr).
+  \label{eq:ring-update}
+\end{equation}
+Second, each atom receives a message from every ring that contains it, and the atom update becomes
+\begin{equation}
+  \h_v^{(t+1)} = U_t\Bigl(\h_v^{(t)},\ \mathbf{m}_v^{(t+1)},\ \sum_{C \in \R(G):\, v \in C} \psi_t\bigl(\rr_C^{(t+1)}\bigr)\Bigr).
+  \label{eq:atom-update}
+\end{equation}
+We use two-layer MLPs for $\phi_t$ and $\psi_t$ and keep $M_t$ and $U_t$ from the backbone (GIN \cite{xu2019} or D-MPNN \cite{yang2019}). The graph representation sums atom and ring states after the final layer $T$, $\h_G = \sum_{v} \h_v^{(T)} + \sum_{C} \rr_C^{(T)}$, followed by an MLP head. Because each atom belongs to at most a few rings, the overhead per layer is $O(|V| + \sum_C |C|)$, which in practice adds 8 to 12 percent to training time.
+
+\begin{figure}[t]
+  \centering
+  \includesvg[width=0.86\linewidth]{18-ramp-architecture}
+  \caption{One RAMP layer. Atoms exchange bond messages as in a standard MPNN (solid). Each ring node gathers the states of its member atoms and sends a message back to each of them (dashed). Fused atoms receive messages from both of their rings.}
+  \label{fig:ramp}
+\end{figure}
+
+\begin{proposition}
+\label{prop:expressive}
+RAMP with injective aggregation is strictly more expressive than 1-WL. In particular, it distinguishes decalin (two fused six-membered rings) from bicyclopentyl (two five-membered rings joined by a single bond), which 1-WL does not.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+RAMP can simulate any MPNN by ignoring ring messages, so it is at least as expressive as 1-WL. Both molecules have ten carbon atoms, eight of degree 2 and two of degree 3, and 1-WL assigns them identical color histograms. Their SSSRs differ in ring size (6 and 6 versus 5 and 5), so with ring size in $\rr_C^{(0)}$ the readout $\h_G$ differs after one layer.
+\end{proof}
+
+%======================================================================
+\section{Experiments}
+%======================================================================
+
+\paragraph{Setup.} We evaluate on ZINC-12k \cite{irwin2012,dwivedi2023} (constrained solubility regression, standard 10k/1k/1k split, 500k parameter budget) and on four MoleculeNet classification tasks \cite{wu2018} with scaffold splits (80/10/10). All models use 5 layers and hidden size 300, trained with Adam for 400 epochs (ZINC) or 100 epochs (MoleculeNet) with early stopping on validation loss. We report mean and standard deviation over 5 seeds (ZINC) or 3 scaffold splits (MoleculeNet). Baselines marked $^\dagger$ are quoted from the cited papers; all others are our runs with identical splits and budgets.
+
+\begin{table}[t]
+\centering
+\caption{Test results. ZINC: mean absolute error (lower is better). MoleculeNet: ROC-AUC $\times 100$ (higher is better). Best result in bold.}
+\label{tab:results}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Model & ZINC $\downarrow$ & BBBP $\uparrow$ & Tox21 $\uparrow$ & HIV $\uparrow$ & BACE $\uparrow$ \\
+\midrule
+GCN \cite{kipf2017}            & $0.367 \pm 0.011^\dagger$ & $66.4 \pm 2.3$ & $74.1 \pm 0.7$ & $75.0 \pm 1.6$ & $71.8 \pm 3.0$ \\
+GIN \cite{xu2019}              & $0.252 \pm 0.014$ & $68.2 \pm 1.9$ & $74.6 \pm 0.6$ & $76.1 \pm 1.3$ & $73.4 \pm 2.8$ \\
+D-MPNN \cite{yang2019}         & --                & $71.0 \pm 2.1$ & $75.9 \pm 0.7$ & $77.4 \pm 1.1$ & $79.2 \pm 1.9$ \\
+GSN \cite{bouritsas2023}       & $0.101 \pm 0.010^\dagger$ & -- & -- & -- & -- \\
+CIN \cite{bodnar2021}          & $\mathbf{0.079 \pm 0.006}^\dagger$ & -- & -- & -- & -- \\
+\midrule
+RAMP + GIN (ours)              & $0.086 \pm 0.005$ & $71.9 \pm 1.8$ & $76.2 \pm 0.6$ & $78.3 \pm 1.0$ & $80.4 \pm 1.6$ \\
+RAMP + D-MPNN (ours)           & --                & $\mathbf{72.8 \pm 1.6}$ & $\mathbf{76.5 \pm 0.5}$ & $\mathbf{78.9 \pm 0.9}$ & $\mathbf{81.3 \pm 1.4}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Results.} \Cref{tab:results} shows that RAMP reduces ZINC error by 66\% relative to its GIN backbone and comes within 0.007 of CIN, while training about three times faster per epoch in our implementation. On MoleculeNet, RAMP improves D-MPNN on every task, by 1.8 (BBBP), 0.6 (Tox21), 1.5 (HIV) and 2.1 (BACE) points. The largest gain is on BACE, where active compounds share fused-ring scaffolds.
+
+\paragraph{Ablations.} On ZINC with the GIN backbone, removing the ring-to-atom message in \eqref{eq:atom-update} raises the error to $0.231 \pm 0.012$, nearly back to the baseline. Keeping ring messages but replacing $\rr_C^{(0)}$ with a constant vector gives $0.094 \pm 0.006$, so most of the benefit comes from the communication structure rather than from hand-crafted ring descriptors. Simply appending ring-size counts to atom features, without ring nodes, gives $0.168 \pm 0.009$.
+
+%======================================================================
+\section{Discussion and Outlook}
+%======================================================================
+
+RAMP shows that much of the benefit of higher-order GNNs on molecules can be obtained with a chemically motivated, inexpensive augmentation. Its expressivity is still bounded: it cannot distinguish all non-isomorphic graphs that share an SSSR profile, and the SSSR itself is not unique for some cage compounds. In the full paper we will characterize RAMP's power relative to the cellular WL hierarchy, extend the ring set to relevant cycles, and test whether ring nodes improve 3D-aware models on QM9 \cite{ramakrishnan2014}, where conformational rigidity matters.
+
+\small
+\bibliographystyle{unsrtnat}
+\bibliography{18-references}
+
+\end{document}

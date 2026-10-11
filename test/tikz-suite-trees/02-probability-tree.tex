@@ -1,0 +1,56 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\begin{document}
+
+% Probability tree for two draws without replacement
+\tikzstyle{level 1}=[level distance=3.5cm, sibling distance=3.5cm]
+\tikzstyle{level 2}=[level distance=3.5cm, sibling distance=2cm]
+\tikzstyle{bag} = [text width=4em, text centered]
+\tikzstyle{end} = [circle, minimum width=3pt, fill, inner sep=0pt]
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[grow=right, sloped]
+\node[bag] {Bag 1 $4W$, $3B$}
+    child {
+        node[bag] {Bag 2 $4W$, $4B$}
+            child {
+                node[end, label=right:{$P(W_1\cap W_2)=\frac{4}{7}\cdot\frac{4}{8}$}] {}
+                edge from parent
+                node[above] {$W$}
+                node[below] {$\frac{4}{8}$}
+            }
+            child {
+                node[end, label=right:{$P(W_1\cap B_2)=\frac{4}{7}\cdot\frac{4}{8}$}] {}
+                edge from parent
+                node[above] {$B$}
+                node[below] {$\frac{4}{8}$}
+            }
+            edge from parent
+            node[above] {$W$}
+            node[below] {$\frac{4}{7}$}
+    }
+    child {
+        node[bag] {Bag 2 $3W$, $5B$}
+        child {
+                node[end, label=right:{$P(B_1\cap W_2)=\frac{3}{7}\cdot\frac{3}{8}$}] {}
+                edge from parent
+                node[above] {$W$}
+                node[below] {$\frac{3}{8}$}
+            }
+            child {
+                node[end, label=right:{$P(B_1\cap B_2)=\frac{3}{7}\cdot\frac{5}{8}$}] {}
+                edge from parent
+                node[above] {$B$}
+                node[below] {$\frac{5}{8}$}
+            }
+        edge from parent
+            node[above] {$B$}
+            node[below] {$\frac{3}{7}$}
+    };
+\end{tikzpicture}
+\caption{Drawing two balls without replacement.}
+\end{figure}
+
+\end{document}

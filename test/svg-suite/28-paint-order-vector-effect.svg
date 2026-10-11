@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220">
+  <text x="20" y="90" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="64" fill="#fdcb6e" stroke="#2d3436" stroke-width="10" paint-order="stroke" stroke-linejoin="round">Outline</text>
+  <g transform="scale(4 1)"><rect x="5" y="130" width="40" height="60" fill="none" stroke="#d63031" stroke-width="3" vector-effect="non-scaling-stroke"/></g>
+  <circle cx="320" cy="160" r="40" fill="#74b9ff" stroke="#0984e3" stroke-width="8" stroke-dasharray="10 5" stroke-dashoffset="5"/>
+</svg>

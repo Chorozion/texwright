@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant A as Client
+    participant B as Load balancer
+    participant C as Server
+    A->>C: A rather long request description that crosses the load balancer lifeline
+    C-->>A: Short
+    A->>B: health check with a moderately long label
+    B->>B: self check with an even longer label to the right
+    B-->>A: OK
+    Note over A,C: A note spanning all three participants, with enough text to wrap onto a second line when it gets long
+    A-xC: Cancel
+    A->C: plain line, no head
+    A-->C: dotted line, no head

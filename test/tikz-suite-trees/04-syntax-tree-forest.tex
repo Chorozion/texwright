@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage{forest}
+\begin{document}
+
+\begin{figure}[h]
+\centering
+\begin{forest}
+  [S
+    [NP
+      [Det [The]]
+      [N [cat]]
+    ]
+    [VP
+      [V [sat]]
+      [PP
+        [P [on]]
+        [NP [Det [the]] [N [mat]]]
+      ]
+    ]
+  ]
+\end{forest}
+\caption{Constituency parse of ``The cat sat on the mat''.}
+\end{figure}
+
+\end{document}

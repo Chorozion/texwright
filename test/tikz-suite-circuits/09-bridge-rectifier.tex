@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage[american,siunitx]{circuitikz}
+\begin{document}
+
+\section{Full-Wave Bridge Rectifier}
+
+\begin{circuitikz}[scale=1]
+  % AC source
+  \draw (0,0) to[sinusoidal voltage source, l=$v_s$] (0,4);
+  \draw (0,4) -- (2,4);
+  \draw (0,0) -- (2,0);
+  % Diode bridge
+  \draw (2,4) to[D*, l=$D_1$] (4,6);
+  \draw (2,0) to[D*, l_=$D_2$] (4,-2);
+  \draw (4,-2) to[D*, l_=$D_3$] (6,2);
+  \draw (4,6) to[D*, l=$D_4$, invert] (6,2);
+  \draw (2,4) -- (2,0);
+  % Output with smoothing capacitor and load
+  \draw (4,6) -- (8,6) to[C, l=$C$] (8,-2) -- (4,-2);
+  \draw (8,6) -- (10,6) to[R, l=$R_L$, v^=$V_o$] (10,-2) -- (8,-2);
+\end{circuitikz}
+
+\end{document}

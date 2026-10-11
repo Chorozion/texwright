@@ -1,0 +1,230 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{physics}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{enumitem}
+\usepackage[colorlinks=true, linkcolor=blue]{hyperref}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+
+\newcommand{\Lag}{\mathcal{L}}
+
+\title{PHYS 3410 Classical Mechanics\\[2pt] \large Problem Set 5 Solutions: Lagrangian Mechanics}
+\author{}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\noindent Throughout, dots denote time derivatives, $\Lag = T - V$, and the Euler--Lagrange equation for each generalized coordinate $q$ is
+\begin{equation}
+  \dv{t}\qty(\pdv{\Lag}{\dot q}) - \pdv{\Lag}{q} = 0.
+  \label{eq:EL}
+\end{equation}
+The canonical momentum conjugate to $q$ is $p_q = \pdv*{\Lag}{\dot q}$. If $\Lag$ does not depend on $q$, then $q$ is \emph{cyclic} and $p_q$ is conserved.
+
+% ==============================================================
+\begin{problem}[Pendulum hanging from a sliding cart]\label{prob:cart}
+A cart of mass $M$ slides without friction on a horizontal track. A simple pendulum of length $\ell$ and bob mass $m$ hangs from a pivot on the cart (Figure~\ref{fig:cart}). Using the cart position $x$ and the pendulum angle $\theta$ as generalized coordinates, (a) find the Lagrangian, (b) derive the equations of motion, (c) identify a conserved quantity, and (d) find the frequency of small oscillations.
+\end{problem}
+
+\begin{figure}[ht]
+  \centering
+  \includesvg[width=0.5\textwidth]{14-pendulum-cart}
+  \caption{Cart of mass $M$ on a frictionless track with a pendulum of length $\ell$ and bob mass $m$.}
+  \label{fig:cart}
+\end{figure}
+
+\paragraph{(a) Lagrangian.} With the pivot at $(x, 0)$ and $y$ pointing up, the bob is at
+\[
+  \vb{r}_m = (x + \ell\sin\theta,\; -\ell\cos\theta),
+  \qquad
+  \dot{\vb{r}}_m = (\dot x + \ell\dot\theta\cos\theta,\; \ell\dot\theta\sin\theta).
+\]
+The kinetic energy is
+\begin{align}
+  T &= \tfrac12 M\dot x^2 + \tfrac12 m\qty[(\dot x + \ell\dot\theta\cos\theta)^2 + \ell^2\dot\theta^2\sin^2\theta] \notag \\
+    &= \tfrac12 (M + m)\dot x^2 + m\ell\,\dot x\dot\theta\cos\theta + \tfrac12 m\ell^2\dot\theta^2,
+\end{align}
+and the potential energy is $V = -mg\ell\cos\theta$. Therefore
+\begin{equation}
+  \Lag = \tfrac12 (M + m)\dot x^2 + m\ell\,\dot x\dot\theta\cos\theta + \tfrac12 m\ell^2\dot\theta^2 + mg\ell\cos\theta.
+  \label{eq:cart-L}
+\end{equation}
+
+\paragraph{(b) Equations of motion.} For $x$:
+\[
+  \pdv{\Lag}{\dot x} = (M + m)\dot x + m\ell\dot\theta\cos\theta, \qquad \pdv{\Lag}{x} = 0,
+\]
+so
+\begin{equation}
+  (M + m)\ddot x + m\ell\qty(\ddot\theta\cos\theta - \dot\theta^2\sin\theta) = 0.
+  \label{eq:cart-x}
+\end{equation}
+For $\theta$:
+\[
+  \pdv{\Lag}{\dot\theta} = m\ell\dot x\cos\theta + m\ell^2\dot\theta, \qquad
+  \pdv{\Lag}{\theta} = -m\ell\dot x\dot\theta\sin\theta - mg\ell\sin\theta.
+\]
+Taking the time derivative of the first expression, the $\dot x\dot\theta\sin\theta$ terms cancel, leaving
+\begin{equation}
+  \ell\ddot\theta + \ddot x\cos\theta + g\sin\theta = 0.
+  \label{eq:cart-theta}
+\end{equation}
+
+\paragraph{(c) Conserved quantity.} The coordinate $x$ is cyclic, so the horizontal momentum of the whole system is conserved:
+\[
+  p_x = (M + m)\dot x + m\ell\dot\theta\cos\theta = \text{const}.
+\]
+This is expected, since no external horizontal force acts on the system. Because $\Lag$ has no explicit time dependence and $T$ is quadratic in the velocities, the energy $E = T + V$ is also conserved.
+
+\paragraph{(d) Small oscillations.} For $\abs{\theta} \ll 1$, keep terms to first order in $\theta$ and $\dot\theta$. Equation~\eqref{eq:cart-x} becomes $(M + m)\ddot x = -m\ell\ddot\theta$, and substituting into \eqref{eq:cart-theta} with $\cos\theta \approx 1$, $\sin\theta \approx \theta$ gives
+\[
+  \ell\ddot\theta - \frac{m\ell}{M + m}\ddot\theta + g\theta = 0
+  \quad\Longrightarrow\quad
+  \ddot\theta + \frac{(M + m)\,g}{M\ell}\,\theta = 0.
+\]
+The small-oscillation frequency is
+\begin{equation}
+  \boxed{\omega = \sqrt{\frac{g}{\ell}\qty(1 + \frac{m}{M})}}
+\end{equation}
+\emph{Checks:} as $M \to \infty$ the cart is fixed and $\omega \to \sqrt{g/\ell}$, the ordinary pendulum. For a light cart, $\omega$ grows because the cart recoils and the bob swings about the system's center of mass, which is closer to it than the pivot is.
+
+% ==============================================================
+\begin{problem}[Bead on a rotating hoop]\label{prob:hoop}
+A bead of mass $m$ slides without friction on a circular hoop of radius $R$. The hoop rotates about its vertical diameter at constant angular velocity $\omega$. Let $\theta$ be the angle of the bead from the bottom of the hoop. Find the equation of motion, the equilibrium positions and their stability.
+\end{problem}
+
+\paragraph{Lagrangian.} In Cartesian coordinates the bead is at $\vb{r} = (R\sin\theta\cos\omega t,\, R\sin\theta\sin\omega t,\, -R\cos\theta)$. Its velocity has a component $R\dot\theta$ along the hoop and a component $R\omega\sin\theta$ perpendicular to the plane of the hoop, so
+\[
+  T = \tfrac12 mR^2\qty(\dot\theta^2 + \omega^2\sin^2\theta), \qquad V = -mgR\cos\theta,
+\]
+\begin{equation}
+  \Lag = \tfrac12 mR^2\qty(\dot\theta^2 + \omega^2\sin^2\theta) + mgR\cos\theta.
+\end{equation}
+
+\paragraph{Equation of motion.} Applying \eqref{eq:EL},
+\[
+  mR^2\ddot\theta - mR^2\omega^2\sin\theta\cos\theta + mgR\sin\theta = 0,
+\]
+or
+\begin{equation}
+  \ddot\theta = \sin\theta\qty(\omega^2\cos\theta - \frac{g}{R}).
+  \label{eq:hoop-eom}
+\end{equation}
+
+\paragraph{Equilibria.} Setting $\ddot\theta = 0$ with $\dot\theta = 0$: either $\sin\theta = 0$, giving $\theta = 0$ (bottom) and $\theta = \pi$ (top), or
+\[
+  \cos\theta_0 = \frac{g}{R\omega^2},
+\]
+which has a solution only if $\omega^2 > g/R$. Define the critical frequency $\omega_c = \sqrt{g/R}$.
+
+\paragraph{Stability.} Write $\theta = \theta_* + \eta$ and linearize \eqref{eq:hoop-eom} as $\ddot\eta = f'(\theta_*)\,\eta$, where $f(\theta)$ is its right-hand side. Then
+\[
+  f'(\theta) = \cos\theta\qty(\omega^2\cos\theta - \frac{g}{R}) - \omega^2\sin^2\theta.
+\]
+\begin{itemize}[nosep]
+  \item At $\theta = 0$: $f'(0) = \omega^2 - \omega_c^2$. The bottom is stable for $\omega < \omega_c$, with oscillation frequency $\sqrt{\omega_c^2 - \omega^2}$, and unstable for $\omega > \omega_c$.
+  \item At $\theta = \pi$: $f'(\pi) = \omega^2 + \omega_c^2 > 0$. The top is always unstable.
+  \item At $\theta_0$ (when it exists): the first term vanishes, so $f'(\theta_0) = -\omega^2\sin^2\theta_0 < 0$. These off-axis points are stable, with oscillation frequency
+  \[
+    \Omega = \omega\sin\theta_0 = \omega\sqrt{1 - \qty(\frac{\omega_c}{\omega})^4}.
+  \]
+\end{itemize}
+As $\omega$ increases through $\omega_c$, the stable equilibrium at the bottom splits into two symmetric stable equilibria at $\pm\theta_0$: a pitchfork bifurcation.
+
+\paragraph{A conserved quantity that is not the energy.} $\Lag$ has no explicit time dependence, so the Jacobi integral
+\[
+  h = \dot\theta\pdv{\Lag}{\dot\theta} - \Lag = \tfrac12 mR^2\dot\theta^2 - \tfrac12 mR^2\omega^2\sin^2\theta - mgR\cos\theta
+\]
+is conserved. It is \emph{not} the total energy $T + V$, which differs in the sign of the $\omega^2$ term. The energy is not conserved because the motor driving the hoop does work on the bead.
+
+% ==============================================================
+\begin{problem}[Central force and Kepler orbits]\label{prob:kepler}
+A particle of mass $m$ moves in a plane under the attractive potential $V(r) = -k/r$ with $k > 0$. Using polar coordinates $(r, \phi)$: (a) find the conserved quantities, (b) reduce the problem to a one-dimensional effective potential, (c) find the radius of a circular orbit with angular momentum $L$, and (d) show that the frequency of small radial oscillations about that orbit equals the orbital angular frequency. Explain why this means bound orbits close.
+\end{problem}
+
+\paragraph{(a)} The Lagrangian is
+\begin{equation}
+  \Lag = \tfrac12 m\qty(\dot r^2 + r^2\dot\phi^2) + \frac{k}{r}.
+\end{equation}
+Since $\phi$ is cyclic, the angular momentum $L = p_\phi = mr^2\dot\phi$ is conserved. Since $\Lag$ has no explicit time dependence, the energy
+\[
+  E = \tfrac12 m\qty(\dot r^2 + r^2\dot\phi^2) - \frac{k}{r}
+\]
+is conserved too.
+
+\paragraph{(b)} The radial Euler--Lagrange equation is $m\ddot r - mr\dot\phi^2 + k/r^2 = 0$. Eliminating $\dot\phi = L/(mr^2)$,
+\begin{equation}
+  m\ddot r = \frac{L^2}{mr^3} - \frac{k}{r^2} = -\dv{U_{\text{eff}}}{r},
+  \qquad
+  U_{\text{eff}}(r) = \frac{L^2}{2mr^2} - \frac{k}{r}.
+\end{equation}
+The radial motion is that of a particle in one dimension with energy $E = \tfrac12 m\dot r^2 + U_{\text{eff}}(r)$. The first term of $U_{\text{eff}}$ is the centrifugal barrier.
+
+\paragraph{(c)} A circular orbit sits at the minimum of $U_{\text{eff}}$:
+\[
+  U_{\text{eff}}'(r_0) = -\frac{L^2}{mr_0^3} + \frac{k}{r_0^2} = 0
+  \quad\Longrightarrow\quad
+  r_0 = \frac{L^2}{mk}.
+\]
+
+\paragraph{(d)} The radial oscillation frequency satisfies $m\omega_r^2 = U_{\text{eff}}''(r_0)$. Using $L^2 = mkr_0$,
+\[
+  U_{\text{eff}}''(r_0) = \frac{3L^2}{mr_0^4} - \frac{2k}{r_0^3} = \frac{3k}{r_0^3} - \frac{2k}{r_0^3} = \frac{k}{r_0^3},
+  \qquad\text{so}\qquad
+  \omega_r^2 = \frac{k}{mr_0^3}.
+\]
+The orbital angular frequency is
+\[
+  \dot\phi^2 = \frac{L^2}{m^2r_0^4} = \frac{mkr_0}{m^2r_0^4} = \frac{k}{mr_0^3}.
+\]
+So $\omega_r = \dot\phi$: the particle completes exactly one radial oscillation per revolution, and a slightly perturbed circular orbit returns to the same perihelion after each turn. This is a special property of the $1/r$ potential. For a general power law $V \propto r^n$, the same calculation gives $\omega_r/\dot\phi = \sqrt{n + 2}$, and near-circular orbits close only for $n = -1$ and $n = 2$ (Bertrand's theorem).
+
+% ==============================================================
+\begin{problem}[Coupled pendulums]\label{prob:coupled}
+Two identical pendulums of length $\ell$ and mass $m$ hang side by side. Their bobs are connected by a light spring of constant $k$, which is unstretched when both pendulums hang vertically. Find the normal modes and frequencies for small oscillations, and describe the motion if one pendulum is displaced by $\theta_0$ and released while the other is at rest.
+\end{problem}
+
+\paragraph{Lagrangian.} For small angles, the horizontal displacement of each bob is $\ell\theta_i$, and the spring stretches by $\ell(\theta_2 - \theta_1)$. Expanding $\cos\theta_i \approx 1 - \theta_i^2/2$ and dropping constants,
+\begin{equation}
+  \Lag = \tfrac12 m\ell^2\qty(\dot\theta_1^2 + \dot\theta_2^2) - \tfrac12 mg\ell\qty(\theta_1^2 + \theta_2^2) - \tfrac12 k\ell^2(\theta_1 - \theta_2)^2.
+\end{equation}
+The equations of motion are
+\begin{align}
+  m\ell^2\ddot\theta_1 &= -mg\ell\,\theta_1 - k\ell^2(\theta_1 - \theta_2), \\
+  m\ell^2\ddot\theta_2 &= -mg\ell\,\theta_2 + k\ell^2(\theta_1 - \theta_2).
+\end{align}
+
+\paragraph{Normal modes.} In matrix form, $\mathsf{M}\ddot{\boldsymbol\theta} = -\mathsf{K}\boldsymbol\theta$ with
+\[
+  \mathsf{M} = m\ell^2\mqty(\imat{2}), \qquad
+  \mathsf{K} = \mqty(mg\ell + k\ell^2 & -k\ell^2 \\ -k\ell^2 & mg\ell + k\ell^2).
+\]
+Trying $\boldsymbol\theta = \vb{a}\,e^{i\omega t}$ gives $(\mathsf{K} - \omega^2\mathsf{M})\vb{a} = 0$, which has nontrivial solutions when
+\[
+  \det(\mathsf{K} - \omega^2\mathsf{M}) = \qty(mg\ell + k\ell^2 - m\ell^2\omega^2)^2 - (k\ell^2)^2 = 0.
+\]
+Hence $mg\ell + k\ell^2 - m\ell^2\omega^2 = \pm k\ell^2$, and the two normal modes are
+\begin{align}
+  \omega_1^2 &= \frac{g}{\ell}, & \vb{a}_1 &= \mqty(1 \\ 1) \quad \text{(in phase; the spring never stretches)}, \\
+  \omega_2^2 &= \frac{g}{\ell} + \frac{2k}{m}, & \vb{a}_2 &= \mqty(1 \\ -1) \quad \text{(out of phase)}.
+\end{align}
+
+\paragraph{Beats.} With initial conditions $\theta_1(0) = \theta_0$, $\theta_2(0) = 0$ and both velocities zero, the solution is an equal mix of the two modes:
+\[
+  \theta_1(t) = \frac{\theta_0}{2}\qty(\cos\omega_1 t + \cos\omega_2 t), \qquad
+  \theta_2(t) = \frac{\theta_0}{2}\qty(\cos\omega_1 t - \cos\omega_2 t).
+\]
+Using sum-to-product identities with $\bar\omega = \tfrac12(\omega_1 + \omega_2)$ and $\Delta = \tfrac12(\omega_2 - \omega_1)$,
+\[
+  \theta_1(t) = \theta_0\cos(\Delta t)\cos(\bar\omega t), \qquad
+  \theta_2(t) = \theta_0\sin(\Delta t)\sin(\bar\omega t).
+\]
+For a weak spring ($k \ll mg/\ell$), $\Delta \ll \bar\omega$: each pendulum oscillates rapidly at $\bar\omega$ inside a slowly varying envelope, and the energy passes completely from the first pendulum to the second and back with period $\pi/\Delta$.
+
+\end{document}

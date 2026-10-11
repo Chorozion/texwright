@@ -1,0 +1,37 @@
+\documentclass[preprint,12pt]{elsarticle}
+\usepackage{amssymb}
+\usepackage{lineno}
+\usepackage{authblk}
+\journal{Journal of Computational Physics}
+
+\begin{document}
+\begin{frontmatter}
+\title{A High-Order Scheme for Hyperbolic Conservation Laws}
+
+\author[inst1]{Hiro Tanaka\corref{cor1}}
+\ead{tanaka@example.jp}
+\cortext[cor1]{Corresponding author}
+\affiliation[inst1]{organization={Department of Mathematics, Example University},
+            city={Kyoto},
+            country={Japan}}
+\author[inst2]{Sofia Rossi}
+\address[inst2]{Politecnico di Esempio, Milan, Italy}
+
+\begin{abstract}
+We present a fifth-order WENO scheme.
+\end{abstract}
+
+\begin{keyword}
+WENO \sep conservation laws \sep finite volume
+\MSC[2010] 65M08
+\end{keyword}
+\end{frontmatter}
+
+\linenumbers
+\section{Introduction}
+\label{sec:intro}
+Hyperbolic systems $u_t + f(u)_x = 0$ arise in gas dynamics.
+
+\section*{Acknowledgements}
+Funded by JSPS.
+\end{document}

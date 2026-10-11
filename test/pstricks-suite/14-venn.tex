@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage{pstricks}
+\begin{document}
+\begin{center}
+\begin{pspicture}(-3,-2.6)(4,2.5)
+  \psframe(-2.8,-2.4)(3.8,2.3)
+  \rput[tl](-2.6,2.1){$U$}
+  \pscircle[fillstyle=solid,fillcolor=red,opacity=0.3](0,0){1.5}
+  \pscircle[fillstyle=solid,fillcolor=blue,opacity=0.3](1.5,0){1.5}
+  \psclip{\pscircle[linestyle=none](0,0){1.5}}
+    \pscircle[fillstyle=vlines,hatchcolor=purple,linestyle=none](1.5,0){1.5}
+  \endpsclip
+  \pscircle(0,0){1.5}
+  \pscircle(1.5,0){1.5}
+  \rput(-0.6,0){$A$}
+  \rput(2.1,0){$B$}
+  \rput*(0.75,-1.9){$A \cap B$}
+  \psline{->}(0.75,-1.65)(0.75,-0.3)
+\end{pspicture}
+\end{center}
+\end{document}

@@ -1,0 +1,12 @@
+erDiagram
+    p[Person] {
+        string firstName
+        string lastName
+    }
+    a["Customer Account"] {
+        string email PK
+    }
+    p ||--o| a : has
+    CAR 1 to zero or more NAMED-DRIVER : allows
+    PERSON only one to zero or more NAMED-DRIVER : is
+    p }|..|| CAR : "co-owns"

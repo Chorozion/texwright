@@ -1,0 +1,98 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{mathrsfs,dsfont,bbm}
+\usepackage{cancel}
+\usepackage{xcolor}
+\usepackage{esint}
+\usepackage{units}
+
+\begin{document}
+\section{Assorted math}
+
+Fractions: $\dfrac{a}{b}$, $\tfrac{1}{2}$, $\cfrac{1}{1 + \cfrac{1}{2}}$, $\binom{n}{k}$, $\dbinom{n}{k}$, $\tbinom{n}{k}$, $\sfrac{3}{4}$, $\nicefrac{1}{2}$, $\unitfrac{m}{s}$, \unit[5]{kg}.
+
+Modular: $a \equiv b \pmod{n}$, $a \bmod b$, $a \pod{m}$.
+
+Fonts: $\mathbb{R}$, $\mathcal{L}$, $\mathfrak{g}$, $\mathscr{F}$, $\mathds{1}$, $\mathbbm{1}$, $\mathrm{d}x$, $\mathsf{T}$, $\mathtt{x}$, $\boldsymbol{\alpha}$, $\pmb{x}$.
+
+Delimiters: $\left. \frac{df}{dx} \right|_{x=0}$, $\big\langle u, v \big\rangle$, $\lVert x \rVert$, $\Bigl( \sum_i x_i \Bigr)$, $\left\lfloor x \right\rfloor$.
+
+Accents: $\overline{z}$, $\widehat{xy}$, $\widetilde{abc}$, $\vec{v}$, $\dot{x}$, $\ddot{x}$, $\hat{\theta}$, $\bar{x}$, $\check{c}$, $\breve{a}$, $\mathring{A}$, $\overrightarrow{AB}$, $\underline{u}$.
+
+Relations: $a \ne b$, $a \neq b$, $\not\in$, $x \mapsto y$, $A \implies B$, $A \iff B$, $\therefore$, $\because$, $\approx$, $\sim$, $\simeq$, $\cong$, $\propto$, $\perp$, $\parallel$, $\subseteq$, $\supsetneq$, $\vdash$, $\models$.
+
+Arrows: $\xleftarrow{a}$, $\xrightarrow[below]{above}$, $\hookrightarrow$, $\twoheadrightarrow$, $\rightleftharpoons$, $\longmapsto$, $\Longrightarrow$.
+
+Stacking: $\overset{\text{def}}{=}$, $\underset{x \to 0}{\lim}$, $\stackrel{?}{=}$, $\sum\limits_{i=1}^n$, $\sum_{\substack{i < j \\ i \ne k}}$, $\overbrace{a + b}^{\text{sum}}$, $\underbrace{x + \dots + x}_{n \text{ times}}$.
+
+Boxes and phantoms: $\boxed{E = mc^2}$, $x \phantom{+ y} z$, $\hphantom{abc}$, $\vphantom{\int}$.
+
+Colour: ${\color{red} x} + \textcolor{blue}{y}$.
+
+Cancel: $\cancel{x}$, $\bcancel{y}$, $\xcancel{z}$, $\cancelto{0}{\Delta}$.
+
+Operators: $\operatorname*{arg\,max}_{\theta} L(\theta)$, $\lim_{n\to\infty}$, $\limsup$, $\max\nolimits_i$, $\det$, $\gcd$.
+
+Integrals: $\int$, $\iint$, $\iiint$, $\oint$, $\oiint$, $\idotsint$.
+
+Dots: $\cdots$, $\ldots$, $\vdots$, $\ddots$, $\dotsc$, $\dotsb$.
+
+Misc: $\checkmark$, $\varnothing$, $\emptyset$, $\infty$, $\aleph_0$, $\hbar$, $\ell$, $\Re$, $\Im$, $\wp$, $\nabla$, $\partial$, $\dagger$, $\star$, $\square$, $\blacksquare$, $\lozenge$, $\top$, $\bot$, $\angle$, $\measuredangle$, $\degree$, $45^\circ$.
+
+\begin{align}
+  f(x) &= \smash{\underbrace{(x+1)^2}_{\text{square}}} \\
+  \intertext{which expands to}
+  &= x^2 + 2x + 1 \tag{$\ast$} \label{eq:star}
+\end{align}
+
+\begin{equation}
+\begin{aligned}
+  a &= b \\ c &= d
+\end{aligned}
+\qquad
+\begin{gathered}
+  x = 1 \\ y = 2
+\end{gathered}
+\qquad
+\begin{alignedat}{2}
+  x &= 1 &\quad y &= 2
+\end{alignedat}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+  (a+b)^2 &= a^2 + 2ab + b^2 \\
+          &\geq 4ab
+\end{split}
+\end{equation}
+
+\begin{equation}
+  A = \left[\begin{array}{cc|c}
+    1 & 2 & 3 \\
+    \hline
+    4 & 5 & 6
+  \end{array}\right], \quad
+  \bigl(\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}\bigr), \quad
+  \begin{vmatrix} a & b \\ c & d \end{vmatrix}, \quad
+  \begin{Vmatrix} x \end{Vmatrix}, \quad
+  \begin{Bmatrix} 1 \end{Bmatrix}
+\end{equation}
+
+\begin{multline}
+  p(x) = 3x^6 + 14x^5y + 590x^4y^2 + 19x^3y^3 \\
+  - 12x^2y^4 - 12xy^5 + 2y^6 - a^3b^3
+\end{multline}
+
+\begin{gather*}
+  \mathcal{F}\{f\}(\xi) = \int_{-\infty}^{\infty} f(x) e^{-2\pi i x \xi}\, dx
+\end{gather*}
+
+\begin{flalign*}
+  &x = 1 & &y = 2&
+\end{flalign*}
+
+\begin{eqnarray}
+  a & = & b \\
+  c & = & d \nonumber
+\end{eqnarray}
+\end{document}

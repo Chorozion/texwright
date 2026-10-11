@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[margin=1in]{geometry}
+\usepackage{xfrac}
+\usepackage{nicefrac}
+\usepackage{cancel}
+\usepackage{stmaryrd}
+\usepackage{esint}
+\pagestyle{fancy}
+\lhead{MATH 241 -- Homework 3}
+\rhead{Due: \today}
+\cfoot{Page \thepage\ of \pageref{LastPage}}
+
+\newenvironment{problem}[1]{\noindent\textbf{Problem #1.}\ }{\par\medskip}
+\newenvironment{solution}{\noindent\textit{Solution.}\ }{\hfill$\blacksquare$\par\bigskip}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\begin{document}
+\begin{problem}{1}
+Evaluate the following.
+\begin{enumerate}[label=(\alph*)]
+  \item $\displaystyle\int_0^1 x^2\,dx$
+  \item $\displaystyle\oint_C \vec{F}\cdot d\vec{r}$ and $\iint_D f\,dA$ and $\oiint_S \vec{F}\cdot d\vec{S}$
+\end{enumerate}
+\end{problem}
+
+\begin{solution}
+\begin{enumerate}[label=(\alph*), noitemsep]
+  \item $\frac{1}{3}$, also written $\sfrac{1}{3}$ or $\nicefrac{1}{3}$.
+  \item By Green's theorem, $\oint_C = \iint_D (\partial_x Q - \partial_y P)\,dA$.
+\end{enumerate}
+\end{solution}
+
+\begin{problem}{2}
+Simplify $\frac{\cancel{3}x}{\cancel{3}y}$, $\bcancel{a+b}$, $\xcancel{c}$ and $\cancelto{0}{x - x}$.
+\end{problem}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, start=3]
+  \item First.
+  \item Second.
+\end{enumerate}
+Interlude text.
+\begin{enumerate}[resume]
+  \item Third, continued numbering.
+\end{enumerate}
+
+\begin{itemize}[label=$\triangleright$]
+  \item Arrow bullets.
+  \item[$\star$] Custom item.
+\end{itemize}
+
+\begin{enumerate}[label=\roman*)]
+\item Roman one.
+\item Roman two.
+\end{enumerate}
+
+\begin{proof}
+Trivial. Note $\llbracket x \rrbracket$ is the Iverson bracket.
+\end{proof}
+
+\begin{description}[style=nextline]
+\item[Lemma] A helping result.
+\item[Corollary] A consequence.
+\end{description}
+\end{document}

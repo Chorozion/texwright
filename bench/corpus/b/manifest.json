@@ -1,0 +1,142 @@
+[
+  {
+    "file": "01-tsp-heuristic.tex",
+    "kind": "research paper",
+    "format": "latex",
+    "request": "Write me a research paper about a new heuristic for the traveling salesman problem, with the algorithm, a theorem and an experiments table, I'll turn it into a PDF",
+    "assets": ["01-references.bib", "01-regret-illustration.svg"]
+  },
+  {
+    "file": "02-urban-heat-islands.md",
+    "kind": "thesis chapter",
+    "format": "markdown",
+    "request": "Write me a thesis chapter about urban heat islands (the literature review, with lots of citations), I'll turn it into a PDF",
+    "assets": ["02-references.bib", "02-uhi-profile.svg"]
+  },
+  {
+    "file": "03-real-analysis-homework.md",
+    "kind": "homework solutions",
+    "format": "markdown",
+    "request": "Write me homework solutions about real analysis, epsilon-delta proofs and sequences, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "04-fourier-series-lecture-notes.md",
+    "kind": "lecture notes",
+    "format": "markdown",
+    "request": "Write me lecture notes about Fourier series and transforms, I'll turn it into a PDF",
+    "assets": ["04-square-wave-partial-sums.svg"]
+  },
+  {
+    "file": "05-microservices-migration-design.md",
+    "kind": "technical design doc",
+    "format": "markdown",
+    "request": "Write me a technical design doc about migrating a monolith to microservices, with diagrams, I'll turn it into a PDF",
+    "assets": ["05-current-architecture.svg", "05-target-architecture.svg", "05-strangler-migration.svg"]
+  },
+  {
+    "file": "06-nurse-practitioner-cv.tex",
+    "kind": "résumé / CV (one page)",
+    "format": "latex",
+    "request": "Write me a one-page résumé for a nurse practitioner, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "07-contract-termination-letter.tex",
+    "kind": "formal business letter",
+    "format": "latex",
+    "request": "Write me a formal business letter giving notice of contract termination, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "08-enzyme-kinetics-lab-report.md",
+    "kind": "lab report",
+    "format": "markdown",
+    "request": "Write me a lab report about enzyme kinetics with a Michaelis-Menten fit and proper units, I'll turn it into a PDF",
+    "assets": ["08-references.bib", "08-michaelis-menten-fit.svg"]
+  },
+  {
+    "file": "09-early-literacy-grant-summary.md",
+    "kind": "grant proposal summary",
+    "format": "markdown",
+    "request": "Write me a grant proposal summary about an early literacy program, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "10-rust-ownership-tutorial.md",
+    "kind": "tutorial",
+    "format": "markdown",
+    "request": "Write me a tutorial about getting started with Rust ownership, with code, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "11-quantum-mechanics-problem-set.tex",
+    "kind": "problem set",
+    "format": "latex",
+    "request": "Write me a problem set about quantum mechanics, with bra-ket notation and operators, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "12-compound-interest-explainer.md",
+    "kind": "explainer",
+    "format": "markdown",
+    "request": "Write me an explainer about how compound interest works, with money examples in the text and tables, I'll turn it into a PDF",
+    "assets": ["12-growth-chart.svg"]
+  },
+  {
+    "file": "13-beam-deflection-calculation.md",
+    "kind": "engineering calculation sheet",
+    "format": "markdown",
+    "request": "Write me an engineering calculation sheet about beam deflection, with units, I'll turn it into a PDF",
+    "assets": ["13-beam-loading.svg"]
+  },
+  {
+    "file": "14-course-syllabus.md",
+    "kind": "course syllabus",
+    "format": "markdown",
+    "request": "Write me a course syllabus for an introductory data science course, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "15-organic-reactions-study-guide.md",
+    "kind": "study guide",
+    "format": "markdown",
+    "request": "Write me a study guide about organic chemistry reactions, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "16-churn-model-evaluation.md",
+    "kind": "data science report",
+    "format": "markdown",
+    "request": "Write me a data science report about evaluating a customer churn model, with a confusion matrix and ROC metrics, I'll turn it into a PDF",
+    "assets": ["16-roc-curve.svg"]
+  },
+  {
+    "file": "17-municipal-broadband-policy-brief.md",
+    "kind": "policy brief",
+    "format": "markdown",
+    "request": "Write me a policy brief about municipal broadband, with footnotes and sources, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "18-gnn-molecules-extended-abstract.tex",
+    "kind": "conference abstract plus extended abstract",
+    "format": "latex",
+    "request": "Write me a conference abstract plus extended abstract about graph neural networks for molecules, I'll turn it into a PDF",
+    "assets": ["18-references.bib", "18-ramp-architecture.svg"]
+  },
+  {
+    "file": "19-habit-tracker-prd.md",
+    "kind": "product requirements doc",
+    "format": "markdown",
+    "request": "Write me a product requirements doc about a habit-tracking app, with tables and checklists, I'll turn it into a PDF",
+    "assets": []
+  },
+  {
+    "file": "20-classic-proofs.tex",
+    "kind": "proof write-up",
+    "format": "latex",
+    "request": "Write me a proof write-up about the irrationality of sqrt(2) and e and the infinitude of primes, with lemmas, I'll turn it into a PDF",
+    "assets": ["20-references.bib"]
+  }
+]

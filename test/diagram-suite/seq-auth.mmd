@@ -1,0 +1,21 @@
+sequenceDiagram
+    title OAuth login
+    actor U as User
+    participant B as Browser
+    participant API as Auth API
+    participant DB as "User store"
+    U->>B: Enter email and password
+    B->>+API: POST /login
+    API->>+DB: Find user by email
+    DB-->>-API: User record
+    alt Password matches
+        API->>API: Sign JWT
+        API-->>B: 200 OK + token
+        B-->>U: Show dashboard
+    else Wrong password
+        API-->>B: 401 Unauthorized
+        B-->>U: Show error
+    else Account locked
+        API--xB: 423 Locked
+    end
+    deactivate API

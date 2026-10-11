@@ -1,0 +1,56 @@
+/* @extends article */
+/* @fonts none */
+/* texwright theme: modern. Sans-serif, left-aligned, block paragraphs, an accent colour. */
+
+:root {
+  --tw-ink: #1d232a;
+  --tw-muted: #56606b;
+  --tw-rule: #2a3440;
+  --tw-light-rule: #d3d9df;
+  --tw-link: #0b57d0;
+  --tw-accent: #1f3a5f;
+  --tw-code-bg: #f4f6f8;
+}
+
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+}
+p { text-align: left; hyphens: manual; margin: 0 0 0.7em; }
+p + p { text-indent: 0; }
+
+.tw-titleblock { text-align: left; border-bottom: 2px solid var(--tw-accent); padding-bottom: 0.9em; }
+.tw-title { font-size: 24pt; font-weight: 650; color: var(--tw-accent); margin-bottom: 0.3em; }
+.tw-subtitle { text-align: left; color: var(--tw-muted); margin: 0 0 0.6em; }
+.tw-authors { justify-content: flex-start; font-size: 11pt; color: var(--tw-muted); }
+.tw-author { text-align: left; }
+p.tw-affiliation { text-align: left; }
+.tw-date { text-align: left; font-size: 10.5pt; color: var(--tw-muted); }
+.tw-abstract { margin: 0 0 1.8em; font-size: 10pt; background: #f6f8fa; padding: 0.8em 1em; border-radius: 6px; }
+.tw-abstract-title { text-align: left; font-size: 10.5pt; color: var(--tw-accent); }
+
+.tw-heading { color: var(--tw-accent); font-weight: 650; }
+h2.tw-heading { font-size: 16pt; padding-bottom: 0.2em; border-bottom: 1px solid var(--tw-light-rule); }
+h3.tw-heading { font-size: 12.5pt; }
+.tw-secnum { color: var(--tw-muted); margin-right: 0.35em; font-weight: 500; }
+
+math { font-family: "STIX Two Math", "Cambria Math", "Latin Modern Math", math; font-size: 1.1em; }
+figcaption { color: var(--tw-muted); }
+.tw-caption-label { font-weight: 600; color: var(--tw-ink); }
+
+table { border: 0; font-size: 9.5pt; width: auto; }
+th, td { border-bottom: 1px solid var(--tw-light-rule); padding: 0.35em 0.8em; }
+thead tr:last-child th { border-bottom: 1.5px solid var(--tw-rule); background: #f6f8fa; }
+
+pre.tw-code { border-left: 0; border-radius: 6px; font-size: 8.8pt; }
+code, kbd, pre { font-family: "Cascadia Mono", Consolas, "SFMono-Regular", Menlo, monospace; }
+:not(pre) > code { background: var(--tw-code-bg); padding: 0.05em 0.3em; border-radius: 4px; font-size: 0.88em; }
+
+.tw-thm-head { color: var(--tw-accent); }
+.tw-theorem { border-left: 3px solid var(--tw-light-rule); padding-left: 0.9em; }
+.tw-callout { border-radius: 6px; }
+.tw-toc-title { color: var(--tw-accent); }
+.tw-plain-head th { font-weight: normal; }
+td[rowspan], th[rowspan] { vertical-align: middle; }
+tr.tw-rule-above > td { border-top: 0.4pt solid var(--tw-rule, #000); }

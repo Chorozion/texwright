@@ -1,0 +1,13 @@
+gantt
+    title Release day
+    dateFormat HH:mm
+    axisFormat %H:%M
+    section Freeze
+        Code freeze      :milestone, freeze, 08:00, 0m
+        Final build      :build, 08:00, 45m
+    section Verify
+        Smoke tests      :crit, smoke, after build, 1h
+        Staging soak     :soak, after smoke, 2h
+    section Ship
+        Rollout 10%      :r10, after soak, 30m
+        Rollout 100%     :crit, r100, after r10, 1h

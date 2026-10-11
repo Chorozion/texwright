@@ -1,0 +1,109 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+\usepackage{microtype}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\inner}[2]{\left\langle #1, #2 \right\rangle}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\title{Convex Optimization Notes\thanks{Draft version.}}
+\author{A. Student}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We collect standard facts about convex functions and gradient descent.
+\end{abstract}
+
+\section{Preliminaries}\label{sec:prelim}
+
+\begin{definition}[Convexity]\label{def:convex}
+A function $f\colon \R^n \to \R$ is \emph{convex} if for all $\bm{x}, \bm{y}$ and $\lambda \in [0,1]$,
+\[
+  f(\lambda \bm{x} + (1-\lambda)\bm{y}) \le \lambda f(\bm{x}) + (1-\lambda) f(\bm{y}).
+\]
+\end{definition}
+
+Let $L \coloneqq \sup_{x} \norm{\nabla^2 f(x)}$ and define $x^\star \coloneqq \argmin_{x \in \R^n} f(x)$.
+We write $\abs*{x}$ for the absolute value and $\ceil{x}$ for the ceiling.
+
+\begin{lemma}\label{lem:descent}
+If $f$ is $L$-smooth then
+\begin{equation}\label{eq:descent}
+  f(y) \le f(x) + \inner{\nabla f(x)}{y - x} + \frac{L}{2}\norm{y - x}^2 .
+\end{equation}
+\end{lemma}
+
+\begin{proof}[Proof of \cref{lem:descent}]
+By Taylor's theorem,
+\begin{align*}
+  f(y) &= f(x) + \int_0^1 \inner{\nabla f(x + t(y-x))}{y-x}\,dt \\
+       &\le f(x) + \inner{\nabla f(x)}{y-x} + \frac{L}{2}\norm{y-x}^2. \qedhere
+\end{align*}
+\end{proof}
+
+\begin{theorem}\label{thm:rate}
+Gradient descent with step $1/L$ satisfies
+\begin{equation*}
+  f(x_k) - f(x^\star) \le \frac{L \norm{x_0 - x^\star}^2}{2k}.
+\end{equation*}
+\end{theorem}
+
+See \cref{thm:rate,lem:descent}, \Cref{eq:descent}, and \crefrange{lem:descent}{thm:rate}.
+Also \autoref{sec:prelim} and \nameref{sec:prelim}.
+
+\begin{remark}
+The rate in \cref{thm:rate} is not optimal.
+\end{remark}
+
+\section{Piecewise definitions}
+
+\begin{equation}
+  \operatorname{sgn}(x) = \begin{dcases}
+    -1 & x < 0, \\
+    \phantom{-}0 & x = 0, \\
+    \frac{x}{\abs{x}} & \text{otherwise}.
+  \end{dcases}
+\end{equation}
+
+\begin{equation*}
+  g(x) = \begin{cases*}
+    x^2 & if $x \ge 0$ \\
+    0 & otherwise
+  \end{cases*}
+\end{equation*}
+
+\begin{align}
+  a &= b + c \\
+  \shortintertext{and therefore}
+  d &= \mathclap{\sum_{i=1}^{n}} e_i
+\end{align}
+
+We also use $\prescript{14}{6}{\mathrm{C}}$ and $\Tr(A^\top A) = \norm{A}_F^2$.
+\begin{equation}
+  \begin{pmatrix*}[r] -1 & 2 \\ 3 & -4 \end{pmatrix*}
+  \begin{bmatrix} 1 \\ 0 \end{bmatrix}
+  = \begin{pmatrix} -1 \\ 3 \end{pmatrix}
+\end{equation}
+
+\end{document}

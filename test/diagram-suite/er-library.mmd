@@ -1,0 +1,21 @@
+erDiagram
+    MEMBER ||--o{ LOAN : borrows
+    BOOK_COPY ||--o{ LOAN : "lent as"
+    BOOK ||--|{ BOOK_COPY : "has copies"
+    BOOK }o--|{ AUTHOR : "written by"
+    BRANCH ||--o{ BOOK_COPY : shelves
+    MEMBER }o--|| BRANCH : "registered at"
+    LOAN {
+        int id PK
+        date due
+        date returned "empty until returned"
+    }
+    BOOK {
+        string isbn PK
+        string title
+        int year
+    }
+    MEMBER {
+        int card_no PK
+        string name
+    }

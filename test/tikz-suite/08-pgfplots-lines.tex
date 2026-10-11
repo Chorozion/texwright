@@ -1,0 +1,20 @@
+\begin{tikzpicture}
+\begin{axis}[
+    title={Training and validation loss},
+    xlabel={Epoch},
+    ylabel={Loss},
+    xmin=0, xmax=50,
+    ymin=0, ymax=2.5,
+    legend pos=north east,
+    grid=major,
+    width=10cm, height=6.5cm,
+]
+\addplot[color=blue, mark=*, thick] coordinates {
+    (0,2.3) (5,1.4) (10,0.95) (15,0.71) (20,0.55) (25,0.46) (30,0.40) (35,0.36) (40,0.33) (45,0.31) (50,0.30)
+};
+\addplot[color=red, mark=square*, thick, dashed] coordinates {
+    (0,2.3) (5,1.5) (10,1.10) (15,0.92) (20,0.84) (25,0.81) (30,0.80) (35,0.81) (40,0.83) (45,0.86) (50,0.90)
+};
+\legend{Training, Validation}
+\end{axis}
+\end{tikzpicture}

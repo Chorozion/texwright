@@ -1,0 +1,23 @@
+\begin{tikzpicture}[
+  node distance=1.2cm and 2cm,
+  startstop/.style={rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!30},
+  process/.style={rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30},
+  decision/.style={diamond, minimum width=2.5cm, minimum height=1cm, text centered, draw=black, fill=green!30, aspect=2},
+  io/.style={trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30},
+  arrow/.style={thick, ->, >=stealth}
+]
+  \node (start) [startstop] {Start};
+  \node (in1) [io, below=of start] {Read input $n$};
+  \node (pro1) [process, below=of in1] {Compute $s = \sum_{i=1}^n i$};
+  \node (dec1) [decision, below=of pro1] {$s > 100$?};
+  \node (pro2a) [process, below=of dec1] {Print ``large''};
+  \node (pro2b) [process, right=of dec1] {Print ``small''};
+  \node (stop) [startstop, below=of pro2a] {Stop};
+  \draw [arrow] (start) -- (in1);
+  \draw [arrow] (in1) -- (pro1);
+  \draw [arrow] (pro1) -- (dec1);
+  \draw [arrow] (dec1) -- node[anchor=east] {yes} (pro2a);
+  \draw [arrow] (dec1) -- node[anchor=south] {no} (pro2b);
+  \draw [arrow] (pro2b) |- (stop);
+  \draw [arrow] (pro2a) -- (stop);
+\end{tikzpicture}

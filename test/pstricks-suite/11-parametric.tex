@@ -1,0 +1,17 @@
+\documentclass{article}
+\usepackage{pstricks,pst-plot}
+\begin{document}
+\begin{figure}[h]
+\centering
+\begin{pspicture}(-2.5,-2.5)(2.5,2.5)
+  \psaxes[labels=none,ticks=none,linecolor=gray]{->}(0,0)(-2.4,-2.4)(2.4,2.4)
+  \psparametricplot[plotpoints=400,linecolor=blue,linewidth=1pt]{0}{360}{t 3 mul sin 2 mul t 2 mul sin 2 mul}
+\end{pspicture}
+\qquad
+\begin{pspicture}(-2.5,-2.5)(2.5,2.5)
+  \psparametricplot[algebraic,plotpoints=500,linecolor=red,linewidth=1pt]{0}{6*Pi}{t/(3*Pi)*cos(t)|t/(3*Pi)*sin(t)}
+  \psparametricplot[algebraic,linecolor=black,linestyle=dashed]{0}{2*Pi}{2*cos(t)|2*sin(t)}
+\end{pspicture}
+\caption{A Lissajous figure and an Archimedean spiral.}
+\end{figure}
+\end{document}

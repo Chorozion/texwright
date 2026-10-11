@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage[american]{circuitikz}
+\begin{document}
+
+\section*{Mesh analysis}
+
+Apply KVL around each mesh of the circuit:
+
+\begin{center}
+\begin{circuitikz}[scale=1.1]
+  \draw (0,0) to[V, v=$10\,\mathrm{V}$, invert] (0,3)
+    to[R=$2\,\Omega$, i>^=$i_1$, v=$v_1$] (3,3)
+    to[R=$4\,\Omega$, i>^=$i_2$] (6,3)
+    to[I, l=$2\,\mathrm{A}$] (6,0)
+    -- (0,0);
+  \draw (3,3) to[R, l=$6\,\Omega$, v^>=$v_2$, *-*] (3,0);
+  \draw (1.5,1.5) node {$i_a$};
+  \draw[->] (1.9,1.2) arc (-30:210:0.5);
+  \draw (4.5,1.5) node {$i_b$};
+  \draw[->] (4.9,1.2) arc (-30:210:0.5);
+  \draw (0,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\end{document}

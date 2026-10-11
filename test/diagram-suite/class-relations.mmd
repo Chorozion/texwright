@@ -1,0 +1,16 @@
+classDiagram
+    classA <|-- classB : Inheritance
+    classC *-- classD : Composition
+    classE o-- classF : Aggregation
+    classG <-- classH : Association
+    classI -- classJ : Link
+    classK <.. classL : Dependency
+    classM <|.. classN : Realization
+    classO .. classP : Dashed link
+    Node --> Node : next
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal() bool
+    Animal: +mate()
+    Duck --|> Animal
+    Duck : +swim()

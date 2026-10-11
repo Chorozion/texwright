@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220">
+  <rect x="0" y="0" width="400" height="220" fill="#ffffff"/>
+  <g stroke-linecap="round" transform="translate(30 40) rotate(0 70 50)"><path d="M32 0 C51 0, 71 1, 108 0 M32 0 C59 -1, 85 0, 108 0 M108 0 C129 1, 140 11, 140 32 M108 0 C130 -1, 141 9, 140 32 M140 32 C140 50, 140 68, 140 68 M140 68 C141 92, 129 101, 108 100 M108 100 C80 99, 54 101, 32 100 M32 100 C10 101, -1 91, 0 68 M0 68 C1 54, 0 41, 0 32 M0 32 C-1 11, 11 1, 32 0" stroke="#1e1e1e" stroke-width="2" fill="none"/></g>
+  <g transform="translate(60 80)"><text x="40" y="0" font-family="Virgil, Segoe UI Emoji, Comic Sans MS, cursive" font-size="20px" fill="#1e1e1e" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Hand drawn</text></g>
+  <g transform="translate(240 40)"><path d="M70 0 C109 0, 140 22, 140 50 C140 78, 109 100, 70 100 C31 100, 0 78, 0 50 C0 22, 31 0, 70 0" stroke="#e03131" stroke-width="2" fill="#ffc9c9" fill-rule="evenodd"/></g>
+</svg>

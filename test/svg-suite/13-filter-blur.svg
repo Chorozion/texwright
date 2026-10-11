@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220">
+  <defs>
+    <filter id="b4"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="b12" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="12"/></filter>
+  </defs>
+  <circle cx="100" cy="110" r="60" fill="#e17055" filter="url(#b4)"/>
+  <rect x="220" y="50" width="140" height="120" fill="#6c5ce7" filter="url(#b12)"/>
+</svg>

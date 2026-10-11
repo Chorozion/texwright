@@ -1,0 +1,38 @@
+% A fragment, as a model would paste into a chat: no preamble.
+\section*{Solution to Problem 4}
+
+We need to show that $\sum_{k=1}^{n} k = \frac{n(n+1)}{2}$ for all $n \in \mathbb{N}$.
+
+\textbf{Base case.} For $n = 1$: $1 = \frac{1 \cdot 2}{2}$. \checkmark
+
+\textbf{Inductive step.} Assume it holds for $n$. Then
+\begin{align*}
+\sum_{k=1}^{n+1} k &= \frac{n(n+1)}{2} + (n+1) \\
+&= \frac{(n+1)(n+2)}{2}. \qquad \blacksquare
+\end{align*}
+
+\begin{center}
+\fbox{\textbf{Answer:} $\dfrac{n(n+1)}{2}$}
+\end{center}
+
+\paragraph{Remark.} The formula is due to Gauss.\footnote{Allegedly as a schoolboy.}
+
+\begin{itemize}
+    \item \textbf{Time complexity:} $\mathcal{O}(1)$
+    \item \textbf{Space complexity:} $\Theta(1)$
+\end{itemize}
+
+\hrulefill
+
+\noindent\textit{Note:} \small{This uses \underline{strong} induction only implicitly.}\normalsize
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+$n$ & $S_n$ \\ \hline
+1 & 1 \\ \hline
+2 & 3 \\ \hline
+\end{tabular}
+\caption{First values}
+\end{table}

@@ -1,0 +1,301 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true,linkcolor=teal!60!black]{hyperref}
+
+% ---- page style ----------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small STAT 2100: Introduction to Probability}
+\rhead{\small Handout 3}
+\cfoot{\small\thepage}
+\setlength{\headheight}{14pt}
+
+% ---- theorem-like environments ------------------------------------------
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{exercise}{Exercise}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+
+% ---- boxed key results ----------------------------------------------------
+\newtcolorbox{keybox}[1][]{
+  enhanced, breakable,
+  colback=teal!4, colframe=teal!55!black,
+  boxrule=0.6pt, arc=2pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, title={#1}
+}
+\newtcolorbox{pitfall}{
+  enhanced, breakable,
+  colback=orange!6, colframe=orange!70!black,
+  boxrule=0.6pt, arc=2pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, title={Common pitfall}
+}
+
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\given}{\,\vert\,}
+\newcommand{\comp}{^{\mathsf{c}}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Conditional Probability, Bayes' Theorem\\[3pt] and Independence}\\[8pt]
+  {\large Handout 3 \quad\textbullet\quad Week 4}\\[4pt]
+  \textit{Read before Tuesday's lecture. Exercises 1--4 are due with Problem Set 3.}
+\end{center}
+
+\vspace{6pt}
+\noindent\textbf{Learning goals.} After working through this handout you should be able to:
+\begin{enumerate}[nosep]
+  \item compute conditional probabilities from their definition and from tables;
+  \item use the multiplication rule and the law of total probability to break problems into cases;
+  \item apply Bayes' theorem, and explain why a positive result on an accurate test can still be unlikely to be correct;
+  \item decide whether events are independent, and distinguish pairwise from mutual independence.
+\end{enumerate}
+
+%=========================================================================
+\section{Conditional probability}
+
+Information changes probabilities. If we learn that an event $B$ has happened, outcomes outside $B$ are no longer possible, and we rescale the probabilities of the outcomes inside $B$ so that they sum to one.
+
+\begin{definition}[Conditional probability]
+For events $A$ and $B$ with $\Prob(B) > 0$, the \emph{conditional probability of $A$ given $B$} is
+\begin{equation}\label{eq:cond}
+  \Prob(A \given B) = \frac{\Prob(A \cap B)}{\Prob(B)}.
+\end{equation}
+\end{definition}
+
+\begin{example}[Two dice]\label{ex:dice}
+Roll two fair dice. Let $S$ be the event that the sum is 8.
+\begin{enumerate}[label=(\alph*), nosep]
+  \item Given that the first die shows 3, the second must show 5, so $\Prob(S \given \text{first} = 3) = 1/6$.
+  \item Given that \emph{at least one} die shows 3, there are 11 equally likely outcomes:
+  \[
+    (3,1),(3,2),\dots,(3,6),\ (1,3),(2,3),(4,3),(5,3),(6,3).
+  \]
+  Of these, $(3,5)$ and $(5,3)$ have sum 8, so $\Prob(S \given \text{at least one } 3) = 2/11$.
+\end{enumerate}
+The two answers differ because the conditioning events are different. Always write down \emph{exactly} what you are conditioning on.
+\end{example}
+
+\subsection{The multiplication rule}
+
+Rearranging~\eqref{eq:cond} gives a way to compute probabilities of intersections step by step:
+\begin{equation}\label{eq:mult}
+  \Prob(A \cap B) = \Prob(B)\,\Prob(A \given B) = \Prob(A)\,\Prob(B \given A),
+\end{equation}
+and more generally
+\[
+  \Prob(A_1 \cap A_2 \cap \dots \cap A_n) = \Prob(A_1)\,\Prob(A_2 \given A_1)\,\Prob(A_3 \given A_1 \cap A_2)\cdots\Prob(A_n \given A_1 \cap \dots \cap A_{n-1}).
+\]
+
+\begin{example}[Two aces]
+Draw two cards from a standard deck without replacement. The probability that both are aces is
+\[
+  \Prob(\text{1st ace})\,\Prob(\text{2nd ace} \given \text{1st ace}) = \frac{4}{52}\cdot\frac{3}{51} = \frac{1}{221} \approx 0.0045.
+\]
+\end{example}
+
+%=========================================================================
+\section{The law of total probability and Bayes' theorem}
+
+Many problems are easiest when split into cases. Events $B_1, \dots, B_n$ form a \emph{partition} of the sample space if they are disjoint and their union is everything: exactly one of them happens.
+
+\begin{keybox}[Law of total probability]
+If $B_1, \dots, B_n$ partition the sample space and each $\Prob(B_i) > 0$, then for any event $A$
+\begin{equation}\label{eq:total}
+  \Prob(A) = \sum_{i=1}^{n} \Prob(A \given B_i)\,\Prob(B_i).
+\end{equation}
+\end{keybox}
+
+Combining~\eqref{eq:cond}, \eqref{eq:mult} and~\eqref{eq:total} gives the most important formula in this handout.
+
+\begin{keybox}[Bayes' theorem]
+If $B_1, \dots, B_n$ partition the sample space and $\Prob(A) > 0$, then
+\begin{equation}\label{eq:bayes}
+  \Prob(B_j \given A) = \frac{\Prob(A \given B_j)\,\Prob(B_j)}{\sum_{i=1}^{n}\Prob(A \given B_i)\,\Prob(B_i)}.
+\end{equation}
+In words: \emph{posterior} $\propto$ \emph{likelihood} $\times$ \emph{prior}, with the denominator making the posteriors sum to one.
+\end{keybox}
+
+\begin{example}[A screening test]\label{ex:screening}
+A disease affects 1\% of a population. A screening test has \emph{sensitivity} 95\% (it is positive for 95\% of people with the disease) and \emph{specificity} 90\% (it is negative for 90\% of people without it). A randomly chosen person tests positive. What is the probability they have the disease?
+
+Let $D$ be the event ``has the disease'' and $+$ the event ``tests positive''. Then $\Prob(D) = 0.01$, $\Prob(+ \given D) = 0.95$ and $\Prob(+ \given D\comp) = 0.10$. By Bayes' theorem,
+\[
+  \Prob(D \given +) = \frac{(0.95)(0.01)}{(0.95)(0.01) + (0.10)(0.99)} = \frac{0.0095}{0.1085} \approx 0.088.
+\]
+Fewer than one in eleven people who test positive actually have the disease.
+
+It helps to see the same calculation with counts. Imagine 10{,}000 people:
+
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+  \toprule
+  & Test positive & Test negative & Total \\
+  \midrule
+  Has disease     & 95    & 5     & 100    \\
+  No disease      & 990   & 8{,}910 & 9{,}900 \\
+  \midrule
+  Total           & 1{,}085 & 8{,}915 & 10{,}000 \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Of the 1{,}085 positives, only 95 are true positives: $95/1085 \approx 8.8\%$. The false positives win because there are so many more healthy people to produce them.
+\end{example}
+
+\begin{pitfall}
+$\Prob(A \given B)$ and $\Prob(B \given A)$ are different numbers. In Example~\ref{ex:screening}, $\Prob(+ \given D) = 0.95$ but $\Prob(D \given +) \approx 0.088$. Confusing the two in a courtroom (``the chance of this evidence if the defendant were innocent is tiny, so the chance he is innocent is tiny'') is known as the \emph{prosecutor's fallacy}.
+\end{pitfall}
+
+\begin{example}[The Monty Hall problem]
+A prize is behind one of three doors, equally likely. You pick door 1. The host, who knows where the prize is, opens one of the other two doors to reveal no prize, choosing at random if both are empty. He opens door 3. Should you switch to door 2?
+
+Let $C_i$ be the event that the prize is behind door $i$, and $H_3$ the event that the host opens door 3. Then
+\[
+  \Prob(H_3 \given C_1) = \tfrac12, \qquad \Prob(H_3 \given C_2) = 1, \qquad \Prob(H_3 \given C_3) = 0,
+\]
+and Bayes' theorem gives
+\[
+  \Prob(C_2 \given H_3) = \frac{1 \cdot \frac13}{\frac12\cdot\frac13 + 1\cdot\frac13 + 0\cdot\frac13} = \frac{1/3}{1/2} = \frac23.
+\]
+Switching wins with probability $2/3$. The host's choice carries information because he is not allowed to open your door or the prize door.
+\end{example}
+
+%=========================================================================
+\section{Independence}
+
+\begin{definition}[Independence]
+Events $A$ and $B$ are \emph{independent} if
+\[
+  \Prob(A \cap B) = \Prob(A)\,\Prob(B).
+\]
+When $\Prob(B) > 0$ this is equivalent to $\Prob(A \given B) = \Prob(A)$: learning that $B$ happened does not change the probability of $A$.
+\end{definition}
+
+Independence is a property of the probabilities, not of the physical situation, although physically separate mechanisms (two different coins, say) are usually modelled as independent. Do not confuse independent events with \emph{disjoint} events: if $A$ and $B$ are disjoint and both have positive probability, then $\Prob(A \cap B) = 0 \ne \Prob(A)\Prob(B)$, so they are \emph{dependent}. Learning that one happened tells you the other did not.
+
+\begin{definition}[Mutual independence]
+Events $A_1, \dots, A_n$ are \emph{mutually independent} if for every subcollection $A_{i_1}, \dots, A_{i_k}$,
+\[
+  \Prob(A_{i_1} \cap \dots \cap A_{i_k}) = \Prob(A_{i_1})\cdots\Prob(A_{i_k}).
+\]
+\end{definition}
+
+\begin{example}[Pairwise but not mutually independent]
+Toss two fair coins. Let $A$ = ``first is heads'', $B$ = ``second is heads'' and $C$ = ``the two coins match''. Each event has probability $\frac12$, and each pair has probability $\frac14$ of occurring together (for example, $A \cap C$ = ``both heads''). So $A$, $B$, $C$ are pairwise independent. But
+\[
+  \Prob(A \cap B \cap C) = \Prob(\text{both heads}) = \tfrac14 \ne \tfrac18 = \Prob(A)\Prob(B)\Prob(C),
+\]
+so they are not mutually independent. Indeed, once you know $A$ and $B$, you know $C$ for certain.
+\end{example}
+
+\begin{theorem}\label{thm:complement}
+If $A$ and $B$ are independent, then so are $A$ and $B\comp$, $A\comp$ and $B$, and $A\comp$ and $B\comp$.
+\end{theorem}
+
+You are asked to prove the first of these in Exercise~\ref{ex:complement}.
+
+%=========================================================================
+\section{Summary}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}ll@{}}
+  \toprule
+  Rule & Formula \\
+  \midrule
+  Conditional probability & $\Prob(A \given B) = \Prob(A \cap B)/\Prob(B)$ \\
+  Multiplication rule & $\Prob(A \cap B) = \Prob(A \given B)\,\Prob(B)$ \\
+  Total probability & $\Prob(A) = \sum_i \Prob(A \given B_i)\,\Prob(B_i)$ \\
+  Bayes' theorem & $\Prob(B_j \given A) = \dfrac{\Prob(A \given B_j)\Prob(B_j)}{\sum_i \Prob(A \given B_i)\Prob(B_i)}$ \\
+  Independence & $\Prob(A \cap B) = \Prob(A)\,\Prob(B)$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+%=========================================================================
+\section{Exercises}
+
+\begin{exercise}
+A card is drawn from a standard 52-card deck. Given that it is a face card (jack, queen or king), what is the probability that it is a king?
+\end{exercise}
+
+\begin{exercise}
+A family has two children. Assume each child is equally likely to be a boy or a girl, independently. Given that at least one child is a boy, what is the probability that both are boys? Explain why the answer is not $\frac12$.
+\end{exercise}
+
+\begin{exercise}
+Box~1 contains 3 red and 2 blue balls; Box~2 contains 1 red and 4 blue balls. A box is chosen by flipping a fair coin and a ball is drawn from it at random. The ball is red. What is the probability it came from Box~1?
+\end{exercise}
+
+\begin{exercise}\label{ex:complement}
+Prove that if $A$ and $B$ are independent, then $A$ and $B\comp$ are independent. \emph{Hint:} $A$ is the disjoint union of $A \cap B$ and $A \cap B\comp$.
+\end{exercise}
+
+\begin{exercise}
+In Example~\ref{ex:screening}, a person who tests positive takes the test a second time. Assume that, given disease status, the two test results are independent. If the second test is also positive, what is the probability the person has the disease?
+\end{exercise}
+
+\begin{exercise}
+A factory has three machines. Machine~1 makes 50\% of the items and 2\% of its items are defective; Machine~2 makes 30\% with 3\% defective; Machine~3 makes 20\% with 5\% defective.
+\begin{enumerate}[label=(\alph*), nosep]
+  \item What proportion of all items are defective?
+  \item An item is found to be defective. What is the probability it was made by Machine~3?
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[Challenge]
+Show that in a group of 23 people, the probability that at least two share a birthday exceeds $\frac12$. Ignore leap years and assume birthdays are independent and uniformly distributed over 365 days.
+\end{exercise}
+
+%=========================================================================
+\newpage
+\section*{Solutions}
+\addcontentsline{toc}{section}{Solutions}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=6pt]
+  \item There are 12 face cards, of which 4 are kings: $\Prob(K \given F) = 4/12 = 1/3$.
+
+  \item The sample space is $\{BB, BG, GB, GG\}$, each with probability $\frac14$. Conditioning on ``at least one boy'' leaves $\{BB, BG, GB\}$, so $\Prob(BB \given \text{at least one } B) = 1/3$. The answer is not $\frac12$ because ``at least one is a boy'' does not tell us \emph{which} child is the boy; it rules out only $GG$.
+
+  \item By Bayes' theorem,
+  \[
+    \Prob(\text{Box 1} \given R) = \frac{\frac12 \cdot \frac35}{\frac12\cdot\frac35 + \frac12\cdot\frac15} = \frac{3/10}{4/10} = \frac34.
+  \]
+
+  \item Since $A = (A \cap B) \cup (A \cap B\comp)$ is a disjoint union,
+  \[
+    \Prob(A \cap B\comp) = \Prob(A) - \Prob(A \cap B) = \Prob(A) - \Prob(A)\Prob(B) = \Prob(A)\bigl(1 - \Prob(B)\bigr) = \Prob(A)\,\Prob(B\comp).
+  \]
+
+  \item Using conditional independence of the two results,
+  \[
+    \Prob(D \given {+}{+}) = \frac{(0.95)^2(0.01)}{(0.95)^2(0.01) + (0.10)^2(0.99)} = \frac{0.009025}{0.009025 + 0.0099} \approx 0.477.
+  \]
+  Equivalently, use the answer $0.0876$ from the first test as the new prior and apply Bayes' theorem once more. A second positive result raises the probability from about 9\% to about 48\%.
+
+  \item
+  \begin{enumerate}[label=(\alph*), nosep]
+    \item $\Prob(\text{def}) = (0.5)(0.02) + (0.3)(0.03) + (0.2)(0.05) = 0.010 + 0.009 + 0.010 = 0.029$.
+    \item $\Prob(M_3 \given \text{def}) = 0.010/0.029 \approx 0.345$. Machine~3 makes only 20\% of the items but about 34\% of the defective ones.
+  \end{enumerate}
+
+  \item The probability that all 23 birthdays are different is
+  \[
+    \frac{365}{365}\cdot\frac{364}{365}\cdots\frac{343}{365} = \prod_{k=0}^{22}\Bigl(1 - \frac{k}{365}\Bigr) \approx 0.4927,
+  \]
+  so the probability of at least one shared birthday is about $1 - 0.4927 = 0.5073 > \frac12$. A quick estimate: using $1 - x \approx e^{-x}$, the product is about $\exp\bigl(-\sum_{k=0}^{22} k/365\bigr) = \exp(-253/365) \approx 0.50$.
+\end{enumerate}
+
+\end{document}

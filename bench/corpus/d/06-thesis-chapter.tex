@@ -1,0 +1,336 @@
+\documentclass[11pt,a4paper,oneside]{report}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper,inner=3cm,outer=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+\setlength{\parskip}{0.3em}
+\linespread{1.15}
+
+% ---------------------------------------------------------------------
+% Theorem environments (numbered within chapter, one shared counter)
+% ---------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\crefname{assumption}{Assumption}{Assumptions}
+
+% ---------------------------------------------------------------------
+% Notation
+% ---------------------------------------------------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\X}{\mathcal{X}^\star}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiterX{\inner}[2]{\langle}{\rangle}{#1, #2}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\begin{document}
+
+\setcounter{chapter}{2}
+
+\chapter{Linear Convergence Without Convexity: the Polyak--{\L}ojasiewicz Condition}
+\label{ch:pl}
+
+\section{Introduction}
+\label{sec:pl-intro}
+
+The classical theory of first-order methods ties fast convergence to strong convexity. If $f\colon\R^d\to\R$ is $\mu$-strongly convex and has an $L$-Lipschitz gradient, gradient descent with step size $1/L$ reduces the optimality gap by a factor of $(1 - \mu/L)$ per iteration \citep{nesterov2004}. Many objectives that arise in practice are not strongly convex, however, and many are not convex at all: least squares with a rank-deficient design, logistic regression on separable data with a small ridge penalty, matrix factorisation, and the training losses of over-parameterised neural networks. Yet gradient methods are often observed to converge linearly on these problems.
+
+This chapter studies one explanation for that behaviour. In 1963, Polyak \citep{polyak1963} showed that gradient descent converges linearly under a much weaker condition than strong convexity, namely that the squared gradient norm grows at least linearly with the suboptimality. The same inequality appears, as a special case of a more general one for real-analytic functions, in work of {\L}ojasiewicz \citep{lojasiewicz1963} published the same year. Following \citet{karimi2016} we call it the \emph{Polyak--{\L}ojasiewicz (PL) condition}.
+
+Our aims are modest and are mainly to set up the tools used in Chapter~4. We (i)~state the PL condition and give examples of non-strongly-convex and non-convex functions that satisfy it (\cref{sec:pl-setting}); (ii)~show that it implies quadratic growth away from the solution set (\cref{sec:pl-qg}); (iii)~prove linear convergence of gradient descent (\cref{sec:pl-gd}); and (iv)~analyse stochastic gradient descent with constant and decreasing step sizes (\cref{sec:pl-sgd}). Most results in this chapter are known; our contribution is a self-contained presentation with complete proofs and explicit constants, which we rely on later.
+
+\section{Setting and examples}
+\label{sec:pl-setting}
+
+Throughout, $\norm{\cdot}$ is the Euclidean norm. We consider the unconstrained problem
+\begin{equation}\label{eq:problem}
+  \min_{x\in\R^d} f(x),
+\end{equation}
+and write $f^\star = \inf_x f(x)$ and $\X = \{x : f(x) = f^\star\}$.
+
+\begin{assumption}[Smoothness]\label{ass:smooth}
+The function $f$ is differentiable, bounded below, and its gradient is $L$-Lipschitz:
+$\norm{\nabla f(x) - \nabla f(y)} \le L\norm{x - y}$ for all $x, y\in\R^d$.
+\end{assumption}
+
+\begin{definition}[Polyak--{\L}ojasiewicz condition]\label{def:pl}
+A differentiable function $f$ with $f^\star > -\infty$ satisfies the PL condition with constant $\mu > 0$ if
+\begin{equation}\label{eq:pl}
+  \frac{1}{2}\norm{\nabla f(x)}^2 \;\ge\; \mu\bigl(f(x) - f^\star\bigr) \qquad\text{for all } x\in\R^d.
+\end{equation}
+\end{definition}
+
+The inequality says that every stationary point is a global minimiser: if $\nabla f(x) = 0$ then $f(x) = f^\star$. It does not say the minimiser is unique, and it does not require convexity.
+
+\begin{lemma}\label{lem:mu-le-L}
+If $f$ satisfies \cref{ass:smooth} and the PL condition with constant $\mu$, and $f$ is not constant, then $\mu \le L$.
+\end{lemma}
+
+\begin{proof}
+By the descent lemma (\cref{lem:descent} below) applied with $y = x - \nabla f(x)/L$,
+\[
+  f^\star \le f\bigl(x - \tfrac1L\nabla f(x)\bigr) \le f(x) - \frac{1}{2L}\norm{\nabla f(x)}^2,
+\]
+so $\norm{\nabla f(x)}^2 \le 2L(f(x) - f^\star)$. Combining with \eqref{eq:pl} gives $2\mu(f(x) - f^\star) \le 2L(f(x) - f^\star)$, and choosing any $x$ with $f(x) > f^\star$ yields $\mu\le L$.
+\end{proof}
+
+We call $\kappa = L/\mu \ge 1$ the \emph{condition number} of $f$.
+
+\begin{example}[Rank-deficient least squares]\label{ex:least-squares}
+Let $A\in\R^{n\times d}$ be nonzero and $b\in\R^n$, and let $f(x) = \frac12\norm{Ax - b}^2$. If $A$ has a nontrivial null space then $f$ is not strongly convex, since it is constant along $\ker A$. Nevertheless, $f$ satisfies the PL condition with $\mu = \sigma_{\min}^{+}(A)^2$, the square of the smallest \emph{nonzero} singular value of $A$.
+\end{example}
+
+\begin{proof}[Verification]
+Decompose $b = b_\parallel + b_\perp$ with $b_\parallel\in\operatorname{range}(A)$ and $b_\perp\in\ker A^\top$. Then $f^\star = \frac12\norm{b_\perp}^2$, and for any $x$,
+\[
+  f(x) - f^\star = \tfrac12\norm{Ax - b_\parallel}^2, \qquad
+  \nabla f(x) = A^\top(Ax - b) = A^\top(Ax - b_\parallel),
+\]
+using $A^\top b_\perp = 0$. The vector $v = Ax - b_\parallel$ lies in $\operatorname{range}(A)$, which is the orthogonal complement of $\ker A^\top$, and on that subspace $\norm{A^\top v} \ge \sigma_{\min}^{+}(A)\norm{v}$. Hence
+\[
+  \tfrac12\norm{\nabla f(x)}^2 \ge \tfrac12\sigma_{\min}^{+}(A)^2\norm{v}^2 = \sigma_{\min}^{+}(A)^2\,\bigl(f(x) - f^\star\bigr). \qedhere
+\]
+\end{proof}
+
+\begin{example}[A non-convex PL function]\label{ex:nonconvex}
+The function $f(x) = x^2 + 3\sin^2 x$ on $\R$ is not convex, since $f''(x) = 2 + 6\cos 2x$ is negative near $x = \pi/2$. Its only stationary point is $x = 0$, and \citet{karimi2016} show that it satisfies \eqref{eq:pl} with $\mu = 1/32$.
+\end{example}
+
+\begin{example}[Composition with a linear map]\label{ex:composition}
+If $g$ is $\mu$-strongly convex and $A$ is any matrix, then $f(x) = g(Ax)$ satisfies the PL condition, with a constant depending on $\mu$ and $\sigma_{\min}^+(A)$ \citep{karimi2016}. Least squares (\cref{ex:least-squares}) is the special case $g(z) = \frac12\norm{z - b}^2$. Logistic regression with a full-rank design restricted to a compact set is another.
+\end{example}
+
+\section{Quadratic growth}
+\label{sec:pl-qg}
+
+We first record the standard upper bound that comes with smoothness.
+
+\begin{lemma}[Descent lemma]\label{lem:descent}
+Under \cref{ass:smooth}, for all $x, y\in\R^d$,
+\begin{equation}\label{eq:descent}
+  f(y) \le f(x) + \inner{\nabla f(x)}{y - x} + \frac{L}{2}\norm{y - x}^2.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By the fundamental theorem of calculus along the segment from $x$ to $y$,
+\[
+  f(y) - f(x) - \inner{\nabla f(x)}{y - x} = \int_0^1 \inner[\big]{\nabla f\bigl(x + t(y - x)\bigr) - \nabla f(x)}{y - x}\,dt.
+\]
+By Cauchy--Schwarz and the Lipschitz property, the integrand is at most $Lt\norm{y - x}^2$, and $\int_0^1 Lt\,dt = L/2$.
+\end{proof}
+
+The PL condition bounds the gradient from below in terms of function values. The next theorem converts it into a lower bound on function values in terms of the distance to the solution set. This \emph{quadratic growth} property is what makes the solution set well-conditioned: points with small suboptimality must be close to $\X$.
+
+\begin{theorem}[PL implies quadratic growth]\label{thm:qg}
+Suppose $f$ satisfies \cref{ass:smooth} and the PL condition with constant $\mu$. Then $\X$ is nonempty and closed, and
+\begin{equation}\label{eq:qg}
+  f(x) - f^\star \;\ge\; \frac{\mu}{2}\dist(x, \X)^2 \qquad\text{for all } x\in\R^d.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Fix $x_0\in\R^d$. If $f(x_0) = f^\star$ there is nothing to prove, so assume $f(x_0) > f^\star$. Because $\nabla f$ is Lipschitz, the gradient flow
+\[
+  \dot{x}(t) = -\nabla f\bigl(x(t)\bigr), \qquad x(0) = x_0,
+\]
+has a unique solution defined for all $t\ge 0$. Every point of $\X$ is an equilibrium of this flow, so by uniqueness the trajectory never enters $\X$ in finite time, and $f(x(t)) > f^\star$ for all $t\ge0$.
+
+\emph{Step 1: function values decay exponentially.} Along the flow,
+\[
+  \frac{d}{dt}\bigl(f(x(t)) - f^\star\bigr) = -\norm{\nabla f(x(t))}^2 \le -2\mu\bigl(f(x(t)) - f^\star\bigr),
+\]
+by \eqref{eq:pl}. Grönwall's inequality gives $f(x(t)) - f^\star \le e^{-2\mu t}(f(x_0) - f^\star)\to 0$.
+
+\emph{Step 2: the path has finite length.} Let $g(t) = \sqrt{f(x(t)) - f^\star}$, which is differentiable since $f(x(t)) > f^\star$. Then
+\[
+  \dot{g}(t) = -\frac{\norm{\nabla f(x(t))}^2}{2\sqrt{f(x(t)) - f^\star}}
+  \le -\sqrt{\frac{\mu}{2}}\,\norm{\nabla f(x(t))} = -\sqrt{\frac{\mu}{2}}\,\norm{\dot{x}(t)},
+\]
+where the inequality uses \eqref{eq:pl} in the form $\norm{\nabla f}/\sqrt{f - f^\star}\ge\sqrt{2\mu}$. Integrating from $0$ to $T$,
+\begin{equation}\label{eq:path-length}
+  \sqrt{\frac{\mu}{2}}\int_0^T\norm{\dot{x}(t)}\,dt \;\le\; g(0) - g(T) \;\le\; \sqrt{f(x_0) - f^\star}.
+\end{equation}
+
+\emph{Step 3: the flow converges to a point of $\X$.} By \eqref{eq:path-length} the total length of the trajectory is finite, so $x(t)$ is Cauchy as $t\to\infty$ and converges to some $\bar{x}$. By continuity and Step~1, $f(\bar{x}) = f^\star$, so $\bar{x}\in\X$; in particular $\X\neq\emptyset$. It is closed because $f$ is continuous.
+
+\emph{Step 4: conclusion.} Since the straight-line distance is at most the path length, letting $T\to\infty$ in \eqref{eq:path-length} gives
+\[
+  \sqrt{\frac{\mu}{2}}\,\dist(x_0, \X) \le \sqrt{\frac{\mu}{2}}\,\norm{\bar{x} - x_0} \le \sqrt{f(x_0) - f^\star}.
+\]
+Squaring yields \eqref{eq:qg}.
+\end{proof}
+
+\begin{remark}\label{rem:hierarchy}
+\citet{karimi2016} place the PL condition in a hierarchy of conditions used to prove linear convergence. For functions with Lipschitz gradient they show
+\[
+  \text{(SC)} \Rightarrow \text{(ESC)} \Rightarrow \text{(WSC)} \Rightarrow \text{(RSI)} \Rightarrow \text{(EB)} \equiv \text{(PL)} \Rightarrow \text{(QG)},
+\]
+where SC is strong convexity, ESC essential strong convexity, WSC weak strong convexity, RSI the restricted secant inequality, EB the Luo--Tseng error bound \citep{luo1993} and QG quadratic growth. \Cref{thm:qg} is the last implication. For convex functions, PL and QG are equivalent \citep{karimi2016,necoara2019}; without convexity QG is strictly weaker, since it allows non-optimal stationary points.
+\end{remark}
+
+\section{Gradient descent}
+\label{sec:pl-gd}
+
+\begin{theorem}[Linear convergence of gradient descent]\label{thm:gd}
+Suppose $f$ satisfies \cref{ass:smooth} and the PL condition with constant $\mu$. Then the iterates of gradient descent with step size $1/L$,
+\[
+  x_{k+1} = x_k - \frac{1}{L}\nabla f(x_k),
+\]
+satisfy, for every $k\ge0$,
+\begin{equation}\label{eq:gd-rate}
+  f(x_k) - f^\star \le \Bigl(1 - \frac{\mu}{L}\Bigr)^{k}\bigl(f(x_0) - f^\star\bigr).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Apply the descent lemma~\eqref{eq:descent} with $x = x_k$ and $y = x_{k+1} = x_k - \nabla f(x_k)/L$:
+\[
+  f(x_{k+1}) \le f(x_k) - \frac1L\norm{\nabla f(x_k)}^2 + \frac{1}{2L}\norm{\nabla f(x_k)}^2 = f(x_k) - \frac{1}{2L}\norm{\nabla f(x_k)}^2.
+\]
+By the PL inequality, $\norm{\nabla f(x_k)}^2 \ge 2\mu(f(x_k) - f^\star)$. Substituting and subtracting $f^\star$ from both sides,
+\[
+  f(x_{k+1}) - f^\star \le \Bigl(1 - \frac{\mu}{L}\Bigr)\bigl(f(x_k) - f^\star\bigr),
+\]
+and induction on $k$ gives \eqref{eq:gd-rate}. Note that $0\le 1 - \mu/L < 1$ by \cref{lem:mu-le-L}.
+\end{proof}
+
+\begin{corollary}[Iteration complexity]\label{cor:gd-complexity}
+Under the conditions of \cref{thm:gd}, $f(x_k) - f^\star\le\varepsilon$ whenever
+\[
+  k \;\ge\; \kappa\,\log\frac{f(x_0) - f^\star}{\varepsilon}, \qquad \kappa = L/\mu.
+\]
+Moreover, $\dist(x_k, \X)^2 \le \frac{2}{\mu}(1 - 1/\kappa)^k(f(x_0) - f^\star)$.
+\end{corollary}
+
+\begin{proof}
+The first claim follows from \eqref{eq:gd-rate} and $1 - 1/\kappa \le e^{-1/\kappa}$. The second follows by combining \eqref{eq:gd-rate} with \cref{thm:qg}.
+\end{proof}
+
+Two features of \cref{thm:gd} deserve comment. First, the rate matches the one for strongly convex functions exactly, with $\mu$ playing the role of the strong convexity constant; nothing is lost by dropping convexity. Second, the proof does not use the PL condition anywhere except along the iterates. It therefore suffices for \eqref{eq:pl} to hold on a set containing all the iterates, such as the sublevel set $\{x : f(x)\le f(x_0)\}$. This local version is what we verify for wide neural networks in Chapter~4, following the approach of \citet{liu2022}.
+
+\section{Stochastic gradient descent}
+\label{sec:pl-sgd}
+
+In machine learning, $f$ is usually an average $f(x) = \frac1n\sum_{i=1}^n f_i(x)$ over training examples and exact gradients are too expensive. Stochastic gradient descent (SGD) replaces $\nabla f(x_k)$ by a cheap unbiased estimate $g_k$ \citep{robbins1951,bottou2018}:
+\begin{equation}\label{eq:sgd}
+  x_{k+1} = x_k - \alpha_k\,g_k.
+\end{equation}
+Let $\mathcal{F}_k$ denote the $\sigma$-algebra generated by $x_0, g_0, \dots, g_{k-1}$, so that $x_k$ is $\mathcal{F}_k$-measurable.
+
+\begin{assumption}[Stochastic gradients]\label{ass:noise}
+For every $k$, $\E[g_k\mid\mathcal{F}_k] = \nabla f(x_k)$ and $\E\bigl[\norm{g_k - \nabla f(x_k)}^2\bigm|\mathcal{F}_k\bigr] \le \sigma^2$.
+\end{assumption}
+
+Write $\delta_k = \E[f(x_k)] - f^\star$. The analysis rests on a one-step recursion.
+
+\begin{lemma}[One-step progress]\label{lem:sgd-step}
+Under \cref{ass:smooth,ass:noise} and the PL condition, if $0 < \alpha_k \le 1/L$ then
+\begin{equation}\label{eq:sgd-recursion}
+  \delta_{k+1} \le (1 - \alpha_k\mu)\,\delta_k + \frac{L\alpha_k^2\sigma^2}{2}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The descent lemma with $y = x_{k+1}$ gives
+\[
+  f(x_{k+1}) \le f(x_k) - \alpha_k\inner{\nabla f(x_k)}{g_k} + \frac{L\alpha_k^2}{2}\norm{g_k}^2.
+\]
+Taking conditional expectations and using \cref{ass:noise}, together with the bias--variance identity $\E[\norm{g_k}^2\mid\mathcal{F}_k] = \norm{\nabla f(x_k)}^2 + \E[\norm{g_k - \nabla f(x_k)}^2\mid\mathcal{F}_k]$,
+\[
+  \E[f(x_{k+1})\mid\mathcal{F}_k] \le f(x_k) - \alpha_k\Bigl(1 - \frac{L\alpha_k}{2}\Bigr)\norm{\nabla f(x_k)}^2 + \frac{L\alpha_k^2\sigma^2}{2}.
+\]
+Since $\alpha_k\le1/L$ we have $1 - L\alpha_k/2 \ge 1/2$, and by the PL inequality $\frac12\norm{\nabla f(x_k)}^2\ge\mu(f(x_k) - f^\star)$. Therefore
+\[
+  \E[f(x_{k+1})\mid\mathcal{F}_k] - f^\star \le (1 - \alpha_k\mu)\bigl(f(x_k) - f^\star\bigr) + \frac{L\alpha_k^2\sigma^2}{2}.
+\]
+Taking total expectations completes the proof.
+\end{proof}
+
+\begin{theorem}[SGD with constant step size]\label{thm:sgd-constant}
+Under the conditions of \cref{lem:sgd-step} with $\alpha_k = \alpha\in(0, 1/L]$ for all $k$,
+\begin{equation}\label{eq:sgd-constant}
+  \delta_k \le (1 - \alpha\mu)^k\,\delta_0 + \frac{L\alpha\sigma^2}{2\mu}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Unrolling \eqref{eq:sgd-recursion},
+\[
+  \delta_k \le (1 - \alpha\mu)^k\delta_0 + \frac{L\alpha^2\sigma^2}{2}\sum_{j=0}^{k-1}(1 - \alpha\mu)^j
+  \le (1 - \alpha\mu)^k\delta_0 + \frac{L\alpha^2\sigma^2}{2}\cdot\frac{1}{\alpha\mu}. \qedhere
+\]
+\end{proof}
+
+With a constant step size, SGD converges linearly, but only to a neighbourhood of the optimum whose size is proportional to $\alpha\sigma^2$. Halving the step size halves the neighbourhood but also halves the rate. When $\sigma = 0$ at the optimum, as in over-parameterised models that interpolate the data, the neighbourhood vanishes and SGD converges linearly to the optimum \citep{vaswani2019,gower2019}; this is the regime of Chapter~4. In general, reaching arbitrary accuracy requires a decreasing step size.
+
+\begin{theorem}[SGD with decreasing step size]\label{thm:sgd-decreasing}
+Under the conditions of \cref{lem:sgd-step}, let $\alpha_k = \beta/(\gamma + k)$ with $\beta > 1/\mu$ and $\gamma > 0$ chosen so that $\alpha_0 = \beta/\gamma \le 1/L$. Then for all $k\ge0$,
+\begin{equation}\label{eq:sgd-decreasing}
+  \delta_k \le \frac{\nu}{\gamma + k}, \qquad\text{where}\quad
+  \nu = \max\Bigl\{\frac{\beta^2 L\sigma^2}{2(\beta\mu - 1)},\; \gamma\,\delta_0\Bigr\}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+We argue by induction; the case $k = 0$ holds by the definition of $\nu$. Suppose \eqref{eq:sgd-decreasing} holds for some $k$ and write $\hat{k} = \gamma + k$. The step sizes are decreasing, so $\alpha_k\le\alpha_0\le1/L$ and \cref{lem:sgd-step} applies:
+\begin{align*}
+  \delta_{k+1}
+  &\le \Bigl(1 - \frac{\beta\mu}{\hat{k}}\Bigr)\frac{\nu}{\hat{k}} + \frac{\beta^2 L\sigma^2}{2\hat{k}^2}
+   = \frac{\hat{k} - 1}{\hat{k}^2}\,\nu - \frac{(\beta\mu - 1)\nu - \beta^2 L\sigma^2/2}{\hat{k}^2} \\
+  &\le \frac{\hat{k} - 1}{\hat{k}^2}\,\nu
+   \;\le\; \frac{\nu}{\hat{k} + 1},
+\end{align*}
+where the second inequality uses $\nu\ge\beta^2L\sigma^2/(2(\beta\mu - 1))$, and the last uses $(\hat{k} - 1)(\hat{k} + 1)\le\hat{k}^2$. Since $\hat{k} + 1 = \gamma + (k+1)$, this completes the induction. (In the first line we used $1 - \beta\mu/\hat{k}\ge 0$, which holds because $\beta\mu/\hat{k} = \alpha_k\mu\le\mu/L\le1$.)
+\end{proof}
+
+\Cref{thm:sgd-decreasing} gives the $O(1/k)$ rate that is optimal for stochastic first-order methods on strongly convex problems \citep{moulines2011,bottou2018}, now under the PL condition alone. The requirement $\beta > 1/\mu$ is not cosmetic: if the step sizes decay too quickly relative to the curvature, the rate degrades to $O(k^{-\beta\mu})$.
+
+\begin{table}[t]
+  \centering
+  \caption{Summary of the convergence guarantees proved in this chapter. All assume \cref{ass:smooth} and the PL condition with constant $\mu$; $\kappa = L/\mu$.}
+  \label{tab:pl-summary}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    Method & Step size & Guarantee & Result \\
+    \midrule
+    Gradient flow & --- & $f - f^\star\le e^{-2\mu t}\,(f(x_0) - f^\star)$ & \cref{thm:qg}, Step 1 \\
+    Gradient descent & $1/L$ & $(1 - 1/\kappa)^k$ contraction & \cref{thm:gd} \\
+    SGD & constant $\alpha\le 1/L$ & linear to $O(L\alpha\sigma^2/\mu)$ ball & \cref{thm:sgd-constant} \\
+    SGD & $\beta/(\gamma + k)$ & $O(1/k)$ & \cref{thm:sgd-decreasing} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Discussion}
+\label{sec:pl-discussion}
+
+\Cref{tab:pl-summary} summarises the results. The common thread is that every proof uses the PL inequality only to convert a decrease in $\norm{\nabla f}^2$, which the descent lemma provides, into a decrease in $f - f^\star$, which is what we want. Convexity never enters.
+
+Two limitations matter for what follows. First, the PL condition is global, and it is rarely possible to verify it globally for non-convex models. The Kurdyka--{\L}ojasiewicz framework \citep{kurdyka1998,bolte2007,attouch2010} relaxes the exponent and localises the inequality, at the cost of rates that depend on unknown constants. Second, the constant $\mu$ is usually unknown, so step-size schedules such as the one in \cref{thm:sgd-decreasing} cannot be implemented exactly. In Chapter~4 we address the first issue for wide two-layer networks by showing that a local PL condition holds, with high probability over the initialisation, on a ball that contains the entire optimisation trajectory. The second issue we leave to adaptive methods, discussed in Chapter~6.
+
+\bibliographystyle{plainnat}
+\bibliography{06-references}
+
+\end{document}

@@ -1,0 +1,11 @@
+\begin{tikzpicture}[>=latex, node distance=2.5cm, auto]
+  \node (A) {$A$};
+  \node (B) [right of=A] {$B$};
+  \node (C) [below of=A] {$C$};
+  \node (D) [below of=B] {$D$};
+  \draw[->] (A) to node {$f$} (B);
+  \draw[->] (A) to node [swap] {$g$} (C);
+  \draw[->] (B) to node {$h$} (D);
+  \draw[->] (C) to node [swap] {$k$} (D);
+  \draw[->, dashed] (A) to node[pos=0.4] {$\phi$} (D);
+\end{tikzpicture}

@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{pstricks}
+\usepackage{pst-eucl}
+\begin{document}
+
+\begin{center}
+\begin{pspicture}(-0.5,-0.8)(6.5,4.5)
+  \psset{PointSymbol=*,dotscale=1.2}
+  \pstGeonode[PosAngle={-135,-45,90}](0,0){A}(6,0){B}(1.5,3.8){C}
+  \pstLineAB{A}{B}
+  \pstLineAB{B}{C}
+  \pstLineAB{C}{A}
+  \pstProjection{A}{B}{C}[H]
+  \psline[linestyle=dashed,linecolor=gray](C)(H)
+  \pstRightAngle[RightAngleSize=0.25]{C}{H}{B}
+  \pstMarkAngle[MarkAngleRadius=0.7,linecolor=red]{B}{A}{C}{$\alpha$}
+  \pstMarkAngle[MarkAngleRadius=0.6,linecolor=blue]{C}{B}{A}{$\beta$}
+  \pstMiddleAB[PointSymbol=none,PointName=none]{A}{B}{M}
+  \pstSegmentMark{A}{M}
+  \pstSegmentMark{M}{B}
+  \rput(3,-0.6){$c$}
+  \rput(4.1,2.1){$a$}
+  \rput(0.4,2){$b$}
+  \rput(1.75,1.5){$h$}
+\end{pspicture}
+\end{center}
+
+A triangle with its altitude from $C$.
+\end{document}

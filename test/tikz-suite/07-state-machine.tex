@@ -1,0 +1,14 @@
+\begin{tikzpicture}[->, >=stealth, shorten >=1pt, auto, node distance=2.8cm, semithick]
+  \tikzstyle{every state}=[fill=yellow!20, draw=black, text=black]
+  \node[initial, state] (A) {$q_0$};
+  \node[state] (B) [above right of=A] {$q_1$};
+  \node[state] (D) [below right of=A] {$q_2$};
+  \node[state, accepting] (C) [below right of=B] {$q_3$};
+  \path (A) edge node {0} (B)
+            edge node [swap] {1} (D)
+        (B) edge [loop above] node {0} (B)
+            edge node {1} (C)
+        (C) edge [bend left] node {0} (D)
+        (D) edge [loop below] node {1} (D)
+            edge [bend left] node {0} (C);
+\end{tikzpicture}

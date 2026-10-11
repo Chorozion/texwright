@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage{pstricks}
+\usepackage{pst-grad}
+\begin{document}
+\begin{center}
+\begin{pspicture}(0,0)(10,4)
+  \psframe[fillstyle=gradient,gradbegin=blue,gradend=cyan,gradmidpoint=1,linecolor=blue](0,0)(3,3)
+  \pscircle[fillstyle=gradient,gradbegin=red,gradend=yellow,gradangle=90,gradmidpoint=1](5,1.5){1.4}
+  \psframe[framearc=0.3,fillstyle=solid,fillcolor=green!30,shadow=true,shadowsize=4pt](7,0.3)(10,2.7)
+  \rput(8.5,1.5){\textbf{Shadowed}}
+  \rput(1.5,3.5){Linear}
+  \rput(5,3.5){Rotated}
+  \psellipse[fillstyle=crosshatch,hatchcolor=gray,hatchsep=3pt](8.5,3.4)(1.2,0.4)
+\end{pspicture}
+\end{center}
+\end{document}

@@ -1,0 +1,28 @@
+erDiagram
+    direction LR
+    AUTHOR ||--o{ POST : writes
+    POST ||--o{ COMMENT : receives
+    READER |o--o{ COMMENT : "leaves"
+    POST }o--o{ TAG : "tagged with"
+    COMMENT |o--o{ COMMENT : "replies to"
+    AUTHOR {
+        uuid id PK
+        string handle UK
+        string bio "Markdown"
+    }
+    POST {
+        uuid id PK
+        uuid author_id FK
+        string title
+        text body
+        timestamp published_at "null while draft"
+    }
+    COMMENT {
+        uuid id PK
+        uuid post_id FK
+        uuid parent_id FK "threading"
+        text body
+    }
+    TAG {
+        string slug PK
+    }

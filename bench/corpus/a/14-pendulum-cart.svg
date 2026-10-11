@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="340" viewBox="0 0 420 340" font-family="Times New Roman, Times, serif" font-size="18">
+  <defs>
+    <marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#000000"/>
+    </marker>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#777777" stroke-width="1.2"/>
+    </pattern>
+  </defs>
+  <rect width="420" height="340" fill="#ffffff"/>
+
+  <!-- track -->
+  <rect x="20" y="96" width="380" height="10" fill="url(#hatch)"/>
+  <line x1="20" y1="96" x2="400" y2="96" stroke="#000000" stroke-width="1.5"/>
+
+  <!-- cart body and wheels -->
+  <rect x="150" y="46" width="100" height="36" fill="#dfe8f3" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="170" cy="88" r="8" fill="#ffffff" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="230" cy="88" r="8" fill="#ffffff" stroke="#000000" stroke-width="1.5"/>
+  <text x="200" y="70" text-anchor="middle" font-style="italic">M</text>
+
+  <!-- pivot at bottom center of cart, shown below track via a slot -->
+  <line x1="200" y1="82" x2="200" y2="106" stroke="#000000" stroke-width="2"/>
+  <circle cx="200" cy="106" r="3.5" fill="#000000"/>
+
+  <!-- vertical reference -->
+  <line x1="200" y1="106" x2="200" y2="290" stroke="#666666" stroke-width="1" stroke-dasharray="5,4"/>
+
+  <!-- string at theta = 30 degrees: length 160 -> bob at (280, 244.6) -->
+  <line x1="200" y1="106" x2="280" y2="244.6" stroke="#000000" stroke-width="1.6"/>
+  <circle cx="280" cy="244.6" r="13" fill="#c0504d" stroke="#000000" stroke-width="1.2"/>
+  <text x="300" y="262" font-style="italic">m</text>
+  <text x="250" y="168" font-style="italic">ℓ</text>
+
+  <!-- angle arc -->
+  <path d="M 200 156 A 50 50 0 0 0 225 149.3" fill="none" stroke="#000000" stroke-width="1.2"/>
+  <text x="206" y="178" font-style="italic">θ</text>
+
+  <!-- x coordinate arrow from origin marker -->
+  <line x1="40" y1="30" x2="40" y2="40" stroke="#000000" stroke-width="1.2"/>
+  <line x1="40" y1="35" x2="196" y2="35" stroke="#000000" stroke-width="1.2" marker-end="url(#head)"/>
+  <line x1="200" y1="28" x2="200" y2="44" stroke="#000000" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="112" y="27" text-anchor="middle" font-style="italic">x</text>
+
+  <!-- gravity -->
+  <line x1="370" y1="150" x2="370" y2="210" stroke="#000000" stroke-width="1.5" marker-end="url(#head)"/>
+  <text x="380" y="190" font-style="italic">g</text>
+</svg>

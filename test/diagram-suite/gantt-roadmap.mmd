@@ -1,0 +1,15 @@
+gantt
+    title Product roadmap 2026
+    dateFormat YYYY-MM-DD
+    axisFormat %b
+    section Platform
+        Auth rewrite        :done, auth, 2026-01-05, 6w
+        Billing v2          :crit, bill, after auth, 10w
+        Usage metering      :meter, after auth, 8w
+    section Mobile
+        iOS beta            :ios, 2026-02-02, 12w
+        Android beta        :android, 2026-03-16, 12w
+        Public launch       :milestone, crit, after ios android, 0d
+    section Growth
+        Referral program    :ref, 2026-05-04, 9w
+        Pricing experiments :active, 2026-04-06, 16w

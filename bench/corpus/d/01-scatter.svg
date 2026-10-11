@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="380" viewBox="0 0 560 380" font-family="Helvetica, Arial, sans-serif" font-size="12">
+  <rect x="0" y="0" width="560" height="380" fill="#ffffff"/>
+  <!-- gridlines -->
+  <g stroke="#e5e5e5" stroke-width="1">
+    <line x1="127.5" y1="30" x2="127.5" y2="320"/>
+    <line x1="185.0" y1="30" x2="185.0" y2="320"/>
+    <line x1="242.5" y1="30" x2="242.5" y2="320"/>
+    <line x1="300.0" y1="30" x2="300.0" y2="320"/>
+    <line x1="357.5" y1="30" x2="357.5" y2="320"/>
+    <line x1="415.0" y1="30" x2="415.0" y2="320"/>
+    <line x1="472.5" y1="30" x2="472.5" y2="320"/>
+    <line x1="70" y1="262.0" x2="530" y2="262.0"/>
+    <line x1="70" y1="204.0" x2="530" y2="204.0"/>
+    <line x1="70" y1="146.0" x2="530" y2="146.0"/>
+    <line x1="70" y1="88.0" x2="530" y2="88.0"/>
+  </g>
+  <!-- plot frame -->
+  <rect x="70" y="30" width="460" height="290" fill="none" stroke="#333333" stroke-width="1"/>
+  <!-- x ticks and labels -->
+  <g stroke="#333333" stroke-width="1">
+    <line x1="70.0" y1="320" x2="70.0" y2="325"/>
+    <line x1="127.5" y1="320" x2="127.5" y2="325"/>
+    <line x1="185.0" y1="320" x2="185.0" y2="325"/>
+    <line x1="242.5" y1="320" x2="242.5" y2="325"/>
+    <line x1="300.0" y1="320" x2="300.0" y2="325"/>
+    <line x1="357.5" y1="320" x2="357.5" y2="325"/>
+    <line x1="415.0" y1="320" x2="415.0" y2="325"/>
+    <line x1="472.5" y1="320" x2="472.5" y2="325"/>
+    <line x1="530.0" y1="320" x2="530.0" y2="325"/>
+  </g>
+  <g fill="#333333" text-anchor="middle">
+    <text x="70.0" y="339">1.5</text>
+    <text x="127.5" y="339">2.0</text>
+    <text x="185.0" y="339">2.5</text>
+    <text x="242.5" y="339">3.0</text>
+    <text x="300.0" y="339">3.5</text>
+    <text x="357.5" y="339">4.0</text>
+    <text x="415.0" y="339">4.5</text>
+    <text x="472.5" y="339">5.0</text>
+    <text x="530.0" y="339">5.5</text>
+  </g>
+  <!-- y ticks and labels -->
+  <g stroke="#333333" stroke-width="1">
+    <line x1="65" y1="320.0" x2="70" y2="320.0"/>
+    <line x1="65" y1="262.0" x2="70" y2="262.0"/>
+    <line x1="65" y1="204.0" x2="70" y2="204.0"/>
+    <line x1="65" y1="146.0" x2="70" y2="146.0"/>
+    <line x1="65" y1="88.0" x2="70" y2="88.0"/>
+    <line x1="65" y1="30.0" x2="70" y2="30.0"/>
+  </g>
+  <g fill="#333333" text-anchor="end">
+    <text x="61" y="324.0">10</text>
+    <text x="61" y="266.0">15</text>
+    <text x="61" y="208.0">20</text>
+    <text x="61" y="150.0">25</text>
+    <text x="61" y="92.0">30</text>
+    <text x="61" y="34.0">35</text>
+  </g>
+  <!-- axis titles -->
+  <text x="300" y="365" text-anchor="middle" fill="#111111" font-size="13">Weight (1000 lb)</text>
+  <text x="22" y="175" text-anchor="middle" fill="#111111" font-size="13" transform="rotate(-90 22 175)">Fuel economy (mpg)</text>
+  <!-- fitted simple regression line, clipped to the plot region -->
+  <line x1="70.0" y1="96.5" x2="484.6" y2="320.0" stroke="#555555" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <!-- automatic transmission (am = 0) -->
+  <g fill="#d62728" fill-opacity="0.85" stroke="#7f1416" stroke-width="0.8">
+    <circle cx="267.2" cy="187.8" r="4"/>
+    <circle cx="293.1" cy="219.1" r="4"/>
+    <circle cx="295.4" cy="226.0" r="4"/>
+    <circle cx="308.0" cy="270.1" r="4"/>
+    <circle cx="264.4" cy="153.0" r="4"/>
+    <circle cx="259.8" cy="171.5" r="4"/>
+    <circle cx="293.1" cy="213.3" r="4"/>
+    <circle cx="293.1" cy="229.5" r="4"/>
+    <circle cx="365.6" cy="245.8" r="4"/>
+    <circle cx="326.4" cy="235.3" r="4"/>
+    <circle cx="332.2" cy="259.7" r="4"/>
+    <circle cx="501.2" cy="315.4" r="4"/>
+    <circle cx="521.3" cy="315.4" r="4"/>
+    <circle cx="512.2" cy="265.5" r="4"/>
+    <circle cx="181.0" cy="186.6" r="4"/>
+    <circle cx="302.3" cy="256.2" r="4"/>
+    <circle cx="292.5" cy="259.7" r="4"/>
+    <circle cx="339.1" cy="281.7" r="4"/>
+    <circle cx="339.7" cy="213.3" r="4"/>
+  </g>
+  <!-- manual transmission (am = 1) -->
+  <g fill="#1f77b4" fill-opacity="0.85" stroke="#0d3a5c" stroke-width="0.8">
+    <rect x="194.8" y="188.4" width="8" height="8"/>
+    <rect x="224.1" y="188.4" width="8" height="8"/>
+    <rect x="160.3" y="167.5" width="8" height="8"/>
+    <rect x="146.5" y="56.2" width="8" height="8"/>
+    <rect x="79.2" y="79.4" width="8" height="8"/>
+    <rect x="104.5" y="38.8" width="8" height="8"/>
+    <rect x="116.0" y="115.3" width="8" height="8"/>
+    <rect x="139.6" y="130.4" width="8" height="8"/>
+    <rect x="67.5" y="79.4" width="8" height="8"/>
+    <rect x="258.0" y="248.7" width="8" height="8"/>
+    <rect x="212.1" y="203.5" width="8" height="8"/>
+    <rect x="304.0" y="258.0" width="8" height="8"/>
+    <rect x="213.2" y="183.8" width="8" height="8"/>
+  </g>
+  <!-- legend -->
+  <g transform="translate(372 44)">
+    <rect x="0" y="0" width="146" height="66" fill="#ffffff" stroke="#999999" stroke-width="0.8"/>
+    <circle cx="14" cy="16" r="4" fill="#d62728" stroke="#7f1416" stroke-width="0.8"/>
+    <text x="26" y="20" fill="#222222">Automatic (am = 0)</text>
+    <rect x="10" y="30" width="8" height="8" fill="#1f77b4" stroke="#0d3a5c" stroke-width="0.8"/>
+    <text x="26" y="38" fill="#222222">Manual (am = 1)</text>
+    <line x1="6" y1="52" x2="22" y2="52" stroke="#555555" stroke-width="1.6" stroke-dasharray="6 4"/>
+    <text x="26" y="56" fill="#222222">OLS fit, mpg ~ wt</text>
+  </g>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect width="800" height="400" fill="#ffffff"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555555"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3f8f5a"/>
+    </marker>
+  </defs>
+
+  <!-- clients -->
+  <rect x="20" y="168" width="110" height="44" rx="6" fill="#f4f4f4" stroke="#666666"/>
+  <text x="75" y="195" text-anchor="middle">Clients</text>
+  <line x1="130" y1="190" x2="176" y2="190" stroke="#555555" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- gateway -->
+  <rect x="178" y="140" width="150" height="100" rx="6" fill="#ece8f6" stroke="#6a5aa8" stroke-width="1.5"/>
+  <text x="253" y="166" text-anchor="middle" font-weight="bold">API gateway</text>
+  <text x="253" y="188" text-anchor="middle" font-size="11">weighted routes</text>
+  <text x="253" y="204" text-anchor="middle" font-size="11">per path and method</text>
+  <text x="253" y="226" text-anchor="middle" font-size="10" fill="#555555">controller raises weight</text>
+
+  <!-- routes -->
+  <path d="M328,165 C370,130 380,90 420,86" fill="none" stroke="#2f6db5" stroke-width="2" marker-end="url(#a)"/>
+  <text x="340" y="70" font-size="11" fill="#2f6db5">GET /api/v2/products</text>
+  <text x="340" y="84" font-size="11" fill="#2f6db5">weight 10%</text>
+  <path d="M328,215 C370,250 380,282 420,284" fill="none" stroke="#c77c2a" stroke-width="2" marker-end="url(#a)"/>
+  <text x="300" y="300" font-size="11" fill="#c77c2a">remaining 90% of reads</text>
+  <text x="300" y="314" font-size="11" fill="#c77c2a">and all writes</text>
+
+  <!-- new service -->
+  <rect x="422" y="60" width="150" height="52" rx="6" fill="#e3eefa" stroke="#2f6db5" stroke-width="1.5"/>
+  <text x="497" y="83" text-anchor="middle">catalog-service</text>
+  <text x="497" y="100" text-anchor="middle" font-size="11" fill="#555555">new, read path</text>
+  <line x1="572" y1="86" x2="618" y2="86" stroke="#555555" stroke-width="1.3" marker-end="url(#a)"/>
+
+  <!-- monolith -->
+  <rect x="422" y="258" width="150" height="52" rx="6" fill="#fdf0e1" stroke="#c77c2a" stroke-width="1.5"/>
+  <text x="497" y="281" text-anchor="middle">core-app</text>
+  <text x="497" y="298" text-anchor="middle" font-size="11" fill="#555555">system of record</text>
+  <line x1="572" y1="284" x2="618" y2="284" stroke="#555555" stroke-width="1.3" marker-end="url(#a)"/>
+
+  <!-- catalog DB -->
+  <path d="M622,64 v40 a62,9 0 0 0 124,0 v-40" fill="#e9eef3" stroke="#5b7290" stroke-width="1.4"/>
+  <ellipse cx="684" cy="64" rx="62" ry="9" fill="#f5f8fb" stroke="#5b7290" stroke-width="1.4"/>
+  <text x="684" y="92" text-anchor="middle" font-size="12">catalog DB</text>
+  <text x="684" y="107" text-anchor="middle" font-size="10" fill="#555555">read model</text>
+
+  <!-- core DB -->
+  <path d="M622,262 v40 a62,9 0 0 0 124,0 v-40" fill="#e9eef3" stroke="#5b7290" stroke-width="1.4"/>
+  <ellipse cx="684" cy="262" rx="62" ry="9" fill="#f5f8fb" stroke="#5b7290" stroke-width="1.4"/>
+  <text x="684" y="290" text-anchor="middle" font-size="12">core DB</text>
+  <text x="684" y="305" text-anchor="middle" font-size="10" fill="#555555">products, variants, ...</text>
+
+  <!-- CDC pipeline -->
+  <line x1="684" y1="252" x2="684" y2="232" stroke="#3f8f5a" stroke-width="1.6" marker-end="url(#g)"/>
+  <rect x="624" y="196" width="120" height="34" rx="6" fill="#e5f4ea" stroke="#3f8f5a"/>
+  <text x="684" y="217" text-anchor="middle" font-size="12">Debezium (WAL)</text>
+  <line x1="684" y1="196" x2="684" y2="178" stroke="#3f8f5a" stroke-width="1.6" marker-end="url(#g)"/>
+  <rect x="624" y="142" width="120" height="34" rx="6" fill="#e5f4ea" stroke="#3f8f5a"/>
+  <text x="684" y="157" text-anchor="middle" font-size="11">Kafka</text>
+  <text x="684" y="170" text-anchor="middle" font-size="10">cdc.core.products</text>
+  <line x1="684" y1="142" x2="684" y2="120" stroke="#3f8f5a" stroke-width="1.6" marker-end="url(#g)"/>
+  <text x="752" y="190" font-size="11" fill="#3f8f5a">CDC</text>
+
+  <!-- footnote -->
+  <text x="20" y="370" font-size="11" fill="#555555">Step 3 (read shift) shown. At step 4 the service becomes the system of record and CDC runs in the</text>
+  <text x="20" y="386" font-size="11" fill="#555555">opposite direction, keeping the legacy tables as a read-only replica until their last reader is removed.</text>
+</svg>

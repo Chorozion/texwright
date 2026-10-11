@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage{pstricks,pst-plot}
+\begin{document}
+\begin{figure}[htbp]
+\centering
+\begin{pspicture}(-0.5,-0.5)(6,4.5)
+  \psaxes[labels=none,ticks=none]{->}(0,0)(-0.3,-0.3)(5.5,4)
+  \psset{linewidth=1.5pt,arrowscale=1.5}
+  \psline[linecolor=blue]{->}(0,0)(3,1)
+  \psline[linecolor=red]{->}(3,1)(4,3.5)
+  \psline[linecolor=green!60!black]{->}(0,0)(4,3.5)
+  \psline[linewidth=0.6pt,linestyle=dashed]{->}(0,0)(1,2.5)
+  \psline[linewidth=0.6pt,linestyle=dashed](1,2.5)(4,3.5)
+  \rput[tl](1.6,0.4){$\vec{u}$}
+  \rput[l](3.7,2.1){$\vec{v}$}
+  \rput[br](1.9,2.2){$\vec{u}+\vec{v}$}
+  \uput[180](0.5,1.4){$\vec{v}$}
+  \uput[d](5.5,0){$x$}
+  \uput[l](0,4){$y$}
+\end{pspicture}
+\caption{The parallelogram rule for adding vectors.}\label{fig:vec}
+\end{figure}
+\end{document}

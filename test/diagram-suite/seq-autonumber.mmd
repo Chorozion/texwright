@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant W as Worker
+    participant Q as Queue
+    participant D as Database
+    loop Every 5 seconds
+        W->>Q: Poll for jobs
+        Q-->>W: Job batch
+        opt Batch is not empty
+            loop For each job
+                W->>D: Write result
+                D-->>W: ack
+            end
+            W->>Q: Delete processed jobs
+        end
+    end
+    break Queue unreachable
+        W->>W: Back off and retry
+    end

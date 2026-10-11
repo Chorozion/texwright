@@ -1,0 +1,15 @@
+stateDiagram-v2
+    direction LR
+    state "CLOSED" as Closed
+    state "LISTEN" as Listen
+    state "SYN RECEIVED" as SynRcvd
+    state "SYN SENT" as SynSent
+    state "ESTABLISHED" as Est
+    [*] --> Closed
+    Closed --> Listen : passive open
+    Closed --> SynSent : active open / SYN
+    Listen --> SynRcvd : SYN / SYN+ACK
+    SynSent --> Est : SYN+ACK / ACK
+    SynRcvd --> Est : ACK
+    Est --> Closed : close
+    Listen --> Closed : close

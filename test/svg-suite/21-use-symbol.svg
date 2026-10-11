@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="220" viewBox="0 0 400 220">
+  <defs>
+    <symbol id="star" viewBox="0 0 100 100"><path d="M50 5 L61 39 L97 39 L68 61 L79 95 L50 74 L21 95 L32 61 L3 39 L39 39 Z"/></symbol>
+  </defs>
+  <use xlink:href="#star" x="10" y="10" width="100" height="100" fill="#fdcb6e" stroke="#e17055" stroke-width="3"/>
+  <use href="#star" x="130" y="60" width="60" height="60" fill="#74b9ff"/>
+  <use href="#star" x="210" y="20" width="180" height="180" fill="#a29bfe" transform="rotate(10 300 110)"/>
+</svg>

@@ -1,0 +1,28 @@
+\documentclass{article}
+\usepackage{pstricks}
+\usepackage{pst-tree}
+\begin{document}
+\begin{figure}[h]
+\centering
+\pstree[levelsep=1.5cm,treesep=0.8cm,nodesep=2pt]{\Tcircle{8}}{%
+  \pstree{\Tcircle{3}}{%
+    \Tcircle{1}
+    \pstree{\Tcircle{6}}{\Tcircle{4} \Tcircle{7}}
+  }
+  \pstree{\Tcircle{10}}{%
+    \Tn
+    \pstree{\Tcircle{14}}{\Tcircle{13} \Tn}
+  }
+}
+\caption{A binary search tree.}
+\label{fig:bst}
+\end{figure}
+
+\begin{center}
+\psset{treemode=R,levelsep=2.5cm,nodesep=3pt}
+\pstree{\TR{Start}}{%
+  \pstree{\TR{Heads}\naput{$\frac12$}}{\TR{HH}\naput{$\frac12$} \TR{HT}\nbput{$\frac12$}}
+  \pstree{\TR{Tails}\nbput{$\frac12$}}{\TR{TH}\naput{$\frac12$} \TR{TT}\nbput{$\frac12$}}
+}
+\end{center}
+\end{document}

@@ -1,0 +1,60 @@
+\documentclass{article}
+\usepackage[edges]{forest}
+\begin{document}
+
+\begin{figure}[h]
+\begin{forest}
+  for tree={
+    font=\ttfamily,
+    grow'=0,
+    child anchor=west,
+    parent anchor=south,
+    anchor=west,
+    calign=first,
+    edge path={
+      \noexpand\path [draw, \forestoption{edge}]
+      (!u.south west) +(7.5pt,0) |- node[fill,inner sep=1.25pt] {} (.child anchor)\forestoption{edge label};
+    },
+    before typesetting nodes={
+      if n=1
+        {insert before={[,phantom]}}
+        {}
+    },
+    fit=band,
+    before computing xy={l=15pt},
+  }
+[project/
+  [src/
+    [main.py]
+    [utils.py]
+    [models/
+      [user.py]
+      [order.py]
+    ]
+  ]
+  [tests/
+    [test\_main.py]
+  ]
+  [README.md]
+  [requirements.txt]
+]
+\end{forest}
+\caption{Project layout.}
+\end{figure}
+
+\begin{figure}[h]
+\begin{forest}
+  for tree={folder, grow'=0, draw, rounded corners, font=\sffamily\small}
+  [docs
+    [guide.md]
+    [api
+      [index.md]
+      [auth.md]
+    ]
+    [changelog.md]
+  ]
+\end{forest}
+\caption{The same with the folder style of the edges library.}
+\end{figure}
+
+\end{document}

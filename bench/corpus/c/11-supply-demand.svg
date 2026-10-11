@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 390" width="560" height="390" font-family="Georgia, 'Times New Roman', serif" font-size="14">
+  <rect width="560" height="390" fill="#ffffff"/>
+  <!-- surplus areas at E1 -->
+  <polygon points="70,80 70,230 280,230" fill="#cfe3f5"/>
+  <polygon points="70,230 70,305 280,230" fill="#f7dfc6"/>
+  <text x="112" y="200" fill="#1d4f7a" font-size="15">CS</text>
+  <text x="112" y="258" fill="#8a4b12" font-size="15">PS</text>
+  <!-- axes -->
+  <g stroke="#222" stroke-width="1.5">
+    <line x1="70" y1="330" x2="505" y2="330"/>
+    <line x1="70" y1="330" x2="70" y2="22"/>
+  </g>
+  <polygon points="505,326 513,330 505,334" fill="#222"/>
+  <polygon points="66,22 70,14 74,22" fill="#222"/>
+  <!-- ticks -->
+  <g stroke="#222" stroke-width="1">
+    <line x1="140" y1="330" x2="140" y2="335"/>
+    <line x1="210" y1="330" x2="210" y2="335"/>
+    <line x1="280" y1="330" x2="280" y2="335"/>
+    <line x1="350" y1="330" x2="350" y2="335"/>
+    <line x1="420" y1="330" x2="420" y2="335"/>
+    <line x1="490" y1="330" x2="490" y2="335"/>
+    <line x1="65" y1="280" x2="70" y2="280"/>
+    <line x1="65" y1="230" x2="70" y2="230"/>
+    <line x1="65" y1="180" x2="70" y2="180"/>
+    <line x1="65" y1="130" x2="70" y2="130"/>
+    <line x1="65" y1="80" x2="70" y2="80"/>
+    <line x1="65" y1="30" x2="70" y2="30"/>
+  </g>
+  <g fill="#222" font-size="12" text-anchor="middle">
+    <text x="70" y="350">0</text>
+    <text x="140" y="350">20</text>
+    <text x="210" y="350">40</text>
+    <text x="280" y="350">60</text>
+    <text x="350" y="350">80</text>
+    <text x="420" y="350">100</text>
+    <text x="490" y="350">120</text>
+  </g>
+  <g fill="#222" font-size="12" text-anchor="end">
+    <text x="60" y="284">10</text>
+    <text x="60" y="234">20</text>
+    <text x="60" y="184">30</text>
+    <text x="60" y="134">40</text>
+    <text x="60" y="84">50</text>
+    <text x="60" y="34">60</text>
+  </g>
+  <text x="290" y="378" text-anchor="middle" fill="#222">Quantity (Q)</text>
+  <text x="22" y="180" text-anchor="middle" fill="#222" transform="rotate(-90 22 180)">Price (P)</text>
+  <!-- equilibrium guides -->
+  <g stroke="#666" stroke-width="1" stroke-dasharray="4 4">
+    <line x1="280" y1="230" x2="280" y2="330"/>
+    <line x1="70" y1="205" x2="350" y2="205"/>
+    <line x1="350" y1="205" x2="350" y2="330"/>
+  </g>
+  <!-- curves -->
+  <line x1="70" y1="80" x2="420" y2="330" stroke="#1d4f7a" stroke-width="2.5"/>
+  <line x1="105" y1="30" x2="490" y2="305" stroke="#1d4f7a" stroke-width="2.5" stroke-dasharray="9 5"/>
+  <line x1="70" y1="305" x2="490" y2="155" stroke="#b5481c" stroke-width="2.5"/>
+  <!-- curve labels -->
+  <text x="398" y="298" fill="#1d4f7a" font-style="italic">D&#8321;</text>
+  <text x="474" y="284" fill="#1d4f7a" font-style="italic">D&#8322;</text>
+  <text x="496" y="152" fill="#b5481c" font-style="italic">S</text>
+  <!-- shift arrow -->
+  <g stroke="#1d4f7a" stroke-width="1.5" fill="none">
+    <line x1="152" y1="128" x2="226" y2="128"/>
+    <polyline points="218,123 226,128 218,133"/>
+  </g>
+  <!-- equilibria -->
+  <circle cx="280" cy="230" r="5" fill="#222"/>
+  <circle cx="350" cy="205" r="5" fill="#222"/>
+  <text x="288" y="250" fill="#222">E&#8321;</text>
+  <text x="356" y="196" fill="#222">E&#8322;</text>
+</svg>

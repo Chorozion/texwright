@@ -1,0 +1,15 @@
+stateDiagram-v2
+    [*] --> Idle
+    Idle : Waiting for a coin
+    Idle --> Selecting : coin inserted
+    Selecting --> Idle : refund
+    Selecting --> Vending : item chosen
+    state Vending {
+        direction LR
+        [*] --> Dispensing
+        Dispensing --> GivingChange
+        GivingChange --> [*]
+    }
+    Vending --> Idle
+    Selecting --> Selecting : more coins
+    note left of Selecting : Credit shown\non the display

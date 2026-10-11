@@ -1,0 +1,60 @@
+\documentclass[11pt]{letter}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[hidelinks]{hyperref}
+
+\signature{Priya Raman, Ph.D.}
+\address{Priya Raman, Ph.D.\\
+  Department of Systems Biology\\
+  Northfield Institute of Technology\\
+  220 Carver Hall, Northfield, MN 55057\\
+  \href{mailto:praman@northfield-tech.example.edu}{praman@northfield-tech.example.edu}\\
+  (507) 555-0186}
+
+\date{October 7, 2026}
+
+\begin{document}
+
+\begin{letter}{Faculty Search Committee\\
+  Department of Biological Sciences\\
+  Lakeshore State University\\
+  1400 Harbor Drive\\
+  Duluth, MN 55812}
+
+\opening{Dear Members of the Search Committee,}
+
+I am writing to apply for the position of Assistant Professor in Quantitative and Computational Biology (Position \#F26-114). I am currently a postdoctoral fellow in Dr.~Samuel Okoye's group at the Northfield Institute of Technology, where I develop stochastic models and statistical methods to understand how cells make reliable decisions from noisy gene expression. My research combines single-cell measurements with mathematical modeling, and I would bring to Lakeshore State a research program that bridges the department's strengths in microbial physiology and its new initiative in data science.
+
+\textbf{Research.} Genetically identical cells in the same environment often behave differently: some bacteria in a population enter a dormant state that survives antibiotics while their siblings die. My doctoral work at the University of Wisconsin--Madison showed that this persistence is controlled not only by the average level of a toxin--antitoxin system, but by the timing of transcriptional bursts. I developed a hybrid master-equation model of bursty expression that predicts the fraction of persister cells from measurable burst statistics, and validated it with time-lapse microscopy of more than 40,000 \emph{E.~coli} lineages. This work appeared in \emph{PNAS} (2023) and \emph{PLOS Computational Biology} (2024).
+
+As a postdoc I have extended this approach to multi-gene circuits using single-cell RNA sequencing. Snapshot data lose the time ordering of events, so I built a likelihood-free inference method that fits stochastic network models to scRNA-seq distributions, together with an open-source Python package, \texttt{burstfit}, now used by four other groups. A first-author paper describing the method is under revision at \emph{Cell Systems}.
+
+At Lakeshore State I plan to pursue three connected directions over the first five years:
+\begin{enumerate}
+  \item measuring how the timing of gene expression bursts shapes antibiotic tolerance in clinical isolates, in collaboration with the department's microbiology faculty;
+  \item developing inference methods that combine snapshot and time-lapse data to identify regulatory interactions, with an eye to methods that undergraduates can use and extend; and
+  \item testing whether the same design principles explain cell-fate variability in freshwater cyanobacteria, which would connect naturally with the university's Lake Superior field station.
+\end{enumerate}
+The first direction is the basis of an NIH K99/R00 application that received a fundable score in the June 2026 round, and I have preliminary data for an NSF CAREER proposal on the third. My research statement describes these aims and their funding plan in detail.
+
+\textbf{Teaching and mentoring.} I enjoy teaching quantitative ideas to biologists who did not expect to like them. At Wisconsin I was the teaching assistant for Introductory Biology for four semesters and received the department's Outstanding TA Award in 2021. I also co-designed and taught a six-week module, ``Modeling for Biologists,'' which introduced differential equations and simulation through Python notebooks built around real lab data; students' scores on a pre/post concept inventory rose by an average of 31 percentage points. At Lakeshore State I would be glad to teach introductory biology, biostatistics, or genetics, and to develop an upper-level course in mathematical modeling of biological systems that could serve both biology and mathematics majors.
+
+I have mentored nine undergraduates in research, six of them first-generation college students. Four have co-authored papers or conference posters, and three are now in Ph.D. programs. Lakeshore State's emphasis on undergraduate research is one of the main reasons I am applying. Computational projects are an especially good entry point for students, since they need only a laptop and curiosity, and I would design my lab so that every undergraduate owns a well-defined piece of a larger question.
+
+\textbf{Service and community.} I co-organize the Northfield Quantitative Biology seminar series and have reviewed for \emph{PLOS Computational Biology}, \emph{Bioinformatics}, and \emph{Physical Biology}. Since 2022 I have volunteered with a regional summer program that brings high-school students from rural Minnesota to campus for a week of hands-on science, and I would welcome the chance to connect a similar program to Lakeshore State.
+
+I would be delighted to contribute to a department that values both rigorous research and close work with students. Thank you for considering my application. My CV, research and teaching statements, and a statement on mentoring and inclusion are enclosed, and three letters of reference will arrive separately. I would be happy to provide any further information.
+
+\closing{Sincerely,}
+
+\encl{Curriculum vitae\\
+  Research statement\\
+  Teaching statement\\
+  Statement on mentoring and inclusive excellence\\
+  Representative publications (3)}
+
+\end{letter}
+
+\end{document}

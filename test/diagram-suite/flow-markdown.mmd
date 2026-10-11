@@ -1,0 +1,7 @@
+flowchart TD
+    a["`**Ingest**
+    read files from S3`"] --> b["`**Transform**
+    normalise *units* and timestamps`"]
+    b --> c["This is a much longer label that a model might write when it describes a step in detail"]
+    c --> d[Output<br/>two lines]
+    a & b --> e[Audit log]

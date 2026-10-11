@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=12pt,
+    enlarge x limits=0.2,
+    ymin=0,
+    ylabel={Revenue (\$M)},
+    symbolic x coords={Q1,Q2,Q3,Q4},
+    xtick=data,
+    nodes near coords,
+    legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-1},
+    width=9cm, height=6cm,
+]
+\addplot coordinates {(Q1,12) (Q2,15) (Q3,19) (Q4,23)};
+\addplot coordinates {(Q1,10) (Q2,13) (Q3,14) (Q4,18)};
+\legend{2024, 2023}
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 480" width="840" height="480" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect width="840" height="480" fill="#ffffff"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555555"/>
+    </marker>
+  </defs>
+
+  <!-- clients and gateway -->
+  <rect x="330" y="14" width="180" height="38" rx="6" fill="#f4f4f4" stroke="#666666"/>
+  <text x="420" y="38" text-anchor="middle">Web and mobile clients</text>
+  <line x1="420" y1="52" x2="420" y2="74" stroke="#555555" stroke-width="1.5" marker-end="url(#a)"/>
+  <rect x="120" y="76" width="600" height="40" rx="6" fill="#ece8f6" stroke="#6a5aa8" stroke-width="1.5"/>
+  <text x="420" y="94" text-anchor="middle" font-weight="bold">API gateway</text>
+  <text x="420" y="109" text-anchor="middle" font-size="11" fill="#555555">routing, authentication, rate limits, traffic splitting</text>
+
+  <!-- gateway to services -->
+  <g stroke="#555555" stroke-width="1.3">
+    <line x1="160" y1="116" x2="78"  y2="158" marker-end="url(#a)"/>
+    <line x1="230" y1="116" x2="192" y2="158" marker-end="url(#a)"/>
+    <line x1="320" y1="116" x2="306" y2="158" marker-end="url(#a)"/>
+    <line x1="420" y1="116" x2="420" y2="158" marker-end="url(#a)"/>
+    <line x1="520" y1="116" x2="534" y2="158" marker-end="url(#a)"/>
+    <line x1="610" y1="116" x2="648" y2="158" marker-end="url(#a)"/>
+    <line x1="690" y1="116" x2="762" y2="158" marker-end="url(#a)"/>
+  </g>
+
+  <!-- services -->
+  <g text-anchor="middle">
+    <rect x="28"  y="160" width="100" height="50" rx="6" fill="#e3eefa" stroke="#2f6db5" stroke-width="1.5"/><text x="78"  y="190">Catalog</text>
+    <rect x="142" y="160" width="100" height="50" rx="6" fill="#e3eefa" stroke="#2f6db5" stroke-width="1.5"/><text x="192" y="190">Inventory</text>
+    <rect x="256" y="160" width="100" height="50" rx="6" fill="#e3eefa" stroke="#2f6db5" stroke-width="1.5"/><text x="306" y="190">Pricing</text>
+    <rect x="370" y="160" width="100" height="50" rx="6" fill="#e3eefa" stroke="#2f6db5" stroke-width="1.5"/><text x="420" y="190">Cart</text>
+    <rect x="484" y="160" width="100" height="50" rx="6" fill="#e3eefa" stroke="#2f6db5" stroke-width="1.5"/><text x="534" y="190">Orders</text>
+    <rect x="598" y="160" width="100" height="50" rx="6" fill="#e3eefa" stroke="#2f6db5" stroke-width="1.5"/><text x="648" y="190">Payments</text>
+    <rect x="712" y="160" width="100" height="50" rx="6" fill="#fdf0e1" stroke="#c77c2a" stroke-width="1.5"/><text x="762" y="182">core-app</text><text x="762" y="199" font-size="11">(reduced)</text>
+  </g>
+
+  <!-- service to datastore -->
+  <g stroke="#555555" stroke-width="1.2">
+    <line x1="78"  y1="210" x2="78"  y2="232"/>
+    <line x1="192" y1="210" x2="192" y2="232"/>
+    <line x1="306" y1="210" x2="306" y2="232"/>
+    <line x1="420" y1="210" x2="420" y2="232"/>
+    <line x1="534" y1="210" x2="534" y2="232"/>
+    <line x1="648" y1="210" x2="648" y2="232"/>
+    <line x1="762" y1="210" x2="762" y2="232"/>
+  </g>
+
+  <!-- datastores (cylinders) -->
+  <g stroke="#5b7290" stroke-width="1.3">
+    <path d="M40,240 v36 a38,8 0 0 0 76,0 v-36" fill="#e9eef3"/><ellipse cx="78" cy="240" rx="38" ry="8" fill="#f5f8fb"/>
+    <path d="M154,240 v36 a38,8 0 0 0 76,0 v-36" fill="#e9eef3"/><ellipse cx="192" cy="240" rx="38" ry="8" fill="#f5f8fb"/>
+    <path d="M268,240 v36 a38,8 0 0 0 76,0 v-36" fill="#e9eef3"/><ellipse cx="306" cy="240" rx="38" ry="8" fill="#f5f8fb"/>
+    <path d="M382,240 v36 a38,8 0 0 0 76,0 v-36" fill="#e9eef3"/><ellipse cx="420" cy="240" rx="38" ry="8" fill="#f5f8fb"/>
+    <path d="M496,240 v36 a38,8 0 0 0 76,0 v-36" fill="#e9eef3"/><ellipse cx="534" cy="240" rx="38" ry="8" fill="#f5f8fb"/>
+    <path d="M610,240 v36 a38,8 0 0 0 76,0 v-36" fill="#e9eef3"/><ellipse cx="648" cy="240" rx="38" ry="8" fill="#f5f8fb"/>
+    <path d="M724,240 v36 a38,8 0 0 0 76,0 v-36" fill="#e9eef3"/><ellipse cx="762" cy="240" rx="38" ry="8" fill="#f5f8fb"/>
+  </g>
+  <g font-size="10" text-anchor="middle" fill="#333333">
+    <text x="78"  y="268">PostgreSQL</text>
+    <text x="192" y="268">PostgreSQL</text>
+    <text x="306" y="268">PostgreSQL</text>
+    <text x="420" y="264">KV store</text><text x="420" y="277">(TBD)</text>
+    <text x="534" y="268">PostgreSQL</text>
+    <text x="648" y="264">PostgreSQL</text><text x="648" y="277">PCI zone</text>
+    <text x="762" y="264">PostgreSQL</text><text x="762" y="277">(legacy)</text>
+  </g>
+
+  <!-- connections to Kafka -->
+  <g stroke="#3f8f5a" stroke-width="1.3">
+    <line x1="78"  y1="286" x2="78"  y2="326" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="192" y1="286" x2="192" y2="326" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="306" y1="286" x2="306" y2="326" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="420" y1="286" x2="420" y2="326" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="534" y1="286" x2="534" y2="326" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="648" y1="286" x2="648" y2="326" marker-start="url(#a)" marker-end="url(#a)"/>
+    <line x1="762" y1="286" x2="762" y2="326" marker-start="url(#a)" marker-end="url(#a)"/>
+  </g>
+
+  <!-- Kafka bus -->
+  <rect x="28" y="328" width="784" height="44" rx="8" fill="#e5f4ea" stroke="#3f8f5a" stroke-width="1.8"/>
+  <text x="420" y="347" text-anchor="middle" font-weight="bold" fill="#24603a">Kafka</text>
+  <text x="420" y="363" text-anchor="middle" font-size="11" fill="#24603a">domain events via transactional outbox; CDC topics from core-app during migration</text>
+
+  <!-- downstream consumers -->
+  <g stroke="#3f8f5a" stroke-width="1.2">
+    <line x1="190" y1="372" x2="190" y2="404" marker-end="url(#a)"/>
+    <line x1="420" y1="372" x2="420" y2="404" marker-end="url(#a)"/>
+    <line x1="650" y1="372" x2="650" y2="404" marker-end="url(#a)"/>
+  </g>
+  <g text-anchor="middle" font-size="12">
+    <rect x="110" y="406" width="160" height="34" rx="6" fill="#f4f4f4" stroke="#666666"/><text x="190" y="428">Search indexer</text>
+    <rect x="340" y="406" width="160" height="34" rx="6" fill="#f4f4f4" stroke="#666666"/><text x="420" y="428">Notifications</text>
+    <rect x="570" y="406" width="160" height="34" rx="6" fill="#f4f4f4" stroke="#666666"/><text x="650" y="428">Finance data pipeline</text>
+  </g>
+
+  <text x="28" y="468" font-size="11" fill="#555555">Synchronous gRPC calls (for example Orders to Inventory, Pricing and Payments in the checkout saga) are not drawn.</text>
+</svg>

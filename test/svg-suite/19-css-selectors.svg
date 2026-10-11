@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220">
+  <style>
+    .chart rect { fill: #74b9ff; }
+    .chart rect.hi { fill: #d63031; }
+    .chart > .label { font: bold 14px Arial, sans-serif; fill: #2d3436; }
+    rect[data-kind="muted"] { fill: #b2bec3; }
+    g.chart rect:first-child { stroke: #2d3436; stroke-width: 3; }
+    #title { font-size: 20px; font-family: Georgia, serif; fill: #6c5ce7; }
+    .axis line { stroke: #636e72; stroke-width: 2; }
+  </style>
+  <text id="title" x="20" y="28">CSS-styled chart</text>
+  <g class="chart">
+    <rect x="40" y="120" width="40" height="80"/>
+    <rect x="100" y="60" width="40" height="140" class="hi"/>
+    <rect x="160" y="90" width="40" height="110" data-kind="muted"/>
+    <rect x="220" y="140" width="40" height="60"/>
+    <text class="label" x="300" y="120">labels</text>
+  </g>
+  <g class="axis"><line x1="30" y1="200" x2="280" y2="200"/></g>
+</svg>

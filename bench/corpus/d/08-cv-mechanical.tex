@@ -1,0 +1,138 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[default]{sourcesanspro}
+\usepackage[left=0.75in,right=0.75in,top=0.6in,bottom=0.6in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{muted}{HTML}{555555}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+% Section headings: small caps, accent colour, rule underneath
+\titleformat{\section}
+  {\large\scshape\color{accent}}
+  {}{0pt}{}
+  [\vspace{-6pt}\color{accent}\rule{\textwidth}{0.6pt}]
+\titlespacing*{\section}{0pt}{10pt}{6pt}
+
+\setlist[itemize]{leftmargin=1.2em, itemsep=1pt, topsep=2pt, parsep=0pt, label=\textbullet}
+
+% \job{Title}{Dates}{Employer}{Location}
+\newcommand{\job}[4]{%
+  \textbf{#1} \hfill {\color{muted}#2}\\
+  \textit{#3} \hfill {\color{muted}\textit{#4}}\par\vspace{2pt}}
+
+% \degree{Degree}{Dates}{School}{Details}
+\newcommand{\degree}[4]{%
+  \textbf{#1} \hfill {\color{muted}#2}\\
+  #3 \hfill {\color{muted}#4}\par\vspace{3pt}}
+
+\begin{document}
+
+%-------------------------------------------------------------------- Header
+\begin{center}
+  {\Huge\bfseries Elena M.\ Vasquez, P.E.}\\[4pt]
+  {\large\color{accent} Mechanical Engineer \textbullet{} Thermal Systems and Product Development}\\[6pt]
+  \small
+  \faMapMarker*\ Columbus, OH \quad
+  \faPhone\ (614) 555-0193 \quad
+  \faEnvelope\ \href{mailto:elena.vasquez.pe@example.com}{elena.vasquez.pe@example.com} \quad
+  \faLinkedin\ \href{https://www.linkedin.com/in/elena-vasquez-pe}{linkedin.com/in/elena-vasquez-pe}
+\end{center}
+
+%-------------------------------------------------------------------- Summary
+\section{Summary}
+Licensed professional engineer with nine years of experience designing and validating thermal management systems for power electronics and HVAC equipment. Has taken four products from concept to production, led teams of up to six engineers, and cut warranty returns and material cost through test-driven design changes. Comfortable across the full loop: first-principles analysis, CFD and FEA, prototype testing, DFM with suppliers, and the documentation that gets a product certified.
+
+%-------------------------------------------------------------------- Experience
+\section{Experience}
+
+\job{Senior Mechanical Engineer, Thermal}{Mar 2021 -- Present}
+    {Brightwater Power Systems}{Columbus, OH}
+\begin{itemize}
+  \item Lead mechanical engineer for a 150\,kW liquid-cooled EV fast-charger power module; owned thermal architecture, cold-plate design and coolant loop sizing from concept through UL 2202 certification and launch (2024).
+  \item Redesigned the cold plate from a gun-drilled aluminium block to a vacuum-brazed pin-fin design, lowering IGBT junction-to-coolant thermal resistance by 31\% (0.042 to 0.029\,K/W) and enabling a 12\% power uprate without new silicon.
+  \item Built a 1-D Simscape coolant-loop model validated against test data within $\pm$1.5\,\textdegree C; it is now the team's standard tool for derating studies and replaced roughly 40\% of planned prototype builds.
+  \item Ran root-cause analysis on field pump failures (Weibull analysis of 212 returns, teardown, cavitation testing); the inlet redesign reduced pump-related warranty claims by 78\% year over year.
+  \item Mentor three junior engineers; wrote the department's design-review checklist for thermal interfaces and fastener torque.
+\end{itemize}
+\vspace{4pt}
+
+\job{Mechanical Design Engineer}{Jun 2017 -- Feb 2021}
+    {Lakeshore Climate Technologies}{Dayton, OH}
+\begin{itemize}
+  \item Designed sheet-metal enclosures, fan mounts and coil assemblies for a line of 3--10 ton rooftop heat pumps; released over 350 production drawings in SolidWorks PDM with GD\&T to ASME Y14.5-2009.
+  \item Led the condenser coil change from copper-tube/aluminium-fin to all-aluminium microchannel on the 5-ton platform, reducing refrigerant charge by 34\% and coil cost by \$58 per unit (\$410k per year at volume).
+  \item Planned and ran psychrometric chamber tests to AHRI 340/360; reduced test-to-test variation by rewriting the chamber stabilisation procedure.
+  \item Performed modal and random-vibration FEA (ANSYS Mechanical) on the compressor mounting bracket; the revised bracket passed ISTA 3E transport testing on the first attempt after two previous failures.
+\end{itemize}
+\vspace{4pt}
+
+\job{Engineering Co-op (three rotations)}{Jan 2015 -- Aug 2016}
+    {Midwest Turbine Components}{Cincinnati, OH}
+\begin{itemize}
+  \item Supported manufacturing engineering for investment-cast turbine blades; wrote CMM inspection programs and helped reduce first-article rejection rate from 9\% to 4\%.
+  \item Automated fixture-wear tracking in Excel/VBA, saving about six technician-hours a week.
+\end{itemize}
+
+%-------------------------------------------------------------------- Education
+\section{Education}
+
+\degree{M.S., Mechanical Engineering}{2019}
+       {The Ohio State University, Columbus, OH}{GPA 3.9/4.0 \textbullet{} part-time while employed}
+\textit{Thesis:} Two-phase pressure drop in microchannel evaporators at low mass flux. Advisor: Prof.\ R.~Okonkwo.
+\vspace{4pt}
+
+\degree{B.S., Mechanical Engineering, \textit{magna cum laude}}{2017}
+       {University of Cincinnati, Cincinnati, OH}{Co-op program, five semesters}
+
+%-------------------------------------------------------------------- Licenses
+\section{Licenses and Certifications}
+\begin{tabularx}{\textwidth}{@{}X r@{}}
+  Professional Engineer (Mechanical), State of Ohio, License No.\ PE.0089xxx & 2022 \\
+  Certified SolidWorks Professional (CSWP) & 2018 \\
+  Six Sigma Green Belt, ASQ & 2020 \\
+  ASHRAE Certified HVAC Designer (CHD) & 2019 \\
+\end{tabularx}
+
+%-------------------------------------------------------------------- Skills
+\section{Technical Skills}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{@{}p{1.55in} X@{}}
+  \textbf{Analysis}    & Heat transfer and fluid flow, two-phase flow, CFD (ANSYS Fluent, Icepak), FEA (ANSYS Mechanical, Abaqus), tolerance stack-ups, Weibull and reliability analysis \\
+  \textbf{CAD / PLM}   & SolidWorks (CSWP), Creo Parametric, SolidWorks PDM, Windchill, GD\&T (ASME Y14.5) \\
+  \textbf{Programming} & Python (NumPy, SciPy, pandas), MATLAB/Simulink and Simscape, LabVIEW, VBA \\
+  \textbf{Testing}     & Thermal chambers, psychrometric rooms, flow benches, thermocouple and RTD instrumentation, DAQ (NI cDAQ), DOE \\
+  \textbf{Standards}   & UL 2202, UL 1995, AHRI 340/360, ASHRAE 90.1, ISTA 3E, IPC-2152 \\
+  \textbf{Manufacturing} & Sheet metal, brazing, die casting, injection moulding, DFM/DFA, PPAP and supplier qualification \\
+\end{tabularx}
+
+%-------------------------------------------------------------------- Publications
+\section{Publications and Patents}
+\begin{itemize}
+  \item E.~M. Vasquez and R.~Okonkwo, ``Frictional pressure drop of R-410A in multiport microchannel tubes at low mass flux,'' \textit{International Journal of Refrigeration}, vol.~112, pp.~201--212, 2020.
+  \item E.~M. Vasquez, D.~Chen, and P.~Sorensen, ``Pin-fin cold plate with variable fin density for power semiconductor modules,'' U.S. Patent Application 2024/0xxxxxx, filed 2023 (pending).
+\end{itemize}
+
+%-------------------------------------------------------------------- Affiliations
+\section{Professional Activities}
+\begin{itemize}
+  \item Member, ASME and ASHRAE; Secretary, ASHRAE Central Ohio Chapter (2023--2025).
+  \item Volunteer judge, Ohio FIRST Robotics regional competition (2019--present).
+\end{itemize}
+
+\vfill
+\begin{center}
+  \footnotesize\color{muted} References available on request.
+\end{center}
+
+\end{document}

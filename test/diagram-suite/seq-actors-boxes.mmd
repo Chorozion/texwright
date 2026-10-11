@@ -1,0 +1,19 @@
+sequenceDiagram
+    box Aqua Front end
+        actor Alice
+        participant App as Mobile app
+    end
+    box rgb(255, 235, 210) Back end
+        participant GW as Gateway
+        participant Svc as Profile service
+    end
+    Alice->>App: Open profile
+    App->>GW: GET /me
+    GW->>Svc: Load profile
+    rect rgb(225, 240, 255)
+        Svc->>Svc: Merge cached fields
+        Svc-->>GW: Profile JSON
+    end
+    GW-->>App: 200 OK
+    App-->>Alice: Render profile
+    Alice<<->>App: Pull to refresh

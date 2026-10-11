@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{amsmath}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\SetKwFunction{FMain}{Partition}
+\SetKwProg{Fn}{Function}{:}{end}
+
+\begin{document}
+\section{Algorithms}
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwIn{An array $A$ of $n$ integers}
+\KwOut{The sorted array $A$}
+\KwData{Temporary index $i$}
+\KwResult{Sorted output}
+\For{$i \gets 1$ \KwTo $n-1$}{
+  $key \gets A[i]$\;
+  $j \gets i - 1$\;
+  \While{$j \ge 0$ \textbf{and} $A[j] > key$}{
+    $A[j+1] \gets A[j]$\;
+    $j \gets j - 1$\;
+  }
+  $A[j+1] \gets key$\;
+}
+\eIf{$n = 0$}{
+  \Return empty\;
+}{
+  \Return $A$\;
+}
+\caption{Insertion sort}
+\label{alg:insertion}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Binary search}
+\DontPrintSemicolon
+\Input{Sorted array $A$, target $t$}
+\Output{Index of $t$ or $-1$}
+$lo \leftarrow 0$; $hi \leftarrow n-1$\;
+\Repeat{$lo > hi$}{
+  $mid \leftarrow \lfloor (lo+hi)/2 \rfloor$\;
+  \uIf{$A[mid] = t$}{\Return $mid$\;}
+  \uElseIf{$A[mid] < t$}{$lo \leftarrow mid + 1$\;}
+  \Else{$hi \leftarrow mid - 1$\;}
+}
+\tcc{not found}
+\Return $-1$\; \tcp*{sentinel}
+\end{algorithm}
+
+Algorithm~\ref{alg:insertion} runs in $O(n^2)$ time.
+
+\begin{algorithm}
+\caption{Quicksort}
+\Fn{\FMain{$A$, $lo$, $hi$}}{
+  \If{$lo < hi$}{
+    \ForEach{element $x$ in $A$}{process $x$\;}
+  }
+  \KwRet{$p$}\;
+}
+\end{algorithm}
+\end{document}

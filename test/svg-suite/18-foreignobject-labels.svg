@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220">
+  <style>.node rect { fill: #ECECFF; stroke: #9370DB; stroke-width: 1px; } .edgeLabel { background-color: #e8e8e8; }</style>
+  <g class="node"><rect x="20" y="80" width="140" height="60" rx="5"/>
+    <foreignObject x="20" y="80" width="140" height="60"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; width: 140px; height: 60px; text-align: center; vertical-align: middle; font-family: Arial, sans-serif; font-size: 16px; color: #333;"><span class="nodeLabel">Start <b>here</b></span></div></foreignObject></g>
+  <path d="M 160 110 L 240 110" stroke="#333" stroke-width="2" fill="none"/>
+  <g class="node"><rect x="240" y="70" width="140" height="80" rx="5"/>
+    <foreignObject x="240" y="70" width="140" height="80"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: center; justify-content: center; width: 140px; height: 80px; text-align: center; font-family: Arial, sans-serif; font-size: 14px; color: #333;"><p>Two-line<br/>label text</p></div></foreignObject></g>
+</svg>

@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage{ifthen}
+\usepackage{xparse}
+\usepackage{etoolbox}
+\usepackage{xspace}
+\usepackage{amsmath}
+
+\newcommand{\eg}{e.g.\xspace}
+\newcommand{\ie}{i.e.,\xspace}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\greet}[2][Hello]{#1, #2!}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand*{\note}[1]{\textit{(#1)}}
+\def\half{\frac{1}{2}}
+\def\pair#1#2{(#1, #2)}
+\let\oldsection\section
+\newcommand{\RR}{\mathbb{R}}
+\NewDocumentCommand{\set}{m}{\{#1\}}
+\newcommand{\draftmode}{true}
+
+\newcounter{exercise}
+\setcounter{exercise}{0}
+\newenvironment{exercise}{\stepcounter{exercise}\par\noindent\textbf{Exercise \theexercise.} }{\par}
+\newenvironment{important}[1][Important]{\begin{center}\textbf{#1:}}{\end{center}}
+
+\begin{document}
+\section{Macros}
+Consider vectors, \eg $\vect{x} \in \RR^n$, \ie points. \greet{World} \greet[Goodbye]{Moon}
+The half is $\half$ and the pair is $\pair{a}{b}$. Set $\set{1,2,3}$. \note{aside}
+\tightlist
+
+\begin{exercise}
+First exercise.
+\end{exercise}
+\begin{exercise}
+Second exercise; the counter is now \arabic{exercise} (roman: \roman{exercise}, alph: \alph{exercise}).
+\end{exercise}
+\addtocounter{exercise}{5}
+Counter after adding five: \theexercise, value \the\value{exercise}.
+
+\begin{important}
+Read the docs.
+\end{important}
+\begin{important}[Warning]
+Be careful.
+\end{important}
+
+\ifthenelse{\equal{\draftmode}{true}}{Draft mode is on.}{Final mode.}
+\ifthenelse{\value{exercise} > 3}{Many exercises.}{Few exercises.}
+\ifdefined\RR Defined.\fi
+
+\newif\ifshowsolutions
+\showsolutionstrue
+\ifshowsolutions Solutions shown.\else Solutions hidden.\fi
+
+\makeatletter
+\renewcommand\@seccntformat[1]{\csname the#1\endcsname.\quad}
+\makeatother
+
+\newlength{\mylen}
+\setlength{\mylen}{2cm}
+\hspace{\mylen}Indented. \hspace*{1cm}More.
+\vspace{1em}
+\vspace*{\fill}
+
+Text\smallskip
+
+Text\medskip
+
+Text\bigskip
+
+\noindent\rule{\textwidth}{0.4pt}
+\begin{flushright}
+Right aligned.
+\end{flushright}
+\begin{flushleft}
+Left aligned.
+\end{flushleft}
+{\raggedleft Ragged left.\par}
+{\centering Centered text.\par}
+\end{document}

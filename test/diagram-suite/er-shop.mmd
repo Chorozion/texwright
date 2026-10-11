@@ -1,0 +1,33 @@
+erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ LINE_ITEM : contains
+    PRODUCT ||--o{ LINE_ITEM : "ordered in"
+    CUSTOMER }|..|{ DELIVERY_ADDRESS : uses
+    ORDER |o--o| PAYMENT : "settled by"
+    CUSTOMER {
+        int id PK
+        string name
+        string email UK "login and receipts"
+    }
+    ORDER {
+        int id PK
+        int customer_id FK
+        datetime placed_at
+        decimal(10,2) total
+    }
+    LINE_ITEM {
+        int order_id PK, FK
+        int product_id PK, FK
+        int quantity
+    }
+    PRODUCT {
+        int id PK
+        string sku UK
+        string title
+        decimal(10,2) price
+    }
+    PAYMENT {
+        int id PK
+        int order_id FK
+        string provider "stripe, paypal"
+    }

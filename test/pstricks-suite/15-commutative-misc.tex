@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage{pstricks}
+\usepackage{pst-node}
+\usepackage{pst-plot}
+\begin{document}
+\begin{center}
+\psset{unit=1cm}
+\begin{pspicture}(0,0)(6,4)
+  \newpsstyle{thickblue}{linecolor=blue,linewidth=1.5pt}
+  \rput(0.5,3.5){\rnode{A}{$A$}}
+  \rput(5.5,3.5){\rnode{B}{$B$}}
+  \rput(0.5,0.5){\rnode{C}{$C$}}
+  \rput(5.5,0.5){\rnode{D}{$D$}}
+  \psset{nodesep=5pt,arrows=->}
+  \ncline{A}{B}\naput{$f$}
+  \ncline{A}{C}\nbput{$g$}
+  \ncline[style=thickblue]{B}{D}\naput{$h$}
+  \ncline{C}{D}\nbput{$k$}
+  \nccurve[angleA=-30,angleB=150,linestyle=dashed]{A}{D}\ncput*{$\phi$}
+\end{pspicture}
+\end{center}
+
+Here is a bar chart drawn with plain PSTricks:
+
+\begin{center}
+\begin{pspicture}(-1,-0.8)(7,4.5)
+  \psaxes[ticks=y,labels=y,Dy=1]{->}(0,0)(6.5,4.3)
+  \multido{\i=1+1,\r=1.5+0.7}{5}{%
+    \psframe[fillstyle=solid,fillcolor=blue!40](\i,0)(!\i\space 0.5 add \r)
+    \rput(!\i\space 0.25 add -0.3){\small Q\i}}
+  \psbezier[linecolor=red]{->}(0.5,4)(2,1)(4,5)(6,3.5)
+\end{pspicture}
+\end{center}
+\end{document}

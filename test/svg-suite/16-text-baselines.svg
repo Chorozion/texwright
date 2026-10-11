@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <line x1="0" y1="100" x2="400" y2="100" stroke="#b2bec3"/>
+  <g font-family="Arial, sans-serif" font-size="22">
+    <text x="10" y="100">alpha</text>
+    <text x="80" y="100" dominant-baseline="middle">middle</text>
+    <text x="170" y="100" dominant-baseline="central">central</text>
+    <text x="260" y="100" dominant-baseline="hanging">hanging</text>
+    <text x="350" y="100" dominant-baseline="text-top" text-anchor="middle">top</text>
+  </g>
+  <rect x="140" y="140" width="120" height="40" fill="#74b9ff"/>
+  <text x="200" y="160" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="18" fill="#fff">Centered</text>
+</svg>

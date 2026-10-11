@@ -1,0 +1,212 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{MATH 2150: Discrete Mathematics}
+\chead{Homework 4}
+\rhead{Jordan Lee}
+\cfoot{\thepage}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\powerset}{\mathcal{P}}
+
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Homework 4: Induction, Sets, and Counting}\\[4pt]
+  Jordan Lee \quad\textbullet\quad Section 002 \quad\textbullet\quad Due October 9, 2026
+\end{center}
+
+\section*{Part I: Mathematical Induction}
+
+\begin{problem}\label{prob:squares}
+Prove that for every integer $n \geq 1$,
+\[
+  \sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}.
+\]
+\end{problem}
+
+\begin{proof}
+Let $P(n)$ be the statement $\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}$.
+
+\textbf{Base case.} For $n = 1$ the left side is $1^2 = 1$ and the right side is $\frac{1 \cdot 2 \cdot 3}{6} = 1$, so $P(1)$ holds.
+
+\textbf{Inductive step.} Fix $k \geq 1$ and assume $P(k)$. Then
+\begin{align*}
+  \sum_{i=1}^{k+1} i^2
+    &= \sum_{i=1}^{k} i^2 + (k+1)^2 \\
+    &= \frac{k(k+1)(2k+1)}{6} + (k+1)^2 && \text{(inductive hypothesis)} \\
+    &= \frac{(k+1)\bigl[k(2k+1) + 6(k+1)\bigr]}{6} \\
+    &= \frac{(k+1)(2k^2 + 7k + 6)}{6} \\
+    &= \frac{(k+1)(k+2)(2k+3)}{6},
+\end{align*}
+which is exactly $P(k+1)$, since $2(k+1)+1 = 2k+3$. By induction, $P(n)$ holds for all $n \geq 1$.
+\end{proof}
+
+\begin{problem}\label{prob:exp}
+Prove that $2^n > n^2$ for every integer $n \geq 5$.
+\end{problem}
+
+\begin{proof}
+\textbf{Base case.} $2^5 = 32 > 25 = 5^2$.
+
+\textbf{Inductive step.} Suppose $2^k > k^2$ for some $k \geq 5$. Then
+\begin{equation}\label{eq:exp-step}
+  2^{k+1} = 2 \cdot 2^k > 2k^2 = k^2 + k^2.
+\end{equation}
+Since $k \geq 5$, we have $k^2 \geq 5k = 2k + 3k \geq 2k + 15 > 2k + 1$. Substituting into \eqref{eq:exp-step},
+\[
+  2^{k+1} > k^2 + 2k + 1 = (k+1)^2.
+\]
+So the statement holds for $k+1$, and by induction for all $n \geq 5$.
+\end{proof}
+
+\noindent\emph{Remark.} The claim fails for $n = 2, 3, 4$ (for example $2^4 = 16 = 4^2$), which is why the base case starts at 5. The inductive step only needs $k^2 > 2k + 1$, which is true for all $k \geq 3$, but a correct base case is still required.
+
+\begin{problem}[Strong induction]\label{prob:stamps}
+Show that every integer $n \geq 12$ can be written as $n = 4a + 5b$ with $a, b \in \N \cup \{0\}$.
+\end{problem}
+
+\begin{proof}
+We use strong induction with four base cases:
+\[
+  12 = 4 \cdot 3, \qquad 13 = 4 \cdot 2 + 5, \qquad 14 = 4 + 5 \cdot 2, \qquad 15 = 5 \cdot 3.
+\]
+Now let $n \geq 16$ and assume the claim for every $m$ with $12 \leq m < n$. Since $n - 4 \geq 12$, we can write $n - 4 = 4a + 5b$ with $a, b \geq 0$. Then $n = 4(a+1) + 5b$, as required.
+\end{proof}
+
+\begin{problem}\label{prob:fib}
+The Fibonacci numbers are defined by $F_1 = F_2 = 1$ and $F_{n} = F_{n-1} + F_{n-2}$ for $n \geq 3$. Prove that
+\[
+  \sum_{i=1}^{n} F_i = F_{n+2} - 1 \qquad \text{for all } n \geq 1.
+\]
+\end{problem}
+
+\begin{proof}
+For $n = 1$: $F_1 = 1$ and $F_3 - 1 = 2 - 1 = 1$. Assume the identity holds for some $k \geq 1$. Then
+\[
+  \sum_{i=1}^{k+1} F_i = \left(F_{k+2} - 1\right) + F_{k+1} = \left(F_{k+2} + F_{k+1}\right) - 1 = F_{k+3} - 1,
+\]
+using the recurrence in the last step. This is the identity for $k + 1$.
+\end{proof}
+
+\section*{Part II: Sets}
+
+\begin{problem}\label{prob:demorgan}
+Let $A$, $B$, $C$ be sets. Prove that $A \setminus (B \cup C) = (A \setminus B) \cap (A \setminus C)$.
+\end{problem}
+
+\begin{proof}
+We show each side is a subset of the other.
+
+($\subseteq$) Let $x \in A \setminus (B \cup C)$. Then $x \in A$ and $x \notin B \cup C$, so $x \notin B$ and $x \notin C$. Hence $x \in A \setminus B$ and $x \in A \setminus C$, so $x \in (A \setminus B) \cap (A \setminus C)$.
+
+($\supseteq$) Let $x \in (A \setminus B) \cap (A \setminus C)$. Then $x \in A$, $x \notin B$, and $x \notin C$. Since $x$ is in neither $B$ nor $C$, $x \notin B \cup C$, so $x \in A \setminus (B \cup C)$.
+\end{proof}
+
+\begin{problem}\label{prob:product}
+Prove or disprove: for all sets $A, B, C, D$,
+\begin{enumerate}[label=(\alph*)]
+  \item $(A \times B) \cap (C \times D) = (A \cap C) \times (B \cap D)$;
+  \item $(A \times B) \cup (C \times D) = (A \cup C) \times (B \cup D)$.
+\end{enumerate}
+\end{problem}
+
+\begin{proof}[Solution]
+(a) \emph{True.} For any ordered pair $(x, y)$,
+\begin{align*}
+  (x,y) \in (A \times B) \cap (C \times D)
+    &\iff (x \in A \wedge y \in B) \wedge (x \in C \wedge y \in D) \\
+    &\iff (x \in A \cap C) \wedge (y \in B \cap D) \\
+    &\iff (x,y) \in (A \cap C) \times (B \cap D).
+\end{align*}
+
+(b) \emph{False.} Take $A = D = \{1\}$ and $B = C = \{2\}$. Then $(A \times B) \cup (C \times D) = \{(1,2), (2,1)\}$, but $(A \cup C) \times (B \cup D) = \{1,2\} \times \{1,2\}$ has four elements and contains $(1,1)$. The inclusion $\subseteq$ always holds; the reverse does not.
+\end{proof}
+
+\begin{problem}\label{prob:powerset}
+Let $A = \{a, b, c\}$. List $\powerset(A)$ and prove that $|\powerset(S)| = 2^n$ whenever $|S| = n$.
+\end{problem}
+
+\begin{proof}[Solution]
+$\powerset(A) = \bigl\{\varnothing, \{a\}, \{b\}, \{c\}, \{a,b\}, \{a,c\}, \{b,c\}, \{a,b,c\}\bigr\}$, which has $8 = 2^3$ elements.
+
+For the general claim, write $S = \{s_1, \dots, s_n\}$. A subset $T \subseteq S$ is determined by deciding, for each $i$, whether $s_i \in T$. That is $n$ independent yes/no choices, so by the product rule there are $2 \cdot 2 \cdots 2 = 2^n$ subsets. (Equivalently, subsets correspond bijectively to bit strings of length $n$.)
+\end{proof}
+
+\section*{Part III: Combinatorics}
+
+\begin{problem}\label{prob:bits}
+How many bit strings of length 8
+\begin{enumerate}[label=(\alph*)]
+  \item contain exactly three 1s?
+  \item contain at least one 1?
+  \item start with 1 or end with 00?
+\end{enumerate}
+\end{problem}
+
+\noindent\textbf{Solution.}
+\begin{enumerate}[label=(\alph*)]
+  \item Choose the positions of the three 1s: $\binom{8}{3} = 56$.
+  \item All strings minus the all-zero string: $2^8 - 1 = 255$.
+  \item Let $S$ be the strings starting with 1 and $E$ those ending with 00. Then $|S| = 2^7 = 128$, $|E| = 2^6 = 64$, and $|S \cap E| = 2^5 = 32$. By inclusion--exclusion, $|S \cup E| = 128 + 64 - 32 = 160$.
+\end{enumerate}
+
+\begin{problem}[Stars and bars]\label{prob:stars}
+How many solutions does $x_1 + x_2 + x_3 + x_4 = 10$ have in nonnegative integers? How many have $x_1 \geq 2$?
+\end{problem}
+
+\noindent\textbf{Solution.} A solution is an arrangement of 10 stars and 3 bars, so there are
+\[
+  \binom{10 + 3}{3} = \binom{13}{3} = 286
+\]
+solutions. For $x_1 \geq 2$, substitute $y_1 = x_1 - 2 \geq 0$ to get $y_1 + x_2 + x_3 + x_4 = 8$, which has $\binom{11}{3} = 165$ solutions.
+
+\begin{problem}[Inclusion--exclusion]\label{prob:incl-excl}
+How many integers in $\{1, 2, \dots, 1000\}$ are divisible by 3, 5, or 7?
+\end{problem}
+
+\noindent\textbf{Solution.} Let $A_d$ be the set of multiples of $d$ in the range, so $|A_d| = \lfloor 1000/d \rfloor$. Because 3, 5, 7 are pairwise coprime, $A_3 \cap A_5 = A_{15}$ and so on. Then
+\begin{align*}
+  |A_3 \cup A_5 \cup A_7|
+    &= |A_3| + |A_5| + |A_7| - |A_{15}| - |A_{21}| - |A_{35}| + |A_{105}| \\
+    &= 333 + 200 + 142 - 66 - 47 - 28 + 9 \\
+    &= 543.
+\end{align*}
+
+\begin{problem}[Combinatorial proof]\label{prob:committee}
+Prove that $k\binom{n}{k} = n\binom{n-1}{k-1}$ for $1 \leq k \leq n$.
+\end{problem}
+
+\begin{proof}
+Count the ways to choose, from $n$ people, a committee of $k$ people with one member designated as chair.
+
+\emph{Method 1:} choose the committee in $\binom{n}{k}$ ways, then choose its chair among the $k$ members: $k\binom{n}{k}$.
+
+\emph{Method 2:} choose the chair first from all $n$ people, then fill the remaining $k-1$ seats from the other $n-1$ people: $n\binom{n-1}{k-1}$.
+
+Both expressions count the same set, so they are equal.
+\end{proof}
+
+\begin{problem}[Pigeonhole principle]\label{prob:pigeon}
+Show that any $n + 1$ integers chosen from $\{1, 2, \dots, 2n\}$ include two that are relatively prime.
+\end{problem}
+
+\begin{proof}
+Partition $\{1, \dots, 2n\}$ into the $n$ pairs $\{1,2\}, \{3,4\}, \dots, \{2n-1, 2n\}$. Choosing $n+1$ integers places them into $n$ pairs, so by the pigeonhole principle two chosen integers lie in the same pair. Those two are consecutive, say $m$ and $m+1$. Any common divisor $d$ of $m$ and $m+1$ divides their difference, which is 1, so $\gcd(m, m+1) = 1$.
+\end{proof}
+
+\noindent\emph{Note:} The bound is tight. The $n$ even numbers $2, 4, \dots, 2n$ contain no coprime pair, so Problem~\ref{prob:pigeon} fails with only $n$ integers.
+
+\end{document}

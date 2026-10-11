@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{circuitikz}
+\begin{document}
+
+\subsection*{Half adder}
+
+\begin{figure}[h]
+\centering
+\begin{circuitikz}
+  \draw
+    (0,2) node[xor port] (xor1) {}
+    (0,0) node[and port] (and1) {};
+  \draw (xor1.in 1) -- ++(-1,0) node[left] {$A$};
+  \draw (xor1.in 2) -- ++(-1,0) node[left] {$B$};
+  \draw (xor1.in 1) ++(-0.5,0) node[circ]{} |- (and1.in 1);
+  \draw (xor1.in 2) ++(-0.8,0) node[circ]{} |- (and1.in 2);
+  \draw (xor1.out) -- ++(1,0) node[right] {$S$};
+  \draw (and1.out) -- ++(1,0) node[right] {$C_{out}$};
+  \draw (0,-2.5) node[not port] (not1) {};
+  \draw (not1.in) -- ++(-0.5,0) node[left] {$C_{in}$};
+  \draw (not1.out) -- ++(0.5,0) node[right] {$\overline{C_{in}}$};
+  \draw (3,-2.5) node[nand port] (n1) {} (5,-2.5) node[nor port] (n2) {} (7,-2.5) node[or port] (o1) {};
+\end{circuitikz}
+\caption{A half adder built from an XOR and an AND gate.}
+\end{figure}
+
+\end{document}

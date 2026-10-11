@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 170" font-family="serif" font-size="13">
+<rect width="760" height="170" fill="white"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f3a4d"/></marker></defs>
+<rect x="10" y="40" width="150" height="56" rx="6" fill="#eef2f6" stroke="#1f3a4d" stroke-width="1.3"/><text x="85" y="64" text-anchor="middle" fill="#1b2127" font-weight="bold">Typeset</text><text x="85" y="81" text-anchor="middle" fill="#5d6973" font-size="11">page map from last pass</text>
+<rect x="190" y="40" width="150" height="56" rx="6" fill="#eef2f6" stroke="#1f3a4d" stroke-width="1.3"/><text x="265" y="64" text-anchor="middle" fill="#1b2127" font-weight="bold">Build pages</text><text x="265" y="81" text-anchor="middle" fill="#5d6973" font-size="11">record anchor pages</text>
+<rect x="370" y="40" width="150" height="56" rx="6" fill="#eef2f6" stroke="#1f3a4d" stroke-width="1.3"/><text x="445" y="64" text-anchor="middle" fill="#1b2127" font-weight="bold">Same pages?</text><text x="445" y="81" text-anchor="middle" fill="#5d6973" font-size="11">compare to last pass</text>
+<rect x="550" y="40" width="150" height="56" rx="6" fill="#eef7f1" stroke="#2f6b4f" stroke-width="1.3"/><text x="625" y="64" text-anchor="middle" fill="#1b2127" font-weight="bold">Ship</text><text x="625" y="81" text-anchor="middle" fill="#5d6973" font-size="11">write the PDF once</text>
+<line x1="160" y1="68" x2="188" y2="68" stroke="#1f3a4d" stroke-width="1.4" marker-end="url(#a)"/>
+<line x1="340" y1="68" x2="368" y2="68" stroke="#1f3a4d" stroke-width="1.4" marker-end="url(#a)"/>
+<line x1="520" y1="68" x2="548" y2="68" stroke="#1f3a4d" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="534" y="60" text-anchor="middle" fill="#2f6b4f" font-size="12">yes</text>
+<path d="M445,96 C445,150 85,150 85,98" fill="none" stroke="#1f3a4d" stroke-width="1.4" marker-end="url(#a)"/>
+<text x="265" y="146" text-anchor="middle" fill="#5d6973" font-size="12">no: update contents and \pageref numbers, typeset again (at most 4 passes)</text>
+<text x="85" y="28" text-anchor="middle" fill="#1f3a4d" font-size="12">pass k</text>
+<text x="625" y="28" text-anchor="middle" fill="#5d6973" font-size="11">nothing is written until the pages settle</text>
+</svg>

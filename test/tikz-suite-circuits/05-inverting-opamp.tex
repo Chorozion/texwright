@@ -1,0 +1,22 @@
+\documentclass{article}
+\usepackage{circuitikz}
+\begin{document}
+
+\section{Inverting Amplifier}
+
+\begin{center}
+\begin{circuitikz}
+  \draw
+  (0, 0) node[op amp] (opamp) {}
+  (opamp.-) to[R, l=$R_{in}$, -o] (-3, 0.5)
+  (opamp.-) |- (-0.5, 2) to[R, l=$R_f$] (1.5, 2) -| (opamp.out)
+  (opamp.out) to[short, -o] (2.5, 0)
+  (opamp.+) -- (-1.2, -1) node[ground] {}
+  (-3, 0.5) node[left] {$V_{in}$}
+  (2.5, 0) node[right] {$V_{out}$};
+\end{circuitikz}
+\end{center}
+
+The closed-loop gain is $A_v = -\dfrac{R_f}{R_{in}}$.
+
+\end{document}

@@ -1,0 +1,259 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage[margin=0.75in,columnsep=0.3in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+\usepackage{amsmath,amsthm}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,citecolor=blue!60!black,linkcolor=red!60!black,urlcolor=blue!60!black]{hyperref}
+
+\newtheorem{proposition}{Proposition}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Qbar}{\bar{Q}}
+\newcommand{\method}{\textsc{BACE}}
+
+\title{\method: Bias-Adaptive Critic Ensembles for\\Off-Policy Continuous Control}
+\author{Anonymous Authors\\ \textit{Paper under double-blind review}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Off-policy actor-critic methods depend on value estimates that are biased by the maximisation in the policy update. Popular remedies such as clipped double Q-learning fix the amount of pessimism in advance, which leads to overestimation on some tasks and systematic underestimation on others. We propose \emph{Bias-Adaptive Critic Ensembles} (\method), which penalises the bootstrap target by a multiple $\beta$ of the ensemble standard deviation and adjusts $\beta$ online so that the critics' estimates track Monte Carlo returns from recent episodes. Under a simple Gaussian error model we show that the bias-free choice of $\beta$ depends on a task- and time-dependent ratio that cannot be set in advance. On five MuJoCo locomotion tasks, \method{} improves the interquartile mean of SAC-normalised return at one million steps from 1.04 (REDQ) to 1.10, and reduces the average normalised value-estimation bias to within 0.01 of zero. The method adds one hyperparameter that needed no per-task tuning.
+\end{abstract}
+
+%======================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Value-based and actor-critic reinforcement learning methods \citep{mnih2015,haarnoja2018} learn a critic by bootstrapping: the target for $Q(s,a)$ is formed from the critic's own estimate at the next state. When the next action is chosen to maximise that estimate, noise in the critic becomes a positive bias in the target \citep{thrun1993}, and bootstrapping propagates the bias across states. Double Q-learning \citep{vanhasselt2010,vanhasselt2016} and its actor-critic descendant, clipped double Q-learning in TD3 \citep{fujimoto2018}, counter this by taking the minimum over two critics. The approach is now standard and is also used by soft actor-critic (SAC) \citep{haarnoja2018,haarnoja2018apps}.
+
+The minimum of two estimates is, however, a fixed amount of pessimism. Whether it removes the right amount of bias depends on how noisy the critics are relative to how much the policy exploits that noise, and both quantities vary across tasks and over the course of training. Several works have therefore made the degree of pessimism tunable: Maxmin Q-learning \citep{lan2020} and REDQ \citep{chen2021} vary the size of the subset over which the minimum is taken, TQC \citep{kuznetsov2020} drops a tunable number of top quantiles, and TOP \citep{moskovitz2021} chooses between optimism and pessimism with a bandit. In most of these methods the knob is still set per task, and tuning it costs many training runs.
+
+We take a direct route. Rather than asking which fixed level of pessimism works best, we measure the bias and correct for it. Our contributions are:
+\begin{itemize}
+  \item a simple analysis (Section~\ref{sec:analysis}) showing that for an ensemble target of the form $\Qbar - \beta\hat\sigma$, the bias-free $\beta$ equals the ratio of the critic's systematic error to its spread, a quantity that is unknown and non-stationary;
+  \item \method{} (Section~\ref{sec:method}), which adapts $\beta$ online by comparing ensemble estimates with soft Monte Carlo returns from recent episodes, at negligible extra cost;
+  \item experiments on five MuJoCo tasks (Section~\ref{sec:experiments}) showing improved returns and near-zero estimation bias, with ablations that isolate the contribution of adaptation.
+\end{itemize}
+
+%======================================================================
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Overestimation in Q-learning.} \citet{thrun1993} first described how function approximation error combined with the max operator yields overestimation. Double Q-learning decouples action selection from evaluation \citep{vanhasselt2010}, and was scaled to deep networks in Double DQN \citep{vanhasselt2016}. In continuous control, TD3 \citep{fujimoto2018} showed that overestimation also afflicts deterministic policy gradients \citep{lillicrap2016} and introduced clipped double Q-learning.
+
+\paragraph{Ensembles of critics.} Ensembles have been used for exploration \citep{osband2016,lee2021}, for controlling bias \citep{lan2020,chen2021}, and for pessimism in offline RL \citep{an2021}. REDQ \citep{chen2021} takes the minimum over a random subset of an ensemble and reaches high sample efficiency with a large update-to-data ratio. SUNRISE \citep{lee2021} reweights targets by ensemble disagreement. Our target is closest to the lower-confidence-bound form used for exploration by OAC \citep{ciosek2019} and for offline RL by EDAC \citep{an2021}, but we adapt its coefficient online.
+
+\paragraph{Adaptive bias control.} TOP \citep{moskovitz2021} treats the sign and size of the uncertainty penalty as a bandit arm and selects it by episode return. ACC \citep{dorka2023} adjusts the number of quantiles TQC drops, using Monte Carlo returns to detect overestimation. \method{} uses a similar signal to ACC but applies it to a generic ensemble without distributional critics, and the analysis in Section~\ref{sec:analysis} gives the adjustment a clear target.
+
+%======================================================================
+\section{Background}
+\label{sec:background}
+
+We consider a Markov decision process with state space $\mathcal{S}$, continuous action space $\mathcal{A}$, transition kernel $p$, reward $r$ and discount $\gamma\in[0,1)$ \citep{sutton2018}. SAC \citep{haarnoja2018} learns a stochastic policy $\pi_\phi$ that maximises the entropy-regularised return, with soft Q-function
+\begin{equation}
+  Q^\pi(s,a) = r(s,a) + \gamma\,\E_{s'\sim p,\,a'\sim\pi}\bigl[Q^\pi(s',a') - \alpha\log\pi(a'\mid s')\bigr],
+\end{equation}
+where $\alpha>0$ is a temperature. Critics $Q_{\theta_1}, Q_{\theta_2}$ are trained by regression onto the target
+\begin{equation}\label{eq:sac-target}
+  y = r + \gamma\Bigl(\min_{i=1,2} Q_{\bar\theta_i}(s',a') - \alpha\log\pi_\phi(a'\mid s')\Bigr),
+\end{equation}
+with $a'\sim\pi_\phi(\cdot\mid s')$ and slowly updated target parameters $\bar\theta_i$. The policy is updated to maximise $\E_{a\sim\pi_\phi}[Q(s,a) - \alpha\log\pi_\phi(a\mid s)]$.
+
+%======================================================================
+\section{Analysis: How Much Pessimism?}
+\label{sec:analysis}
+
+Replace the pair of critics by an ensemble of $N$ critics and consider targets of the form
+\begin{equation}\label{eq:ensemble-target}
+  y_\beta = r + \gamma\Bigl(\Qbar(s',a') - \beta\,\hat\sigma(s',a') - \alpha\log\pi_\phi(a'\mid s')\Bigr),
+\end{equation}
+where $\Qbar$ and $\hat\sigma$ are the sample mean and standard deviation of $\{Q_{\bar\theta_i}(s',a')\}_{i=1}^N$. Setting $\beta=0$ gives the ensemble average; larger $\beta$ is more pessimistic. For $N=2$, $\Qbar - \hat\sigma/\sqrt{2}$ equals the minimum of the two estimates, so clipped double Q-learning is the special case $\beta = 1/\sqrt{2}$.
+
+\begin{proposition}\label{prop:bias}
+Fix $(s',a')$ and suppose the target critics satisfy $Q_{\bar\theta_i}(s',a') = Q^\pi(s',a') + b + \varepsilon_i$, with $\varepsilon_1,\dots,\varepsilon_N$ independent $\mathcal{N}(0,\varsigma^2)$. Then
+\begin{equation}
+  \E\bigl[\Qbar - \beta\hat\sigma\bigr] = Q^\pi(s',a') + b - \beta\,c_N\,\varsigma,
+\end{equation}
+where $c_N = \sqrt{2/(N-1)}\;\Gamma(N/2)/\Gamma((N-1)/2)$. The target is unbiased if and only if $\beta = b/(c_N\varsigma)$.
+\end{proposition}
+
+\begin{proof}
+$\E[\Qbar] = Q^\pi + b$ because the noise has mean zero. For a normal sample of size $N$, the sample standard deviation (with denominator $N-1$) satisfies $\E[\hat\sigma] = c_N\varsigma$, a standard result. Linearity of expectation gives the claim.
+\end{proof}
+
+For $N = 5$, $c_N = 0.940$. The proposition is deliberately simple: real critic errors are neither Gaussian nor independent, and $b$ itself is produced by the bootstrap. But it makes the main point. The correct $\beta$ is the ratio of systematic error $b$ to ensemble spread $\varsigma$. Early in training $\varsigma$ is large and the policy has had little time to exploit errors; later the ensemble agrees more closely while the policy has become good at finding actions the critics overvalue. There is no reason to expect a single $\beta$ to be right throughout, and our experiments in Section~\ref{sec:ablations} confirm that it is not.
+
+%======================================================================
+\section{Method}
+\label{sec:method}
+
+\method{} trains $N$ critics on the target~\eqref{eq:ensemble-target} and adjusts $\beta$ every $K$ environment steps so that the ensemble neither over- nor under-estimates returns on recently visited state--action pairs.
+
+\paragraph{Estimating the bias.} Let $\mathcal{D}_{\text{MC}}$ be the transitions from the last $E$ completed episodes. For each $(s_t,a_t)\in\mathcal{D}_{\text{MC}}$ we compute the soft discounted return
+\begin{equation}
+  G_t = \sum_{k\ge0}\gamma^k\bigl(r_{t+k} - \gamma\,\alpha\log\pi_\phi(a_{t+k+1}\mid s_{t+k+1})\bigr),
+\end{equation}
+truncated at the end of the episode. Episodes ended by a time limit, rather than by termination, would make $G_t$ too small near the end, so we discard the final $h$ transitions of such episodes; with $\gamma=0.99$ and $h=300$ the neglected tail has weight $\gamma^{300}<0.05$. The normalised bias estimate is
+\begin{equation}\label{eq:bias-estimate}
+  \hat\Delta = \frac{\sum_{t\in\mathcal{D}_{\text{MC}}}\bigl(\Qbar(s_t,a_t) - \beta\,\hat\sigma(s_t,a_t) - G_t\bigr)}{\sum_{t\in\mathcal{D}_{\text{MC}}}|G_t| + \epsilon}.
+\end{equation}
+Normalising by $\sum|G_t|$ makes the step size $\eta_\beta$ independent of the reward scale.
+
+\paragraph{Adapting $\beta$.} We update
+\begin{equation}\label{eq:beta-update}
+  \beta \leftarrow \operatorname{clip}\bigl(\beta + \eta_\beta\,\hat\Delta,\; \beta_{\min},\; \beta_{\max}\bigr).
+\end{equation}
+Overestimation ($\hat\Delta>0$) increases pessimism and underestimation decreases it. The returns $G_t$ are generated by slightly older policies than the current one; with small $E$ this lag is short, and in practice it caused no instability.
+
+\paragraph{Actor update.} The actor maximises $\E_{a\sim\pi_\phi}[\Qbar(s,a) - \alpha\log\pi_\phi(a\mid s)]$, using the mean of the online critics as in REDQ. Using the penalised value for the actor as well made little difference in preliminary runs.
+
+Algorithm~\ref{alg:bace} summarises the procedure.
+
+\begin{algorithm}[t]
+\caption{\method{} (Bias-Adaptive Critic Ensembles)}
+\label{alg:bace}
+\begin{algorithmic}[1]
+\Require ensemble size $N$, initial $\beta_0$, step $\eta_\beta$, interval $K$, bounds $[\beta_{\min},\beta_{\max}]$
+\State Initialise $\pi_\phi$, critics $\theta_1,\dots,\theta_N$, targets $\bar\theta_i\gets\theta_i$, buffer $\mathcal{D}\gets\emptyset$, $\beta\gets\beta_0$
+\For{$t = 1, 2, \dots$}
+  \State Observe $s$, sample $a\sim\pi_\phi(\cdot\mid s)$, step, store $(s,a,r,s',d)$ in $\mathcal{D}$
+  \State Sample minibatch $B\subset\mathcal{D}$; for each $s'$ sample $a'\sim\pi_\phi(\cdot\mid s')$
+  \State $y \gets r + \gamma(1-d)\bigl(\Qbar_{\bar\theta}(s',a') - \beta\hat\sigma_{\bar\theta}(s',a') - \alpha\log\pi_\phi(a'\mid s')\bigr)$
+  \For{$i = 1,\dots,N$}
+    \State $\theta_i \gets \theta_i - \lambda_Q\nabla_{\theta_i}\frac{1}{|B|}\sum_B\bigl(Q_{\theta_i}(s,a) - y\bigr)^2$
+  \EndFor
+  \State Update $\phi$ to maximise $\frac{1}{|B|}\sum_B\bigl[\Qbar_\theta(s,\tilde a) - \alpha\log\pi_\phi(\tilde a\mid s)\bigr]$, $\tilde a\sim\pi_\phi(\cdot\mid s)$
+  \State Update $\alpha$ towards the target entropy $-\dim\mathcal{A}$
+  \State $\bar\theta_i \gets \rho\,\bar\theta_i + (1-\rho)\,\theta_i$ for all $i$
+  \If{$t \bmod K = 0$}
+    \State Compute $\hat\Delta$ from the last $E$ episodes using~\eqref{eq:bias-estimate}
+    \State $\beta \gets \operatorname{clip}(\beta + \eta_\beta\hat\Delta,\,\beta_{\min},\,\beta_{\max})$
+  \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+%======================================================================
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Setup}
+
+We evaluate on five locomotion tasks from Gymnasium \citep{towers2024} simulated in MuJoCo \citep{todorov2012}: HalfCheetah-v4, Hopper-v4, Walker2d-v4, Ant-v4 and Humanoid-v4. We compare against SAC \citep{haarnoja2018apps}, TD3 \citep{fujimoto2018} and REDQ \citep{chen2021}. To isolate the effect of the target, all methods use an update-to-data ratio of one, the same network architecture (two hidden layers of 256 units) and the same optimiser settings (Table~\ref{tab:hparams}); REDQ uses $N=10$ critics with in-target minimisation over $M=2$. Each method is run with 10 random seeds per task for one million environment steps. Every 5,000 steps we run 10 evaluation episodes with the deterministic policy mean. Following \citet{henderson2018} and \citet{agarwal2021}, we report means with standard errors and aggregate across tasks with the interquartile mean (IQM) and stratified bootstrap confidence intervals.
+
+\begin{table}[t]
+\centering
+\caption{Hyperparameters. Values shared by all methods are listed first; \method-specific values were chosen on Hopper-v4 and HalfCheetah-v4 and used unchanged on all tasks.}
+\label{tab:hparams}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Hyperparameter & Value \\
+\midrule
+Optimiser & Adam, learning rate $3\times10^{-4}$ \\
+Batch size & 256 \\
+Discount $\gamma$ & 0.99 \\
+Target smoothing $\rho$ & 0.995 \\
+Replay buffer size & $10^6$ \\
+Update-to-data ratio & 1 \\
+Initial random steps & 5,000 \\
+\midrule
+Ensemble size $N$ & 5 \\
+Initial $\beta_0$ & 0.5 \\
+Adaptation step $\eta_\beta$ & 0.1 \\
+Adaptation interval $K$ & 1,000 steps \\
+Episodes for bias estimate $E$ & 10 \\
+Discarded tail $h$ & 300 steps \\
+Bounds $[\beta_{\min},\beta_{\max}]$ & $[-0.5,\,3.0]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Main results}
+
+\begin{table*}[t]
+\centering
+\caption{Average return at one million environment steps (mean $\pm$ standard error over 10 seeds; each seed's score is the mean of the last five evaluations). Bold marks the best mean; underlined entries are within one combined standard error of the best.}
+\label{tab:main}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Method & HalfCheetah & Hopper & Walker2d & Ant & Humanoid \\
+\midrule
+SAC  & $10{,}820 \pm 410$ & $3{,}180 \pm 210$ & $4{,}890 \pm 310$ & $5{,}240 \pm 480$ & \underline{$5{,}610 \pm 220$} \\
+TD3  & $10{,}210 \pm 520$ & $3{,}240 \pm 260$ & $4{,}470 \pm 390$ & $5{,}010 \pm 610$ & $5{,}180 \pm 410$ \\
+REDQ & $11{,}050 \pm 380$ & \underline{$3{,}390 \pm 120$} & $5{,}120 \pm 270$ & $5{,}710 \pm 350$ & \underline{$5{,}560 \pm 300$} \\
+\method{} (ours) & $\mathbf{11{,}640 \pm 290}$ & $\mathbf{3{,}520 \pm 90}$ & $\mathbf{5{,}480 \pm 230}$ & $\mathbf{6{,}180 \pm 300}$ & $\mathbf{5{,}890 \pm 190}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:main} reports final returns. \method{} attains the highest mean on all five tasks. The margin is largest on Ant (8\% above REDQ, 18\% above SAC) and Walker2d, and smallest on Hopper and Humanoid, where the differences from REDQ are within the seed-to-seed spread. Aggregated over tasks, the IQM of SAC-normalised return is 1.10 (95\% CI 1.07--1.13) for \method, 1.04 (1.01--1.07) for REDQ and 0.94 (0.90--0.98) for TD3. Figure~\ref{fig:curves} shows that the gains appear early: on both tasks \method{} reaches SAC's final return in roughly half the number of steps.
+
+\begin{figure*}[t]
+  \centering
+  \includesvg[width=0.82\textwidth]{10-learning-curves}
+  \caption{Learning curves on Walker2d-v4 and Ant-v4. Lines show the mean evaluation return over 10 seeds; shaded regions show one standard deviation.}
+  \label{fig:curves}
+\end{figure*}
+
+\paragraph{Estimation bias.} To check that \method{} does what it is designed to do, we measure the normalised bias of each method's critic, $(\hat Q - G)/|G|$, on states from 50 fresh evaluation episodes of the stochastic policy at the end of training. Averaged over tasks, the bias is $-0.07$ for SAC, $-0.10$ for TD3, $-0.05$ for REDQ and $+0.01$ for \method. Both clipped-double-Q methods underestimate, consistent with previous reports \citep{kuznetsov2020,chen2021}. The ensemble mean without a penalty ($\beta=0$) overestimates by $+0.21$.
+
+\paragraph{How $\beta$ evolves.} The learned coefficient follows a similar pattern on every task. It rises from $\beta_0=0.5$ during the first 100k--200k steps, peaking between 1.1 (HalfCheetah) and 1.4 (Ant), and then declines slowly to between 0.4 and 0.7 by one million steps. Recall that $\beta=1/\sqrt{2}\approx0.71$ corresponds to clipped double Q-learning with two critics; by the end of training \method{} is usually less pessimistic than that, which is consistent with the underestimation we measured for SAC and TD3.
+
+\subsection{Ablations}
+\label{sec:ablations}
+
+Table~\ref{tab:ablation} isolates the components of \method{} on Walker2d and Ant.
+
+\begin{table}[t]
+\centering
+\caption{Ablations at one million steps (mean $\pm$ s.e., 10 seeds). ``Time'' is wall-clock relative to SAC on one GPU.}
+\label{tab:ablation}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Variant & Walker2d & Ant & Time \\
+\midrule
+\method{} ($N=5$, adaptive $\beta$) & $5{,}480 \pm 230$ & $6{,}180 \pm 300$ & 1.6$\times$ \\
+\midrule
+Fixed $\beta = 0$ (ensemble mean) & $4{,}210 \pm 520$ & $4{,}630 \pm 710$ & 1.6$\times$ \\
+Fixed $\beta = 0.5$ & $5{,}150 \pm 280$ & $5{,}820 \pm 340$ & 1.6$\times$ \\
+Fixed $\beta = 1.5$ & $4{,}960 \pm 250$ & $5{,}460 \pm 320$ & 1.6$\times$ \\
+Min of 2 random critics & $5{,}050 \pm 260$ & $5{,}690 \pm 330$ & 1.6$\times$ \\
+\midrule
+$N = 3$ & $5{,}230 \pm 300$ & $5{,}850 \pm 360$ & 1.3$\times$ \\
+$N = 10$ & $5{,}540 \pm 210$ & $6{,}240 \pm 280$ & 2.7$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Adaptation matters more than the exact form of the penalty: the best fixed $\beta$ we tried (0.5) improves on the min-of-two target by only 100--130 points, about a quarter of the gain from adaptation, and the unpenalised ensemble mean is unstable, with three of ten Ant seeds collapsing after 600k steps. Larger ensembles help slightly but at a steep computational cost; $N=5$ is a reasonable trade-off. We also varied $\eta_\beta\in\{0.03, 0.1, 0.3\}$ and $K\in\{500, 1000, 5000\}$ and found final returns within one standard error of the defaults in all cases (not shown).
+
+%======================================================================
+\section{Limitations}
+\label{sec:limitations}
+
+\method{} relies on Monte Carlo returns from complete or long-truncated episodes, so it does not directly apply to continuing tasks without natural episode boundaries; a bootstrapped $n$-step estimate could stand in for $G_t$ there, at the price of reintroducing some critic bias. The bias estimate is computed on states visited by recent behaviour policies, which may differ from the states where overestimation does the most damage. Finally, our experiments cover only dense-reward locomotion tasks with an update-to-data ratio of one; whether adaptation remains beneficial at the high update-to-data ratios where REDQ excels is an open question.
+
+%======================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+The amount of pessimism an off-policy critic needs is not a constant of the algorithm but a property of the task and the stage of training. \method{} measures the critic's bias against Monte Carlo returns and adjusts a single coefficient to remove it. The change is a few lines of code on top of an ensemble SAC implementation, adds little computation beyond the ensemble itself, and gave consistent improvements on all tasks we tried without per-task tuning. Code will be released upon publication.
+
+\bibliographystyle{plainnat}
+\bibliography{10-references}
+
+\end{document}

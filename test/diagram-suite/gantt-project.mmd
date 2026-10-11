@@ -1,0 +1,18 @@
+gantt
+    title Website relaunch
+    dateFormat YYYY-MM-DD
+    excludes weekends
+    section Discovery
+        Stakeholder interviews :done, int, 2026-03-02, 5d
+        Content audit          :done, audit, after int, 4d
+        Requirements signed    :milestone, req, after audit, 0d
+    section Design
+        Wireframes             :active, wire, after audit, 6d
+        Visual design          :crit, vis, after wire, 8d
+        Design review          :milestone, crit, after vis, 0d
+    section Build
+        Front end              :crit, fe, after vis, 12d
+        CMS integration        :cms, after wire, 10d
+        QA and fixes           :crit, qa, after fe cms, 5d
+    section Launch
+        Go live                :milestone, crit, live, after qa, 0d

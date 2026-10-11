@@ -1,0 +1,279 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,citecolor=blue!50!black,linkcolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage[nameinlink]{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\Edges}{\mathcal{E}}
+\newcommand{\h}{\mathbf{h}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\W}{\mathbf{W}}
+\newcommand{\A}{\mathbf{A}}
+\newcommand{\D}{\mathbf{D}}
+\newcommand{\Lap}{\mathbf{L}}
+\newcommand{\I}{\mathbf{I}}
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\Hmat}{\mathbf{H}}
+\newcommand{\AGG}{\operatorname{AGG}}
+\newcommand{\UPD}{\operatorname{UPD}}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\title{Graph Neural Networks: A Short Survey of\\Architectures, Theory and Open Problems}
+\author{Mei-Ling Tan \and Oluwaseun Adebayo\\[4pt]
+  \small Department of Computer Science}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Graph neural networks (GNNs) learn representations of nodes, edges and whole graphs by passing information along edges. In under a decade they have moved from a niche topic to a standard tool in chemistry, recommendation, physical simulation and weather forecasting. This survey gives a compact, self-contained account of the field for readers who know deep learning but not graphs. We present spectral and spatial views of graph convolution, unify the main architectures under the message-passing framework, summarise what is known about their expressive power, and discuss the practical problems of depth, scale and evaluation. We close with the open problems we consider most important.
+\end{abstract}
+
+%======================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Many kinds of data are naturally graphs: molecules are atoms joined by bonds, social networks are people joined by relationships, and road networks, citation networks, meshes and knowledge bases all have the same structure. Standard neural networks assume a fixed grid (images) or sequence (text), and they cannot be applied directly to graphs, which have no canonical ordering of nodes and a variable number of neighbours per node.
+
+The idea of a neural network that operates on graphs dates back to \citet{gori2005} and \citet{scarselli2009}, who defined node states as the fixed point of a contraction map over neighbourhoods. The modern era began with spectral formulations of graph convolution \citep{bruna2014,defferrard2016}, the simplification of \citet{kipf2017} into the graph convolutional network (GCN), and the realisation that most proposed models are special cases of a single \emph{message-passing} scheme \citep{gilmer2017}, later generalised to the ``graph network'' block of \citet{battaglia2018}. Since then the field has grown rapidly; broader surveys include \citet{wu2021survey} and \citet{zhou2020}, and \citet{bronstein2017,bronstein2021} place GNNs within a general programme of geometric deep learning.
+
+This survey is deliberately short. Rather than cataloguing every model, we focus on the ideas that recur across the literature and on the limitations that drive current research. \Cref{sec:prelim} fixes notation. \Cref{sec:spectral} derives graph convolution from the spectral viewpoint, and \cref{sec:mpnn} generalises it to message passing. \Cref{sec:expressivity} covers expressive power, \cref{sec:depth} the problems of depth, and \cref{sec:scale} scalability. \Cref{sec:transformers} discusses graph transformers, \cref{sec:applications} applications, and \cref{sec:evaluation} benchmarks. \Cref{sec:open} lists open problems.
+
+%======================================================================
+\section{Preliminaries}
+\label{sec:prelim}
+
+A graph $\G = (\V, \Edges)$ has $n = |\V|$ nodes and edges $\Edges \subseteq \V\times\V$. Its adjacency matrix $\A\in\{0,1\}^{n\times n}$ has $A_{uv} = 1$ if $(u,v)\in\Edges$. We consider undirected graphs unless stated otherwise, so $\A$ is symmetric. The degree matrix is $\D = \operatorname{diag}(d_1,\dots,d_n)$ with $d_v = \sum_u A_{uv}$, and $\N(v)$ denotes the neighbours of $v$. Each node has a feature vector $\x_v\in\R^{d}$, collected as rows of $\X\in\R^{n\times d}$.
+
+Three kinds of task are common: \emph{node-level} prediction (classify each paper in a citation network), \emph{edge-level} prediction (will these two users interact?) and \emph{graph-level} prediction (is this molecule toxic?).
+
+Because node numbering is arbitrary, a model on graphs should not depend on it. Let $\mathbf{P}$ be a permutation matrix. A function $f$ producing one output per graph is \emph{permutation invariant} if $f(\mathbf{P}\X, \mathbf{P}\A\mathbf{P}^\top) = f(\X, \A)$, and a function producing one output per node is \emph{permutation equivariant} if $f(\mathbf{P}\X, \mathbf{P}\A\mathbf{P}^\top) = \mathbf{P}f(\X, \A)$. Every architecture in this survey is built so that node-level layers are equivariant and graph-level readouts are invariant.
+
+%======================================================================
+\section{Spectral graph convolution}
+\label{sec:spectral}
+
+The normalised graph Laplacian $\Lap = \I - \D^{-1/2}\A\D^{-1/2}$ is symmetric and positive semi-definite, with eigendecomposition $\Lap = \mathbf{U}\bm{\Lambda}\mathbf{U}^\top$ and eigenvalues $0 = \lambda_1\le\dots\le\lambda_n\le 2$. By analogy with the classical Fourier transform, $\mathbf{U}^\top\x$ is called the \emph{graph Fourier transform} of a signal $\x\in\R^n$, and a spectral filter $g_\theta$ acts as
+\begin{equation}\label{eq:spectral}
+  g_\theta \star \x = \mathbf{U}\,g_\theta(\bm\Lambda)\,\mathbf{U}^\top\x.
+\end{equation}
+\citet{bruna2014} learned $g_\theta(\bm\Lambda)$ directly, one parameter per eigenvalue. This has two drawbacks: computing $\mathbf{U}$ costs $O(n^3)$, and the filters are not localised in space and do not transfer between graphs.
+
+\paragraph{Polynomial filters.} \citet{defferrard2016}, building on graph wavelets \citep{hammond2011}, parameterised the filter as a polynomial in the Laplacian, expanded in Chebyshev polynomials $T_k$:
+\begin{equation}\label{eq:cheb}
+  g_\theta \star \x = \sum_{k=0}^{K-1}\theta_k\,T_k(\tilde\Lap)\,\x, \qquad \tilde\Lap = \frac{2}{\lambda_{\max}}\Lap - \I.
+\end{equation}
+Because $\tilde\Lap^k$ has nonzero entries only between nodes at most $k$ hops apart, the filter is exactly $(K-1)$-localised, and it can be applied with $K-1$ sparse matrix--vector products without any eigendecomposition.
+
+\paragraph{The GCN layer.} \citet{kipf2017} took $K = 2$, approximated $\lambda_{\max}\approx 2$ and tied the two parameters ($\theta = \theta_0 = -\theta_1$), giving $g_\theta\star\x \approx \theta(\I + \D^{-1/2}\A\D^{-1/2})\x$. Repeated application of $\I + \D^{-1/2}\A\D^{-1/2}$, whose eigenvalues lie in $[0,2]$, is numerically unstable, so they applied a \emph{renormalisation trick}: add self-loops, $\tilde\A = \A + \I$ with degree matrix $\tilde\D$, and use $\hat\A = \tilde\D^{-1/2}\tilde\A\tilde\D^{-1/2}$. For multi-channel features the layer is
+\begin{equation}\label{eq:gcn}
+  \Hmat^{(\ell+1)} = \sigma\bigl(\hat\A\,\Hmat^{(\ell)}\,\W^{(\ell)}\bigr), \qquad \Hmat^{(0)} = \X.
+\end{equation}
+Each layer mixes every node's features with those of its neighbours, weighted by $1/\sqrt{\tilde d_u\tilde d_v}$, and then applies a shared linear map and non-linearity. Two layers of~\eqref{eq:gcn} with a softmax output became the reference model for semi-supervised node classification.
+
+%======================================================================
+\section{Message passing}
+\label{sec:mpnn}
+
+The GCN layer can be read without any reference to spectra: each node aggregates transformed features from its neighbours. \citet{gilmer2017} made this the definition. A \emph{message-passing neural network} (MPNN) updates node states in $L$ rounds,
+\begin{align}
+  \mathbf{m}_v^{(\ell+1)} &= \AGG^{(\ell)}\Bigl(\bigl\{\!\!\bigl\{\, M^{(\ell)}\bigl(\h_v^{(\ell)}, \h_u^{(\ell)}, \mathbf{e}_{uv}\bigr) : u\in\N(v) \,\bigr\}\!\!\bigr\}\Bigr), \label{eq:mpnn-msg}\\
+  \h_v^{(\ell+1)} &= \UPD^{(\ell)}\bigl(\h_v^{(\ell)}, \mathbf{m}_v^{(\ell+1)}\bigr), \label{eq:mpnn-upd}
+\end{align}
+where $\{\!\{\cdot\}\!\}$ denotes a multiset, $\mathbf{e}_{uv}$ are optional edge features, $M$ and $\UPD$ are learned functions, and $\AGG$ is a permutation-invariant function such as sum, mean or max. For graph-level tasks, a \emph{readout} pools the final node states, for example $\h_\G = \sum_v \h_v^{(L)}$. Since $\AGG$ is invariant to the order of neighbours, every MPNN layer is permutation equivariant by construction.
+
+\Cref{tab:architectures} expresses the most widely used architectures in this form.
+
+\begin{table}[t]
+  \centering
+  \caption{Common GNN layers as instances of message passing. $\sigma$ is a non-linearity, $\Vert$ denotes concatenation, and $\hat a_{uv}$ are the entries of the renormalised adjacency $\hat\A$ from~\eqref{eq:gcn}.}
+  \label{tab:architectures}
+  \small
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabularx}{\textwidth}{@{}l c L@{}}
+    \toprule
+    Model & Aggregation & Update $\h_v^{(\ell+1)}$ \\
+    \midrule
+    GCN \citep{kipf2017} & weighted sum & $\sigma\Bigl(\sum_{u\in\N(v)\cup\{v\}} \hat a_{uv}\,\W\h_u\Bigr)$ \\
+    GraphSAGE \citep{hamilton2017} & mean / max / LSTM & $\sigma\Bigl(\W\bigl[\h_v \,\Vert\, \AGG_{u\in\N(v)}\h_u\bigr]\Bigr)$ \\
+    GAT \citep{velickovic2018} & attention & $\sigma\Bigl(\sum_{u\in\N(v)\cup\{v\}}\alpha_{vu}\,\W\h_u\Bigr)$ \\
+    GIN \citep{xu2019} & sum & $\mathrm{MLP}\Bigl((1+\epsilon)\,\h_v + \sum_{u\in\N(v)}\h_u\Bigr)$ \\
+    R-GCN \citep{schlichtkrull2018} & sum per relation & $\sigma\Bigl(\W_0\h_v + \sum_{r}\sum_{u\in\N_r(v)}\frac{1}{|\N_r(v)|}\W_r\h_u\Bigr)$ \\
+    GGNN \citep{li2016} & sum & $\mathrm{GRU}\Bigl(\h_v,\ \sum_{u\in\N(v)}\W\h_u\Bigr)$ \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Attention.} GCN fixes neighbour weights by degree. The graph attention network (GAT) of \citet{velickovic2018} learns them:
+\begin{equation}\label{eq:gat}
+  \alpha_{vu} = \frac{\exp\bigl(\mathrm{LeakyReLU}\bigl(\mathbf{a}^\top[\W\h_v \,\Vert\, \W\h_u]\bigr)\bigr)}{\sum_{w\in\N(v)\cup\{v\}}\exp\bigl(\mathrm{LeakyReLU}\bigl(\mathbf{a}^\top[\W\h_v \,\Vert\, \W\h_w]\bigr)\bigr)},
+\end{equation}
+usually with several independent attention heads whose outputs are concatenated. Attention lets a node down-weight irrelevant or noisy neighbours, which helps on graphs whose edges are only loosely related to the labels.
+
+\paragraph{Inductive learning.} GCN as originally formulated is \emph{transductive}: it is trained and evaluated on one fixed graph. GraphSAGE \citep{hamilton2017} emphasised the \emph{inductive} setting, in which the learned aggregation functions are applied to nodes or graphs not seen during training. Since all layers in \cref{tab:architectures} share weights across nodes, they are all inductive in principle; the distinction is mostly about training and evaluation protocol.
+
+%======================================================================
+\section{Expressive power}
+\label{sec:expressivity}
+
+How many graphs can a GNN tell apart? The answer is tied to a classical heuristic for graph isomorphism.
+
+\begin{definition}[1-WL colour refinement]
+The 1-dimensional Weisfeiler--Leman test \citep{weisfeiler1968} assigns every node the same initial colour and then iterates
+\[
+  c_v^{(\ell+1)} = \operatorname{HASH}\Bigl(c_v^{(\ell)},\ \bigl\{\!\!\bigl\{\, c_u^{(\ell)} : u\in\N(v)\,\bigr\}\!\!\bigr\}\Bigr),
+\]
+where $\operatorname{HASH}$ is injective. Two graphs are declared non-isomorphic if their multisets of colours differ at some iteration.
+\end{definition}
+
+The update has exactly the form of~\eqref{eq:mpnn-msg}--\eqref{eq:mpnn-upd} with an injective aggregation. The following result was proved independently by \citet{xu2019} and \citet{morris2019}.
+
+\begin{theorem}\label{thm:wl}
+If an MPNN maps two graphs to different representations, then the 1-WL test also distinguishes them. Conversely, if the aggregation, update and readout functions of an MPNN are injective on multisets, it distinguishes exactly the pairs of graphs that 1-WL distinguishes.
+\end{theorem}
+
+Mean and max aggregation are not injective on multisets: mean cannot distinguish $\{\!\{a, b\}\!\}$ from $\{\!\{a, a, b, b\}\!\}$, and max loses multiplicities altogether. Sum aggregation followed by an MLP can be injective, which motivated GIN \citep{xu2019}. In experiments, GIN fits training data on graph classification benchmarks much better than GCN or GraphSAGE.
+
+1-WL has well-known blind spots. It cannot distinguish two disjoint triangles from a single six-cycle, since every node in both graphs has degree two. More generally, it cannot count cycles or detect many substructures relevant to chemistry. Higher-order GNNs that operate on tuples of nodes \citep{morris2019} match the stronger $k$-WL tests, at a cost of $O(n^k)$ memory, and a large literature explores cheaper ways to break the 1-WL barrier, such as adding positional encodings or subgraph counts as node features.
+
+%======================================================================
+\section{Depth: oversmoothing and oversquashing}
+\label{sec:depth}
+
+Deep convolutional networks for images routinely have hundreds of layers. Most successful GNNs have two to four, and naive deeper GNNs usually perform worse. Two distinct phenomena are responsible.
+
+\paragraph{Oversmoothing.} Each GCN layer multiplies features by $\hat\A$, a low-pass filter. Without non-linearities, $\hat\A^\ell\X$ converges as $\ell\to\infty$ to a matrix in which each node's features depend only on its degree and connected component \citep{li2018}. Node representations become indistinguishable and classification fails. \citet{oono2020} showed that, under conditions on the weights, the distance of the representations from this uninformative subspace decays exponentially with depth even with ReLU non-linearities; \citet{rusch2023} survey the many proposed definitions and remedies.
+
+\paragraph{Oversquashing.} The number of nodes within $\ell$ hops of a node can grow exponentially in $\ell$, but the information they carry must be compressed into a fixed-size vector. \citet{alon2021} showed that this bottleneck harms tasks that depend on long-range interactions, and that adding a fully connected layer at the end of a GNN helps on such tasks. \citet{topping2022} related oversquashing to negatively curved edges, which act as bottlenecks, and proposed rewiring the graph to relieve them.
+
+\paragraph{Remedies.} Several simple architectural changes allow deeper or wider receptive fields:
+\begin{itemize}
+  \item \emph{Decoupling propagation from transformation.} SGC \citep{wu2019sgc} removes non-linearities altogether, computing $\hat\A^K\X$ once and training a logistic regression on the result. APPNP \citep{klicpera2019} applies an MLP to the features and then propagates with personalised PageRank,
+  \begin{equation}\label{eq:appnp}
+    \mathbf{Z}^{(k+1)} = (1-\alpha)\,\hat\A\,\mathbf{Z}^{(k)} + \alpha\,\Hmat, \qquad \mathbf{Z}^{(0)} = \Hmat = f_\theta(\X),
+  \end{equation}
+  where the teleport term $\alpha\Hmat$ keeps the representation from converging to the uninformative fixed point.
+  \item \emph{Residual connections.} GCNII \citep{chen2020gcnii} combines an initial residual connection like that in~\eqref{eq:appnp} with identity mapping of the weights, and trains networks with 64 layers without degradation.
+  \item \emph{Rewiring.} Adding edges, or a virtual node connected to all others, shortens long paths \citep{topping2022}.
+\end{itemize}
+
+\paragraph{Heterophily.} The low-pass behaviour of GCN-style layers is helpful when neighbours tend to share labels (\emph{homophily}), as in citation networks. On \emph{heterophilous} graphs, where neighbours tend to differ (fraudsters linked to their victims, for example), it can be harmful, and even an MLP that ignores the graph can outperform a GCN. \citet{zhu2020} identify design choices that help in this regime: separating a node's own representation from its neighbours', using higher-order neighbourhoods, and combining intermediate representations.
+
+%======================================================================
+\section{Scaling to large graphs}
+\label{sec:scale}
+
+Full-batch training of~\eqref{eq:gcn} needs all node representations of every layer in memory. On graphs with billions of edges this is impossible, and mini-batching is complicated by the fact that a node's $L$-layer representation depends on its whole $L$-hop neighbourhood. Three families of solutions dominate:
+\begin{itemize}
+  \item \emph{Neighbour sampling}, in which each node aggregates over a fixed-size random subset of its neighbours at each layer \citep{hamilton2017};
+  \item \emph{subgraph sampling}, in which training uses small subgraphs obtained by graph clustering (Cluster-GCN; \citealp{chiang2019}) or random node, edge or walk sampling with bias correction (GraphSAINT; \citealp{zeng2020}); and
+  \item \emph{precomputation}, as in SGC, where propagation is done once as a preprocessing step and training reduces to a standard model on fixed features.
+\end{itemize}
+PinSage \citep{ying2018} combined random-walk-based neighbourhood sampling with a MapReduce inference pipeline and was deployed on a graph with three billion nodes. Libraries such as PyTorch Geometric \citep{fey2019} now provide efficient implementations of all three approaches.
+
+%======================================================================
+\section{Graph transformers}
+\label{sec:transformers}
+
+A transformer applied to the node set treats the graph as fully connected: every node attends to every other node. This removes oversquashing by construction and is strictly more flexible than message passing, but it discards the graph structure unless that structure is injected some other way. Graphormer \citep{ying2021} adds learned biases to the attention scores based on shortest-path distances and edge features along the shortest path, and adds degree embeddings to node features; it achieved strong results on molecular property prediction. GraphGPS \citep{rampasek2022} provides a modular recipe that combines a local message-passing layer with global attention in every block, together with positional and structural encodings, and uses linear-complexity attention to scale to larger graphs. Whether global attention is necessary, or whether message passing with good positional encodings and rewiring is sufficient, remains an active debate.
+
+%======================================================================
+\section{Applications}
+\label{sec:applications}
+
+\paragraph{Chemistry and drug discovery.} Molecules are the canonical graph-level application. \citet{gilmer2017} introduced the MPNN framework to predict quantum-chemical properties, and directed message-passing models trained on growth-inhibition data were used by \citet{stokes2020} to screen over a hundred million molecules \emph{in silico}, leading to the identification of the antibiotic halicin. When 3D coordinates matter, equivariant GNNs \citep{satorras2021} make predictions that transform correctly under rotations and translations.
+
+\paragraph{Recommendation.} User--item interactions form a bipartite graph. PinSage \citep{ying2018} used GNN embeddings to generate recommendations at Pinterest, and graph-based recommenders are now widespread in industry.
+
+\paragraph{Physical simulation and weather.} \citet{sanchez2020} represented particles in fluids, sand and deformable materials as nodes of a dynamically constructed graph and trained a GNN to predict their accelerations, producing stable rollouts thousands of steps long. GraphCast \citep{lam2023} applies an encoder--processor--decoder GNN on a multi-scale icosahedral mesh to medium-range weather forecasting and outperformed the leading operational deterministic system on most of the verification targets the authors evaluated.
+
+%======================================================================
+\section{Benchmarks and evaluation}
+\label{sec:evaluation}
+
+For several years the field relied on three small citation networks (Cora, Citeseer and PubMed) with a single fixed train/validation/test split. \Cref{tab:results} shows results reported on these splits. The differences between models are small, and \citet{shchur2018} showed that rankings change when different random splits are used, and that simple baselines are competitive when tuned with the same care.
+
+\begin{table}[t]
+  \centering
+  \caption{Test accuracy (\%) on the standard semi-supervised splits of the Planetoid citation datasets, as reported in the original papers. Hyperparameter search and training protocols differ, so small differences should not be over-interpreted.}
+  \label{tab:results}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    Model & Cora & Citeseer & PubMed \\
+    \midrule
+    MLP (as reported by \citealp{velickovic2018}) & 55.1 & 46.5 & 71.4 \\
+    ChebNet \citep{defferrard2016} & 81.2 & 69.8 & 74.4 \\
+    GCN \citep{kipf2017} & 81.5 & 70.3 & 79.0 \\
+    GAT \citep{velickovic2018} & 83.0 & 72.5 & 79.0 \\
+    SGC \citep{wu2019sgc} & 81.0 & 71.9 & 78.9 \\
+    GCNII \citep{chen2020gcnii} & 85.5 & 73.4 & 80.3 \\
+    \midrule
+    \multicolumn{4}{@{}l}{\footnotesize ChebNet figures are from the experiments of \citet{kipf2017}.} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Two benchmark efforts have improved matters. The Open Graph Benchmark \citep{hu2020ogb} provides larger datasets with realistic splits (by time for citation graphs, by molecular scaffold for chemistry) and standard evaluators; \cref{tab:datasets} lists some of them. \citet{dwivedi2023} provide a set of medium-scale tasks with fixed parameter budgets, which makes architectural comparisons fairer.
+
+\begin{table}[t]
+  \centering
+  \caption{Statistics of commonly used datasets.}
+  \label{tab:datasets}
+  \begin{tabular}{@{}llrrr@{}}
+    \toprule
+    Dataset & Task & Graphs & Nodes & Edges \\
+    \midrule
+    Cora & node classification (7 classes) & 1 & 2,708 & 5,429 \\
+    Citeseer & node classification (6 classes) & 1 & 3,327 & 4,732 \\
+    PubMed & node classification (3 classes) & 1 & 19,717 & 44,338 \\
+    ogbn-arxiv & node classification (40 classes) & 1 & 169,343 & 1,166,243 \\
+    ogbn-products & node classification (47 classes) & 1 & 2,449,029 & 61,859,140 \\
+    ogbg-molhiv & graph classification (binary) & 41,127 & 25.5 (avg.) & 27.5 (avg.) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+%======================================================================
+\section{Open problems}
+\label{sec:open}
+
+We highlight five directions that we believe deserve more attention.
+
+\begin{enumerate}
+  \item \textbf{Beyond 1-WL, cheaply.} Higher-order models are more expressive but scale poorly. Which additional structural information gives the most discriminative power per unit of computation, and does it matter for real tasks rather than synthetic isomorphism tests?
+  \item \textbf{Depth that helps.} Remedies for oversmoothing allow deep GNNs to train, but rarely make them substantially better than shallow ones. It is not yet clear which tasks genuinely need deep message passing.
+  \item \textbf{Distribution shift.} GNNs are often deployed on graphs that grow or change after training. Size generalisation, from small training graphs to much larger test graphs, is poorly understood.
+  \item \textbf{Evaluation.} Many benchmarks remain small and saturated, and gains reported on them are often within the noise of the evaluation protocol. Shared, realistic, well-split benchmarks with strong tuned baselines remain the most effective way to measure progress.
+  \item \textbf{Graph foundation models.} Large pre-trained models have transformed language and vision. Whether a single pre-trained model can transfer across graphs with different node features, sizes and semantics is an open and actively studied question.
+\end{enumerate}
+
+%======================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+Message passing gives a simple and general recipe for learning on graphs: transform neighbours' states, aggregate them with a permutation-invariant function, and update. Its strengths (locality, weight sharing, permutation equivariance) are also the source of its main limitations: bounded expressive power, oversmoothing with depth, and bottlenecks on long-range interactions. Much current research, from higher-order and transformer architectures to graph rewiring, can be read as an attempt to keep the strengths while relaxing those limits. The field's next challenge is less about new layers than about evaluation, robustness and transfer.
+
+\bibliographystyle{plainnat}
+\bibliography{20-references}
+
+\end{document}

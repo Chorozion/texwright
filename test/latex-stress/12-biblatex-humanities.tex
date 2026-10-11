@@ -1,0 +1,37 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[style=authoryear,backend=biber,maxcitenames=2]{biblatex}
+\usepackage{csquotes}
+\usepackage{setspace}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{footmisc}
+\addbibresource{refs.bib}
+\doublespacing
+
+\title{On Reading Slowly}
+\author{Eleanor Vance}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+As \textcite{smith2020} argue, \enquote{reading is a practice, not a product}.
+Others disagree \parencite[p.~12]{knuth1984}, and some go further \autocite{lee2019}.
+\citeauthor{smith2020} published in \citeyear{smith2020}. A footnote citation is common.\footcite{lee2019}
+Multiple works: \parencite{smith2020,knuth1984}; see also \cite[see][ch. 2]{knuth1984}.
+\Textcite{lee2019} is often cited. \citetitle{knuth1984} remains influential.
+
+\begin{displayquote}
+Reading slowly is an act of resistance against the speed of the attention economy.
+\end{displayquote}
+
+The phrase \enquote*{close reading} has a long history.\footnote{See the discussion in \cite{smith2020}.}
+
+\begin{quote}
+\textit{``Festina lente''} --- make haste slowly.
+\end{quote}
+
+\nocite{web2023}
+\printbibliography[title={Works Cited}, heading=bibintoc]
+\end{document}

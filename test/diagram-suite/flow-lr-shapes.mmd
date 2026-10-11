@@ -1,0 +1,11 @@
+flowchart LR
+    user([User]) --> api[API Gateway]
+    api --> auth{{Auth service}}
+    api --> svc[[Order service]]
+    svc --> db[(Postgres)]
+    svc -.-> cache[(Redis cache)]
+    auth ==> idp>Identity provider]
+    svc --> queue[/Event queue/]
+    queue --> worker[\Worker pool\]
+    worker --o metrics((Metrics))
+    worker --x dlq[Dead letter queue]

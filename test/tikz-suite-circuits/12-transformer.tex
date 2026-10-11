@@ -1,0 +1,20 @@
+\documentclass{article}
+\usepackage{circuitikz}
+\begin{document}
+
+\begin{figure}[h!]
+\centering
+\begin{circuitikz}
+  \draw (0,0) node[transformer core] (T) {}
+    (T.A1) node[anchor=east] {A1}
+    (T.A2) node[anchor=east] {A2}
+    (T.B1) node[anchor=west] {B1}
+    (T.B2) node[anchor=west] {B2}
+    (T.base) node{$N_1 : N_2$};
+  \draw (T.A1) -- ++(-1,0) to[sV, l_=$V_p$] ($(T.A2)+(-1,0)$) -- (T.A2);
+  \draw (T.B1) -- ++(1,0) to[R, l=$R_L$] ($(T.B2)+(1,0)$) -- (T.B2);
+\end{circuitikz}
+\caption{Ideal transformer driving a resistive load.}
+\end{figure}
+
+\end{document}

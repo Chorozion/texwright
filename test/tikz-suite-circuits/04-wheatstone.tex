@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{circuitikz}
+\begin{document}
+
+\begin{figure}[htbp]
+  \centering
+  \begin{circuitikz}[scale=1.2]
+    % Bridge nodes
+    \coordinate (A) at (0,2);
+    \coordinate (B) at (2,4);
+    \coordinate (C) at (4,2);
+    \coordinate (D) at (2,0);
+
+    \draw (A) to[R, l=$R_1$, *-*] (B);
+    \draw (B) to[R, l=$R_2$, -*] (C);
+    \draw (A) to[R, l_=$R_3$, -*] (D);
+    \draw (D) to[R, l_=$R_x$] (C);
+    \draw (B) to[voltmeter, l=$V_G$] (D);
+
+    % Source
+    \draw (A) -- (-1.5,2) to[battery, l=$E$] (-1.5,-1) -- (5.5,-1) -- (5.5,2) -- (C);
+  \end{circuitikz}
+  \caption{Wheatstone bridge. The bridge is balanced when $R_1 R_x = R_2 R_3$.}
+  \label{fig:wheatstone}
+\end{figure}
+
+\end{document}

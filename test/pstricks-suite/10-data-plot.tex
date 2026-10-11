@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage{pstricks}
+\usepackage{pst-plot}
+\begin{document}
+\begin{figure}[htb]
+\centering
+\savedata{\mydata}[{0 0.5, 1 1.8, 2 2.9, 3 3.4, 4 5.2, 5 5.9, 6 7.1, 7 7.6}]
+\readdata{\second}{10-measurements.dat}
+\psset{xunit=1cm,yunit=0.5cm}
+\begin{pspicture}(-1,-1.5)(8,9)
+  \psaxes[Dx=1,Dy=2,ticksize=0 4pt]{->}(0,0)(7.8,8.5)[Time (s),-90][Distance (m),0]
+  \dataplot[plotstyle=dots,dotstyle=o,dotsize=4pt,linecolor=blue]{\mydata}
+  \listplot[linecolor=red,linestyle=dashed]{0 0.4 7 7.9}
+  \dataplot[plotstyle=dots,dotstyle=square*,dotsize=3pt,linecolor=green!50!black]{\second}
+  \fileplot[linecolor=green!50!black,linewidth=0.5pt]{10-measurements.dat}
+  \listplot[plotstyle=curve,linecolor=gray]{0 0.5 1 1.8 2 2.9 3 3.4 4 5.2 5 5.9 6 7.1 7 7.6}
+\end{pspicture}
+\caption{Measured distance over time with a linear fit.}
+\label{fig:data}
+\end{figure}
+\end{document}

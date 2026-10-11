@@ -1,0 +1,64 @@
+\documentclass[12pt,oneside]{book}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage[nottoc]{tocbibind}
+\usepackage{emptypage}
+\usepackage{lipsum}
+\usepackage{blindtext}
+
+\begin{document}
+\frontmatter
+\begin{titlepage}
+  \begin{center}
+    \vspace*{1in}
+    {\huge\textbf{Machine Learning for Climate Downscaling}}\\[1.5cm]
+    {\Large A thesis submitted for the degree of\\ Doctor of Philosophy}\\[1cm]
+    {\large Kwame Mensah}\\
+    \vfill
+    University of Example\\
+    \today
+  \end{center}
+\end{titlepage}
+
+\chapter*{Declaration}
+I declare that this thesis is my own work.
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\blindtext
+
+\tableofcontents
+\listoffigures
+
+\mainmatter
+\part{Foundations}
+\chapter{Introduction}\label{chap:intro}
+\section{Motivation}
+Climate models are coarse. \lipsum[2-3]
+
+\section{Contributions}\label{sec:contrib}
+\begin{enumerate}
+\item A new architecture.
+\item A benchmark.
+\end{enumerate}
+
+\chapter{Background}
+\section{Downscaling}
+\subsection{Statistical}
+\subsubsection{Regression}
+\paragraph{Linear.} Simple.
+\subparagraph{Ridge.} Regularised.
+
+\part{Methods}
+\chapter{Model}
+Equation numbering is by chapter:
+\begin{equation}
+  y = Wx + b \label{eq:lin}
+\end{equation}
+See \eqref{eq:lin} in Chapter~\ref{chap:intro}, Section~\ref{sec:contrib}, page~\pageref{sec:contrib}.
+
+\backmatter
+\chapter{Glossary}
+GCM: general circulation model.
+\end{document}

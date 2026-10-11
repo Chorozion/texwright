@@ -1,0 +1,84 @@
+{
+  "name": "texwright",
+  "version": "0.3.4",
+  "description": "Markdown and LaTeX to PDF and HTML with its own TeX-style typesetting engine: Knuth-Plass line breaking, TeX math layout, footnotes, floats and exact page references. No TeX, no browser, no runtime dependencies. Built for AI agents: structured diagnostics, JSON in and out, and an MCP server.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Thomas Garren (SOPHIA XT LLC)",
+  "bin": {
+    "texwright": "dist/cli.mjs"
+  },
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./bundle": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/texwright.mjs"
+    }
+  },
+  "files": [
+    "dist/src",
+    "dist/texwright.mjs",
+    "dist/texwright-core.js",
+    "dist/cli.mjs",
+    "dist/worker.mjs",
+    "themes",
+    "fonts",
+    "hyphenation",
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTORS.md",
+    "THIRD-PARTY-NOTICES.md",
+    "templates",
+    "CHEATSHEET.md",
+    "AGENTS.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/bundle.mjs",
+    "test": "npm run build && node scripts/test.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "bench": "npm run build && node bench/run.mjs",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "markdown",
+    "latex",
+    "pdf",
+    "typesetting",
+    "tex",
+    "knuth-plass",
+    "mathml",
+    "pandoc",
+    "citations",
+    "bibtex",
+    "mcp",
+    "ai-agents",
+    "documents"
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@types/node": "^22.20.5",
+    "pdfjs-dist": "^6.4.299",
+    "typescript": "^5.9.3"
+  },
+  "contributors": [
+    "Sophia",
+    "Xe5",
+    "Thomas Garren (SOPHIA XT LLC)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chorozion/texwright.git"
+  },
+  "homepage": "https://github.com/Chorozion/texwright#readme",
+  "bugs": {
+    "url": "https://github.com/Chorozion/texwright/issues"
+  }
+}

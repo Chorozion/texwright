@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage[european]{circuitikz}
+\begin{document}
+
+\section*{Schaltung im europ\"aischen Stil}
+
+\begin{circuitikz}
+  \draw (0,0) to[V=$U_0$] (0,3)
+    to[R=$R_1$, i=$I$] (3,3)
+    to[L=$L$, *-] (6,3)
+    to[C=$C$] (6,0)
+    -- (0,0);
+  \draw (3,3) to[R=$R_2$, v>=$U_2$, -*] (3,0);
+  \draw (6,3) -- (8,3) to[lamp, l=$H_1$] (8,0) -- (6,0);
+  \draw (0,3) -- (0,4) to[switch, l=$S_1$] (3,4) -- (3,3);
+\end{circuitikz}
+
+\end{document}

@@ -1,0 +1,305 @@
+% Lecture notes: PHYS 2240, Lecture 11
+% Compile with: pdflatex -shell-escape 04-electromagnetism-notes.tex
+% (the svg package calls Inkscape to convert the figure)
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black]{hyperref}
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+\newtheorem{exercise}{Exercise}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\E}{\vb{E}}
+\newcommand{\B}{\vb{B}}
+\newcommand{\J}{\vb{J}}
+\newcommand{\eps}{\varepsilon_0}
+
+\title{PHYS 2240: Electricity and Magnetism\\[4pt]
+  \large Lecture 11 --- Maxwell's Equations in Differential Form}
+\author{Dr.\ Helen Marsh}
+\date{Autumn term 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent So far we have stated Gauss's law, Ampère's law and Faraday's law as integral statements about surfaces and loops. In this lecture we use the divergence theorem and Stokes' theorem to turn each of them into a local statement that holds at every point in space. Along the way we find that Ampère's law, as we have been using it, is inconsistent with charge conservation, and fixing it leads directly to electromagnetic waves.
+\end{abstract}
+
+\tableofcontents
+
+%======================================================================
+\section{The vector calculus we need}
+\label{sec:vector-calculus}
+
+In Cartesian coordinates the del operator is
+\[
+  \grad = \vu{x}\,\pdv{x} + \vu{y}\,\pdv{y} + \vu{z}\,\pdv{z},
+\]
+and for a vector field $\vb{F} = (F_x, F_y, F_z)$ the divergence and curl are
+\begin{align}
+  \div{\vb{F}} &= \pdv{F_x}{x} + \pdv{F_y}{y} + \pdv{F_z}{z}, \label{eq:div-cart}\\[4pt]
+  \curl{\vb{F}} &=
+  \begin{vmatrix}
+    \vu{x} & \vu{y} & \vu{z} \\
+    \partial_x & \partial_y & \partial_z \\
+    F_x & F_y & F_z
+  \end{vmatrix}. \label{eq:curl-cart}
+\end{align}
+The divergence measures how much a field ``spreads out'' from a point; the curl measures how much it circulates around a point.
+
+Two integral theorems connect these local derivatives to global quantities.
+
+\paragraph{Divergence theorem.} For a volume $V$ bounded by a closed surface $S$ with outward unit normal,
+\begin{equation}\label{eq:divergence-theorem}
+  \oint_S \vb{F}\vdot\dd{\vb{a}} = \int_V (\div{\vb{F}})\,\dd{\tau}.
+\end{equation}
+
+\paragraph{Stokes' theorem.} For an open surface $S$ bounded by a closed curve $C$, with the orientation of $C$ and the normal of $S$ related by the right-hand rule,
+\begin{equation}\label{eq:stokes-theorem}
+  \oint_C \vb{F}\vdot\dd{\vb{l}} = \int_S (\curl{\vb{F}})\vdot\dd{\vb{a}}.
+\end{equation}
+
+We will also need the following identities, valid for any smooth scalar field $f$ and vector field $\vb{F}$:
+\begin{align}
+  \div(\curl{\vb{F}}) &= 0, \label{eq:div-curl}\\
+  \curl(\grad{f}) &= \vb{0}, \label{eq:curl-grad}\\
+  \curl(\curl{\vb{F}}) &= \grad(\div{\vb{F}}) - \laplacian{\vb{F}}. \label{eq:curl-curl}
+\end{align}
+
+Finally, for fields with spherical or cylindrical symmetry it is much easier to use the curvilinear forms. If $\vb{F} = F_r(r)\,\vu{r}$ in spherical coordinates, or $\vb{F} = F_\phi(s)\,\vu*{\phi}$ in cylindrical coordinates, then
+\begin{equation}\label{eq:curvilinear}
+  \div{\vb{F}} = \frac{1}{r^2}\dv{r}\qty(r^2 F_r),
+  \qquad
+  \curl{\vb{F}} = \frac{1}{s}\dv{s}\qty(s F_\phi)\,\vu{z}.
+\end{equation}
+
+\begin{remark}
+A common mistake is to compute $\div(\vu{r}/r^2)$ with~\eqref{eq:curvilinear} and conclude it is zero everywhere. It is zero for $r > 0$, but the field is singular at the origin and the divergence theorem applied to a small sphere gives $4\pi$. The correct statement is $\div(\vu{r}/r^2) = 4\pi\,\delta^3(\vb{r})$.
+\end{remark}
+
+%======================================================================
+\section{Gauss's law}
+\label{sec:gauss}
+
+Gauss's law in integral form says that the electric flux through any closed surface equals the enclosed charge divided by $\eps$:
+\begin{equation}\label{eq:gauss-integral}
+  \oint_S \E\vdot\dd{\vb{a}} = \frac{Q_\text{enc}}{\eps} = \frac{1}{\eps}\int_V \rho\,\dd{\tau}.
+\end{equation}
+Apply the divergence theorem~\eqref{eq:divergence-theorem} to the left-hand side:
+\[
+  \int_V \qty(\div{\E} - \frac{\rho}{\eps})\dd{\tau} = 0.
+\]
+This holds for \emph{every} volume $V$, however small, so the integrand itself must vanish:
+\begin{equation}\label{eq:gauss-diff}
+  \boxed{\div{\E} = \frac{\rho}{\eps}}
+\end{equation}
+
+\begin{figure}[ht]
+  \centering
+  \includesvg[width=0.92\textwidth]{04-gauss-ampere}
+  \caption{(a) A spherical Gaussian surface $S$ concentric with a uniformly charged ball of radius $R$; by symmetry $\E$ is radial and has the same magnitude everywhere on $S$. (b) A circular Amperian loop $C$ around a long straight wire carrying current $I$; $\B$ is tangent to the loop and circulates according to the right-hand rule.}
+  \label{fig:gauss-ampere}
+\end{figure}
+
+\begin{example}[Uniformly charged ball]\label{ex:ball}
+A ball of radius $R$ carries total charge $Q$ spread uniformly through its volume, so $\rho = 3Q/(4\pi R^3)$. By symmetry $\E = E(r)\,\vu{r}$. Take a spherical Gaussian surface of radius $r$ (Figure~\ref{fig:gauss-ampere}a). The flux is $4\pi r^2 E(r)$, and the enclosed charge is $Q$ for $r > R$ and $Q r^3/R^3$ for $r < R$. Therefore
+\begin{equation}\label{eq:ball-field}
+  \E(\vb{r}) =
+  \begin{cases}
+    \dfrac{Q}{4\pi\eps}\,\dfrac{r}{R^3}\,\vu{r}, & r < R,\\[10pt]
+    \dfrac{Q}{4\pi\eps}\,\dfrac{1}{r^2}\,\vu{r}, & r > R.
+  \end{cases}
+\end{equation}
+Now check the differential form. Inside, using~\eqref{eq:curvilinear},
+\[
+  \div{\E} = \frac{1}{r^2}\dv{r}\qty(\frac{Q r^3}{4\pi\eps R^3}) = \frac{3Q}{4\pi\eps R^3} = \frac{\rho}{\eps}.
+\]
+Outside, $r^2 E_r$ is constant, so $\div{\E} = 0$, consistent with $\rho = 0$ there. The field is continuous at $r = R$, as it must be when there is no surface charge.
+\end{example}
+
+\paragraph{Electric potential.} In electrostatics $\curl{\E} = \vb{0}$, so by~\eqref{eq:curl-grad} we can write $\E = -\grad{V}$. Substituting into~\eqref{eq:gauss-diff} gives Poisson's equation,
+\begin{equation}\label{eq:poisson}
+  \laplacian{V} = -\frac{\rho}{\eps},
+\end{equation}
+which reduces to Laplace's equation $\laplacian{V} = 0$ in charge-free regions.
+
+%======================================================================
+\section{Magnetostatics: no monopoles, and Ampère's law}
+\label{sec:ampere}
+
+No isolated magnetic charge has ever been observed, so the flux of $\B$ through any closed surface is zero. By the same argument as in Section~\ref{sec:gauss},
+\begin{equation}\label{eq:no-monopole}
+  \oint_S \B\vdot\dd{\vb{a}} = 0 \quad\Longleftrightarrow\quad \div{\B} = 0.
+\end{equation}
+
+Ampère's law for steady currents states that the circulation of $\B$ around a closed loop equals $\mu_0$ times the current through any surface bounded by the loop:
+\begin{equation}\label{eq:ampere-integral}
+  \oint_C \B\vdot\dd{\vb{l}} = \mu_0 I_\text{enc} = \mu_0 \int_S \J\vdot\dd{\vb{a}}.
+\end{equation}
+Stokes' theorem~\eqref{eq:stokes-theorem} turns the left-hand side into a surface integral of $\curl{\B}$, and since $S$ is arbitrary,
+\begin{equation}\label{eq:ampere-diff}
+  \curl{\B} = \mu_0 \J \qquad \text{(steady currents only).}
+\end{equation}
+
+\begin{example}[Thick straight wire]\label{ex:wire}
+A long straight wire of radius $a$ carries current $I$ distributed uniformly over its cross-section, so $J = I/(\pi a^2)$. By symmetry $\B = B(s)\,\vu*{\phi}$, where $s$ is the distance from the axis. Choosing a circular loop of radius $s$ (Figure~\ref{fig:gauss-ampere}b),
+\[
+  2\pi s\,B(s) = \mu_0 I_\text{enc} =
+  \begin{cases}
+    \mu_0 I s^2/a^2, & s < a,\\
+    \mu_0 I, & s > a,
+  \end{cases}
+  \qquad\Longrightarrow\qquad
+  B(s) =
+  \begin{cases}
+    \dfrac{\mu_0 I s}{2\pi a^2}, & s < a,\\[10pt]
+    \dfrac{\mu_0 I}{2\pi s}, & s > a.
+  \end{cases}
+\]
+Inside the wire,~\eqref{eq:curvilinear} gives
+\[
+  \curl{\B} = \frac{1}{s}\dv{s}\qty(\frac{\mu_0 I s^2}{2\pi a^2})\vu{z} = \frac{\mu_0 I}{\pi a^2}\,\vu{z} = \mu_0 \J,
+\]
+as~\eqref{eq:ampere-diff} requires. Outside, $sB$ is constant and the curl vanishes.
+\end{example}
+
+For a sense of scale: a household cable carrying $I = \SI{10}{\ampere}$ produces, at $s = \SI{1}{\centi\metre}$,
+\[
+  B = \frac{\mu_0 I}{2\pi s} = \frac{(\SI{1.257e-6}{\newton\per\ampere\squared})(\SI{10}{\ampere})}{2\pi(\SI{0.01}{\metre})} \approx \SI{200}{\micro\tesla},
+\]
+about four times the Earth's field at mid-latitudes. (In a real two-conductor cable the opposite currents almost cancel this.)
+
+%======================================================================
+\section{Faraday's law}
+\label{sec:faraday}
+
+A changing magnetic flux through a loop induces an electromotive force around it:
+\begin{equation}\label{eq:faraday-integral}
+  \oint_C \E\vdot\dd{\vb{l}} = -\dv{t}\int_S \B\vdot\dd{\vb{a}}.
+\end{equation}
+For a loop that does not move, the time derivative can be taken inside the integral. Applying Stokes' theorem on the left,
+\begin{equation}\label{eq:faraday-diff}
+  \curl{\E} = -\pdv{\B}{t}.
+\end{equation}
+So $\E$ is curl-free, and can be written as $-\grad{V}$, only when $\B$ is static. In general the electric field has a part produced by charges and a part produced by changing magnetic fields.
+
+%======================================================================
+\section{Maxwell's correction to Ampère's law}
+\label{sec:displacement}
+
+Take the divergence of~\eqref{eq:ampere-diff}. By~\eqref{eq:div-curl} the left-hand side is zero, so we would need
+\[
+  \div{\J} = 0
+\]
+everywhere. But local charge conservation is expressed by the continuity equation
+\begin{equation}\label{eq:continuity}
+  \div{\J} + \pdv{\rho}{t} = 0,
+\end{equation}
+and $\partial\rho/\partial t$ is certainly not zero on the plates of a charging capacitor. Equation~\eqref{eq:ampere-diff} must therefore be incomplete whenever charge densities change in time.
+
+Maxwell's fix uses Gauss's law to rewrite $\rho$ in terms of $\E$: $\partial\rho/\partial t = \eps\,\partial(\div{\E})/\partial t = \div(\eps\,\partial\E/\partial t)$. Then
+\[
+  \div\qty(\J + \eps\pdv{\E}{t}) = 0
+\]
+identically, and the natural repair is
+\begin{equation}\label{eq:ampere-maxwell}
+  \boxed{\curl{\B} = \mu_0\J + \mu_0\eps\pdv{\E}{t}}
+\end{equation}
+The extra term, $\J_d = \eps\,\partial\E/\partial t$, is called the \emph{displacement current}. It is not a current of moving charges, but it produces magnetic field exactly as a real current would.
+
+\begin{example}[Charging capacitor]
+A parallel-plate capacitor with circular plates of radius $b$ is charged by a current $I$. Between the plates there is no conduction current, but the field $E = Q/(\eps \pi b^2)$ grows at the rate $\dot{E} = I/(\eps\pi b^2)$. The displacement current through a circle of radius $s < b$ between the plates is $\eps\dot{E}\,\pi s^2 = I s^2/b^2$, so
+\[
+  B(s) = \frac{\mu_0 I s}{2\pi b^2} \qquad (s < b),
+\]
+the same form as inside a thick wire. Ampère's law now gives the same answer whether the surface bounded by the loop passes through the wire or between the plates.
+\end{example}
+
+%======================================================================
+\section{Summary: Maxwell's equations}
+\label{sec:summary}
+
+Table~\ref{tab:maxwell} collects the four equations in both forms.
+
+\begin{table}[ht]
+  \centering
+  \caption{Maxwell's equations in vacuum with sources.}
+  \label{tab:maxwell}
+  \renewcommand{\arraystretch}{1.6}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Name & Integral form & Differential form \\
+    \midrule
+    Gauss & $\displaystyle\oint_S \E\vdot\dd{\vb{a}} = \frac{Q_\text{enc}}{\eps}$ & $\displaystyle\div{\E} = \frac{\rho}{\eps}$ \\
+    No monopoles & $\displaystyle\oint_S \B\vdot\dd{\vb{a}} = 0$ & $\div{\B} = 0$ \\
+    Faraday & $\displaystyle\oint_C \E\vdot\dd{\vb{l}} = -\dv{\Phi_B}{t}$ & $\displaystyle\curl{\E} = -\pdv{\B}{t}$ \\
+    Ampère--Maxwell & $\displaystyle\oint_C \B\vdot\dd{\vb{l}} = \mu_0 I_\text{enc} + \mu_0\eps\dv{\Phi_E}{t}$ & $\displaystyle\curl{\B} = \mu_0\J + \mu_0\eps\pdv{\E}{t}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Together with the Lorentz force law, $\vb{F} = q(\E + \vb{v}\cross\B)$, these equations describe all of classical electromagnetism.
+
+%======================================================================
+\section{Electromagnetic waves}
+\label{sec:waves}
+
+In empty space $\rho = 0$ and $\J = \vb{0}$. Take the curl of Faraday's law~\eqref{eq:faraday-diff} and use~\eqref{eq:ampere-maxwell}:
+\[
+  \curl(\curl{\E}) = -\pdv{t}(\curl{\B}) = -\mu_0\eps\pdv[2]{\E}{t}.
+\]
+By the identity~\eqref{eq:curl-curl} and $\div{\E} = 0$, the left-hand side is $-\laplacian{\E}$. Hence
+\begin{equation}\label{eq:wave}
+  \laplacian{\E} = \mu_0\eps\pdv[2]{\E}{t},
+\end{equation}
+and the same steps starting from~\eqref{eq:ampere-maxwell} give the identical equation for $\B$. Equation~\eqref{eq:wave} is a wave equation with speed
+\begin{equation}\label{eq:c}
+  c = \frac{1}{\sqrt{\mu_0\eps}}
+    = \frac{1}{\sqrt{(\SI{1.25663706e-6}{\henry\per\metre})(\SI{8.8541878e-12}{\farad\per\metre})}}
+    \approx \SI{2.998e8}{\metre\per\second}.
+\end{equation}
+Maxwell noticed in 1862 that this number, computed from electrical and magnetic measurements on the bench, matched the measured speed of light. Without the displacement current there would be no wave equation and no such coincidence.
+
+%======================================================================
+\section*{Exercises}
+\addcontentsline{toc}{section}{Exercises}
+
+\begin{exercise}
+Use~\eqref{eq:div-cart} to compute $\div{\vb{F}}$ for $\vb{F} = x^2\vu{x} + 3xz^2\vu{y} - 2xz\vu{z}$, then verify the divergence theorem for this field over the unit cube $0 \le x, y, z \le 1$. \emph{(Answer: both sides equal $0$.)}
+\end{exercise}
+
+\begin{exercise}
+A long cylinder of radius $R$ carries charge density $\rho(s) = k s$ for $s < R$, where $k$ is a constant. Find $\E$ inside and outside, and check your answer against~\eqref{eq:gauss-diff}.
+\end{exercise}
+
+\begin{exercise}
+Show directly from~\eqref{eq:faraday-diff} and~\eqref{eq:no-monopole} that if $\B$ is written as $\curl{\vb{A}}$, then $\E + \partial\vb{A}/\partial t$ is curl-free. What does this let you write $\E$ in terms of?
+\end{exercise}
+
+\begin{exercise}
+A plane wave $\E = E_0 \cos(kz - \omega t)\,\vu{x}$ travels in vacuum. Use~\eqref{eq:faraday-diff} to find $\B$, show that $|\B| = |\E|/c$, and show that~\eqref{eq:wave} requires $\omega = ck$.
+\end{exercise}
+
+\begin{thebibliography}{9}
+\bibitem{griffiths}
+  D.~J. Griffiths, \emph{Introduction to Electrodynamics}, 5th ed.\ (Cambridge University Press, Cambridge, 2023), Chapters 1, 2, 5 and 7.
+\bibitem{purcell}
+  E.~M. Purcell and D.~J. Morin, \emph{Electricity and Magnetism}, 3rd ed.\ (Cambridge University Press, Cambridge, 2013).
+\bibitem{jackson}
+  J.~D. Jackson, \emph{Classical Electrodynamics}, 3rd ed.\ (Wiley, New York, 1999), Section 6.1.
+\bibitem{maxwell}
+  J.~C. Maxwell, ``A dynamical theory of the electromagnetic field,'' \emph{Philosophical Transactions of the Royal Society of London} \textbf{155}, 459--512 (1865).
+\end{thebibliography}
+
+\end{document}

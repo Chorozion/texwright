@@ -1,0 +1,29 @@
+classDiagram
+    class Shape {
+        <<abstract>>
+        #String name
+        +area() double*
+        +describe() String
+        +int count$
+        +create(String kind)$ Shape
+    }
+    class Circle {
+        -double radius
+        +area() double
+    }
+    class Rectangle {
+        -double width
+        -double height
+        +area() double
+    }
+    class Square
+    Shape <|-- Circle
+    Shape <|-- Rectangle
+    Rectangle <|-- Square
+    class Box~T~ {
+        -T value
+        +get() T
+        +map(Function~T,R~ f) Box~R~
+    }
+    Box~T~ o-- Shape : holds
+    note for Square "A square is a rectangle\nwith equal sides"

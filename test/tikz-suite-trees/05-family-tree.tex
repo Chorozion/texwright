@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\begin{document}
+
+\begin{tikzpicture}[
+  person/.style={rectangle, draw=black, rounded corners, fill=orange!15, minimum width=2.4cm, minimum height=1cm, align=center, font=\small},
+  edge from parent fork down,
+  level distance=2cm,
+  level 1/.style={sibling distance=6cm},
+  level 2/.style={sibling distance=3cm}
+]
+\node[person] {John Smith\\(1920--1990)}
+  child {node[person] {Mary Smith\\(1945--)}
+    child {node[person] {Anna Lee}}
+    child {node[person] {Tom Lee}}
+  }
+  child {node[person] {Robert Smith\\(1948--2010)}
+    child {node[person] {Clara Smith}}
+    child {node[person] {David Smith}}
+  };
+\end{tikzpicture}
+
+\end{document}

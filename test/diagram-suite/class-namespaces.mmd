@@ -1,0 +1,36 @@
+classDiagram
+    direction LR
+    namespace Domain {
+        class Account {
+            +UUID id
+            +Money balance
+            +deposit(Money m)
+            +withdraw(Money m)
+        }
+        class Transaction {
+            +UUID id
+            +Money amount
+            +Instant at
+        }
+    }
+    namespace Infrastructure {
+        class AccountRepository {
+            <<interface>>
+            +find(UUID id) Account
+            +save(Account a)
+        }
+        class SqlAccountRepository {
+            -DataSource ds
+            +find(UUID id) Account
+            +save(Account a)
+        }
+    }
+    class AccountService {
+        +transfer(UUID from, UUID to, Money m)
+    }
+    Account "1" *-- "many" Transaction : records
+    SqlAccountRepository ..|> AccountRepository
+    AccountService --> AccountRepository : uses
+    AccountService ..> Account
+    classDef infra fill:#eef7ee,stroke:#4f7a4c
+    cssClass "SqlAccountRepository" infra

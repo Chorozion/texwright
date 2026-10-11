@@ -1,0 +1,17 @@
+\documentclass{article}
+\usepackage{pstricks}
+\usepackage{pst-3dplot}
+\begin{document}
+\begin{figure}[h]
+\centering
+\begin{pspicture}(-3.5,-3)(4,4.5)
+  \psset{Alpha=45,Beta=30}
+  \pstThreeDCoor[xMin=0,xMax=4,yMin=0,yMax=4,zMin=0,zMax=4,linecolor=black]
+  \psplotThreeD[plotstyle=line,drawStyle=xyLines,xPlotpoints=20,yPlotpoints=20,linecolor=blue,linewidth=0.4pt](-2,2)(-2,2){%
+    x dup mul y dup mul add neg 0.5 mul 2.71828 exch exp 2.5 mul}
+  \pstThreeDDot[linecolor=red,drawCoor=true](1,1,2)
+  \pstThreeDPut(1.2,1.2,2.4){$P$}
+\end{pspicture}
+\caption{A Gaussian surface $z = 2.5\,e^{-(x^2+y^2)/2}$.}
+\end{figure}
+\end{document}

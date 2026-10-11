@@ -1,0 +1,266 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\usepackage{cleveref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\OPT}{\mathrm{OPT}}
+\newcommand{\MST}{\mathrm{MST}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\title{Admissible Regret Insertion: A Tour Construction Heuristic\\for the Metric TSP with a Constant-Factor Guarantee}
+\author{Elena V. Marsh\thanks{Department of Industrial and Systems Engineering. Correspondence: \texttt{emarsh@example.edu}.} \and Tobias Lindqvist}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Insertion heuristics remain the default way to build an initial tour for the traveling salesman problem (TSP) when a solution is needed in milliseconds. Cheapest insertion carries a factor-2 guarantee on metric instances but builds tours that local search struggles to repair, while regret-based insertion, popular in vehicle routing, builds better-shaped tours with no guarantee at all. We propose \emph{Admissible Regret Insertion} (ARI), which at each step restricts attention to vertices whose best insertion cost lies within a factor $1+\varepsilon$ of the cheapest and, among those, inserts the vertex with the largest regret. We prove that ARI returns a tour of length at most $2(1+\varepsilon)$ times the optimum on any metric instance, and that a candidate-list implementation runs in $O(Kn^2)$ time. On eight TSPLIB instances with 52 to 2392 cities, ARI followed by 2-opt and Or-opt reaches a mean optimality gap of 1.91\%, against 4.96\% for cheapest insertion with the same local search, at a cost of 1.3 seconds on the largest instance.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+Given $n$ cities and pairwise distances, the TSP asks for a shortest closed tour visiting every city once. The problem is NP-hard, and without the triangle inequality it admits no constant-factor approximation unless P\,=\,NP~\cite{sahni1976}. On metric instances the picture is better: the algorithm of \citet{christofides1976} achieves a factor of $3/2$, recently improved by a tiny constant~\cite{karlin2021}, and exact solvers such as Concorde handle instances with tens of thousands of cities~\cite{applegate2006}. In practice, high-quality tours come from Lin--Kernighan style local search~\cite{lin1973,helsgaun2000}.
+
+All of these methods need a starting tour, and many applications (dispatching, robotic path planning, repeated subproblems inside a larger optimizer) need one fast. Construction heuristics fill this role. \citet{rosenkrantz1977} showed that nearest and cheapest insertion are 2-approximations on metric instances, while nearest neighbor can be off by a factor of $\Theta(\log n)$. A guarantee on the construction tour, however, says little about how well local search will improve it. \citet{johnson1997} observed that tours from greedy matching are a better starting point for 2-opt than tours from insertion, even though the worst-case bounds point the other way.
+
+Regret insertion, introduced for vehicle routing by \citet{potvin1993} and now a standard repair operator in large neighborhood search~\cite{ropke2006}, ranks vertices by how much they stand to lose if their best position is taken. It produces tours with fewer long detours, but nothing prevents it from inserting a far-away vertex early and paying for it.
+
+Our contributions are:
+\begin{enumerate}
+  \item A construction heuristic, ARI, that applies the regret rule only inside an \emph{admissible set} of near-cheapest insertions (\cref{sec:method}).
+  \item A proof that ARI is a $2(1+\varepsilon)$-approximation for metric TSP for every $\varepsilon \ge 0$ (\cref{thm:approx}), using a nested-cut argument that may be of independent use for analyzing insertion rules.
+  \item An $O(Kn^2)$ implementation with candidate lists that keeps the guarantee (\cref{prop:runtime}).
+  \item Experiments on TSPLIB showing that ARI tours are a markedly better starting point for 2-opt and Or-opt than tours from cheapest, nearest-neighbor or unrestricted regret insertion (\cref{sec:experiments}).
+\end{enumerate}
+
+\section{Preliminaries}
+\label{sec:prelim}
+
+Let $G = (V, E)$ be the complete graph on $n = |V|$ vertices with a distance function $d : V \times V \to \mathbb{R}_{\ge 0}$ that is symmetric and satisfies the triangle inequality. A \emph{subtour} on $T \subseteq V$ is a cyclic order of $T$; we write $E(T)$ for its edge set and $L(T) = \sum_{\{a,b\} \in E(T)} d(a,b)$ for its length. Inserting a vertex $v \notin T$ into edge $\{a,b\} \in E(T)$ costs
+\begin{equation}
+  \Delta(v; a, b) = d(a, v) + d(v, b) - d(a, b),
+  \label{eq:insertion-cost}
+\end{equation}
+which is nonnegative by the triangle inequality. We write $d(v, T) = \min_{t \in T} d(v, t)$ for the distance from $v$ to the subtour and $\OPT$ for the length of an optimal tour. Since deleting one edge of an optimal tour leaves a spanning path,
+\begin{equation}
+  \MST \le \OPT,
+  \label{eq:mst-opt}
+\end{equation}
+where $\MST$ is the weight of a minimum spanning tree of $G$.
+
+\begin{definition}[Best insertion and regret]
+\label{def:regret}
+For $v \notin T$ and a set $P(v) \subseteq E(T)$ of candidate positions, let $c_1(v) \le c_2(v)$ be the two smallest values of $\Delta(v; a, b)$ over $\{a,b\} \in P(v)$, with $c_2(v) = c_1(v)$ when $|P(v)| = 1$. The \emph{regret} of $v$ is $\rho(v) = c_2(v) - c_1(v)$.
+\end{definition}
+
+A vertex with large regret has one clearly good position. If another vertex is inserted into that edge first, $v$ will later pay at least $c_2(v)$. Regret insertion picks $\argmax_v \rho(v)$ at every step; cheapest insertion picks $\argmin_v c_1(v)$.
+
+\section{Admissible Regret Insertion}
+\label{sec:method}
+
+\subsection{The selection rule}
+
+ARI combines the two rules. Given a tolerance $\varepsilon \ge 0$, the \emph{admissible set} at a step with current subtour $T$ is
+\begin{equation}
+  \mathcal{A}_\varepsilon(T) = \Bigl\{ v \in V \setminus T \;:\; c_1(v) \le (1 + \varepsilon) \min_{w \notin T} c_1(w) \Bigr\},
+  \label{eq:admissible}
+\end{equation}
+and ARI inserts $v^\star = \argmax_{v \in \mathcal{A}_\varepsilon(T)} \rho(v)$ at its best position, breaking ties by smaller $c_1$. With $\varepsilon = 0$ the rule is cheapest insertion with regret as tie-breaker; as $\varepsilon \to \infty$ it becomes pure regret insertion. \Cref{fig:regret} illustrates the idea.
+
+\begin{figure}[t]
+  \centering
+  \includesvg[width=0.62\linewidth]{01-regret-illustration}
+  \caption{Regret on a partial tour. Vertex $v$ has one cheap position (solid) and a much costlier second choice (dashed), so $\rho(v)$ is large. Vertex $u$ has two positions of nearly equal cost and loses little by waiting.}
+  \label{fig:regret}
+\end{figure}
+
+\subsection{Candidate positions}
+
+Evaluating every edge of $E(T)$ for every outside vertex costs $\Theta(n)$ per vertex per step. We restrict positions using a precomputed list $N_K(v)$ of the $K$ nearest neighbors of each vertex. For $v \notin T$ let $t(v) = \argmin_{t \in T} d(v, t)$ be its nearest tour vertex, which we maintain exactly as in Prim's algorithm. The candidate positions are
+\begin{equation}
+  P(v) = \bigl\{ \{a, b\} \in E(T) : a \in \{t(v)\} \cup \bigl(N_K(v) \cap T\bigr) \bigr\}.
+  \label{eq:positions}
+\end{equation}
+Including $t(v)$ unconditionally is what preserves the approximation guarantee; the neighbor list only adds options. The full procedure is \cref{alg:ari}.
+
+\begin{algorithm}[t]
+\caption{Admissible Regret Insertion (ARI)}
+\label{alg:ari}
+\begin{algorithmic}[1]
+\Require Vertex set $V$, metric $d$, tolerance $\varepsilon \ge 0$, list size $K$
+\Ensure A tour on $V$
+\State Pick $s \in V$ (we use the vertex nearest the centroid); $T \gets (s)$
+\ForAll{$v \in V \setminus T$}
+  \State $t(v) \gets s$; compute $c_1(v), c_2(v)$ over $P(v)$
+\EndFor
+\While{$T \ne V$}
+  \State $c_{\min} \gets \min_{w \notin T} c_1(w)$
+  \State $\mathcal{A} \gets \{ v \notin T : c_1(v) \le (1+\varepsilon)\, c_{\min} \}$
+  \State $v^\star \gets \argmax_{v \in \mathcal{A}} \bigl(c_2(v) - c_1(v)\bigr)$ \Comment{ties: smaller $c_1$}
+  \State Insert $v^\star$ into its best edge $\{a, b\}$; $T \gets T \cup \{v^\star\}$
+  \ForAll{$v \notin T$}
+    \If{$d(v, v^\star) < d(v, t(v))$} $t(v) \gets v^\star$ \EndIf
+    \If{the cached best or second-best edge of $v$ was $\{a,b\}$}
+      \State recompute $c_1(v), c_2(v)$ over $P(v)$ \Comment{$O(K)$}
+    \Else
+      \State update $c_1(v), c_2(v)$ with edges $\{a, v^\star\}$, $\{v^\star, b\}$ if they lie in $P(v)$
+    \EndIf
+  \EndFor
+\EndWhile
+\State \Return $T$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Local search}
+
+We polish the constructed tour with 2-opt~\cite{croes1958} followed by Or-opt~\cite{or1976} with segment lengths 1 to 3. Both use the same neighbor lists ($K = 10$) and don't-look bits~\cite{bentley1992}, and both apply the first improving move found. Tours are stored as arrays with position indices, so a 2-opt move reverses the shorter of the two segments.
+
+\section{Analysis}
+\label{sec:analysis}
+
+The guarantee rests on two lemmas. The first bounds the cost of a single insertion; the second bounds the sum of the per-step bounds by the minimum spanning tree.
+
+\begin{lemma}
+\label{lem:local}
+For any subtour $T$ with $|T| \ge 1$ and any $v \notin T$, $c_1(v) \le 2\, d(v, T)$.
+\end{lemma}
+
+\begin{proof}
+Let $t = t(v)$ and let $b$ be the successor of $t$ on the subtour (if $|T| = 1$, then $b = t$ and the subtour is the degenerate cycle $t \to t$). The edge $\{t, b\}$ lies in $P(v)$ by \eqref{eq:positions}. By the triangle inequality $d(v, b) \le d(v, t) + d(t, b)$, so
+\[
+  \Delta(v; t, b) = d(t, v) + d(v, b) - d(t, b) \le 2\, d(v, t) = 2\, d(v, T).
+\]
+Since $c_1(v)$ is the minimum over $P(v)$, the claim follows.
+\end{proof}
+
+\begin{lemma}
+\label{lem:cuts}
+Let $\emptyset \ne T_1 \subset T_2 \subset \dots \subset T_{n-1} \subset V$ with $|T_i| = i$. Then
+\[
+  \sum_{i=1}^{n-1} \min_{u \in T_i,\, w \notin T_i} d(u, w) \;\le\; \MST.
+\]
+\end{lemma}
+
+\begin{proof}
+Fix a minimum spanning tree $M$. For each $i$, let $F_i \subseteq M$ be the set of tree edges crossing the cut $(T_i, V \setminus T_i)$; every edge in $F_i$ has length at least the minimum on the left-hand side. It therefore suffices to choose distinct edges $e_i \in F_i$, for then the sum is at most $\sum_i d(e_i) \le \MST$.
+
+We verify Hall's condition. Take any index set $S = \{i_1 < \dots < i_m\}$. The sets $T_{i_1}, T_{i_2} \setminus T_{i_1}, \dots, V \setminus T_{i_m}$ partition $V$ into $m+1$ nonempty parts. Because $M$ is connected, at least $m$ of its edges join different parts, and each such edge crosses at least one of the cuts indexed by $S$. Hence $\bigl|\bigcup_{i \in S} F_i\bigr| \ge |S|$, and Hall's theorem gives the required system of distinct representatives.
+\end{proof}
+
+\begin{theorem}
+\label{thm:approx}
+On any metric instance and for any $\varepsilon \ge 0$ and $K \ge 0$, ARI returns a tour $T$ with
+\[
+  L(T) \le 2(1 + \varepsilon)\, \OPT.
+\]
+\end{theorem}
+
+\begin{proof}
+Let $T_i$ be the subtour after $i$ vertices have been placed and let $\delta_i = \min_{u \in T_i,\, w \notin T_i} d(u, w)$. The step from $T_i$ to $T_{i+1}$ increases the length by $c_1(v^\star)$, where $v^\star \in \mathcal{A}_\varepsilon(T_i)$. By \eqref{eq:admissible} and \cref{lem:local},
+\[
+  c_1(v^\star) \le (1+\varepsilon) \min_{w \notin T_i} c_1(w) \le (1+\varepsilon) \min_{w \notin T_i} 2\, d(w, T_i) = 2(1+\varepsilon)\, \delta_i.
+\]
+The initial subtour has length $0$, so summing over the $n-1$ insertions and applying \cref{lem:cuts} and \eqref{eq:mst-opt},
+\begin{align}
+  L(T) &= \sum_{i=1}^{n-1} c_1\bigl(v^\star_i\bigr) \le 2(1+\varepsilon) \sum_{i=1}^{n-1} \delta_i \notag \\
+       &\le 2(1+\varepsilon)\, \MST \le 2(1+\varepsilon)\, \OPT. \qedhere
+\end{align}
+\end{proof}
+
+\begin{remark}
+2-opt and Or-opt never lengthen a tour, so the bound of \cref{thm:approx} also holds after local search. The constant cannot be improved below 2 for the $\varepsilon = 0$ case, since \citet{rosenkrantz1977} give metric instances on which cheapest insertion approaches $2\,\OPT$.
+\end{remark}
+
+\begin{proposition}
+\label{prop:runtime}
+\Cref{alg:ari} runs in $O(Kn^2)$ time and $O(Kn)$ space, excluding the $O(n^2 \log K)$ preprocessing for neighbor lists.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Each of the $n - 1$ iterations scans the outside vertices twice: once to find $c_{\min}$ and $v^\star$, once to update $t(v)$ and the cached pair $(c_1, c_2)$. A cached position is invalidated only when its edge $\{a, b\}$ is split, in which case recomputation over $P(v)$ costs $O(K)$ because $|P(v)| \le 2(K+1)$. Each iteration therefore costs $O(Kn)$.
+\end{proof}
+
+In practice the recomputation branch is rare: on pr2392 it fired for 2.4 vertices per iteration on average, so the running time is close to that of plain cheapest insertion.
+
+\section{Experiments}
+\label{sec:experiments}
+
+\paragraph{Setup.} We implemented all heuristics in C++17 and compiled with \texttt{g++ -O3}. Runs used one core of an AMD Ryzen 9 7950X at 4.5\,GHz. Instances come from TSPLIB~\cite{reinelt1991}, with optimal values taken from the library. Every method is deterministic, so we report a single run. The optimality gap is $100 \cdot (L - \OPT) / \OPT$. Unless stated otherwise, $\varepsilon = 0.25$ and $K = 10$.
+
+\paragraph{Baselines.} NN is nearest neighbor from the same start vertex. CI is cheapest insertion. RI is unrestricted regret insertion, that is, ARI with $\varepsilon = \infty$. All construction methods are followed by the same 2-opt routine; the last column adds Or-opt after 2-opt for ARI.
+
+\begin{table}[t]
+\centering
+\caption{Optimality gap (\%) after local search on TSPLIB instances. Time is total wall-clock time for ARI\,+\,2-opt\,+\,Or-opt, including neighbor-list construction. Best gap per row in bold.}
+\label{tab:main}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+ & & & \multicolumn{4}{c}{+ 2-opt} & + 2-opt + Or & \\
+\cmidrule(lr){4-7} \cmidrule(lr){8-8}
+Instance & $n$ & $\OPT$ & NN & CI & RI & ARI & ARI & Time (s) \\
+\midrule
+berlin52 & 52   & 7\,542   & 3.41 & 2.87 & 1.92 & 1.12 & \textbf{0.00} & 0.002 \\
+kroA100  & 100  & 21\,282  & 4.86 & 3.95 & 2.71 & 2.04 & \textbf{1.13} & 0.005 \\
+ch150    & 150  & 6\,528   & 5.12 & 4.20 & 3.38 & 2.61 & \textbf{1.47} & 0.009 \\
+a280     & 280  & 2\,579   & 6.47 & 5.31 & 4.02 & 3.18 & \textbf{2.06} & 0.024 \\
+pcb442   & 442  & 50\,778  & 6.95 & 5.88 & 4.66 & 3.70 & \textbf{2.51} & 0.051 \\
+rat783   & 783  & 8\,806   & 6.21 & 5.47 & 4.48 & 3.52 & \textbf{2.43} & 0.142 \\
+pr1002   & 1002 & 259\,045 & 6.73 & 5.92 & 4.91 & 3.86 & \textbf{2.74} & 0.231 \\
+pr2392   & 2392 & 378\,032 & 7.02 & 6.10 & 5.15 & 4.07 & \textbf{2.95} & 1.284 \\
+\midrule
+Mean     &      &          & 5.85 & 4.96 & 3.90 & 3.01 & \textbf{1.91} &       \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Main results.} \Cref{tab:main} reports gaps after local search. With identical 2-opt, ARI improves on cheapest insertion by 1.95 percentage points on average and on unrestricted regret insertion by 0.89 points. The improvement holds on every instance. Adding Or-opt brings ARI to a mean gap of 1.91\%, which is within reach of the 2-opt + 3-opt figures that \citet{johnson1997} report for random uniform instances, at a fraction of the cost.
+
+\begin{table}[t]
+\centering
+\caption{Effect of the tolerance $\varepsilon$, averaged over the eight instances of \cref{tab:main}. ``Bound'' is the worst-case factor from \cref{thm:approx}.}
+\label{tab:eps}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+$\varepsilon$ & 0 & 0.05 & 0.10 & 0.25 & 0.50 & $\infty$ \\
+\midrule
+Bound $2(1+\varepsilon)$          & 2.00  & 2.10  & 2.20  & 2.50  & 3.00  & none  \\
+Construction gap (\%)             & 16.8  & 15.1  & 14.6  & 14.2  & 15.0  & 19.7  \\
+Gap after 2-opt (\%)              & 4.93  & 3.42  & 3.08  & 3.01  & 3.19  & 3.90  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Choice of $\varepsilon$.} \Cref{tab:eps} shows a broad optimum between $\varepsilon = 0.10$ and $0.25$. Two effects compete. A small tolerance leaves the regret rule too few vertices to choose from, and the tour resembles a cheapest-insertion tour. A large tolerance lets the rule pull in distant vertices early; these create long edges that 2-opt removes only partially, which is exactly the failure mode the admissible set is meant to prevent. Notably, the empirical construction gap at $\varepsilon = 0.25$ is far below the worst-case factor of 2.5.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Restricting regret insertion to near-cheapest candidates costs almost nothing in running time, restores the factor-2 style guarantee of classical insertion heuristics, and produces tours that local search finishes better. The nested-cut lemma (\cref{lem:cuts}) applies to any insertion rule whose step cost is bounded by a multiple of the cut distance, which suggests analyzing other randomized or learned insertion policies the same way. We plan to test ARI as the construction step inside LKH~\cite{helsgaun2000} and as a repair operator in large neighborhood search for routing problems with side constraints.
+
+\bibliographystyle{plainnat}
+\bibliography{01-references}
+
+\end{document}

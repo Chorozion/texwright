@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{graphs, graphdrawing, quotes}
+\usegdlibrary{layered}
+\begin{document}
+
+\begin{figure}[h]
+\centering
+\tikz \graph [layered layout, nodes={draw, rounded corners, fill=yellow!20, font=\ttfamily}, edges={-latex}, sibling distance=2cm, level distance=1.5cm] {
+  app -> {auth, api, ui};
+  auth -> {crypto, db};
+  api -> {db, cache};
+  ui -> {api, theme};
+  cache -> db;
+};
+\caption{Module dependencies.}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\graph[grow down=1.5cm, branch right=2cm, nodes={circle, draw}] {
+  a -> {b, c} -> d;
+};
+\end{tikzpicture}
+\caption{A small graph with default placement.}
+\end{figure}
+
+\end{document}

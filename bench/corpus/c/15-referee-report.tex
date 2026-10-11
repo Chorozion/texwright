@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[numbers, sort&compress]{natbib}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, citecolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+
+\setlist[enumerate]{leftmargin=*, itemsep=4pt}
+
+\newcommand{\paper}{\textsc{Spark}}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Referee Report}\\[6pt]
+  \begin{tabular}{@{}ll@{}}
+    \textbf{Submission:} & \#4127, Workshop on Continual and Lifelong Learning 2026 (archival track) \\
+    \textbf{Title:} & \emph{SPARK: Sparse Routed Adapters for Rehearsal-Free Continual Learning} \\
+    \textbf{Reviewer:} & Reviewer 2 \\
+    \textbf{Date:} & October 6, 2026 \\
+    \textbf{Recommendation:} & Major revision \\
+    \textbf{Confidence:} & 4 / 5 (familiar with the literature; did not rerun experiments)
+  \end{tabular}
+\end{center}
+
+\section{Summary of the submission}
+
+The paper proposes \paper{}, a method for class-incremental continual learning on top of a frozen pre-trained vision transformer. For each new task, \paper{} adds a small pool of low-rank adapters \citep{hu2022lora} to the attention layers and trains a router that sends each input token to the top-$k$ adapters across all tasks seen so far, in the style of sparse mixture-of-experts layers \citep{shazeer2017,fedus2022}. Adapters from earlier tasks are frozen. The training objective for task $t$ is
+\begin{equation}\label{eq:loss}
+  \mathcal{L}_t = \mathcal{L}_\text{CE} + \lambda_\text{bal}\,\mathcal{L}_\text{bal}
+  + \lambda_\perp \sum_{t' < t} \bigl\lVert A_t^{\top} A_{t'} \bigr\rVert_F^2,
+\end{equation}
+where $\mathcal{L}_\text{bal}$ is a load-balancing term and the last term pushes the down-projection matrices $A_t$ of the new adapters toward subspaces orthogonal to those of earlier tasks. No replay buffer is used.
+
+The authors evaluate on Split CIFAR-100 (10 tasks), ImageNet-R (10 tasks), and CORe50, and report average final accuracy
+\begin{equation}\label{eq:acc}
+  \bar{A}_T = \frac{1}{T}\sum_{i=1}^{T} a_{T,i}
+\end{equation}
+and forgetting
+\begin{equation}\label{eq:forget}
+  \bar{F}_T = \frac{1}{T-1}\sum_{i=1}^{T-1} \max_{t \in \{i, \dots, T-1\}} \bigl(a_{t,i} - a_{T,i}\bigr),
+\end{equation}
+where $a_{t,i}$ is the accuracy on task $i$ after training on task $t$. The headline claim is a gain of 4.3 points over L2P \citep{wang2022l2p} and 2.1 points over CODA-Prompt \citep{smith2023coda} on ImageNet-R, with a theoretical result (Proposition~1) bounding interference between tasks in terms of the orthogonality penalty.
+
+\section{Overall assessment}
+
+The paper is clearly written and addresses a real problem. Combining parameter-efficient adapters with sparse routing is a natural idea, and the ablations in Section~5.3 are more thorough than is typical for this subfield. However, I have concerns about the fairness of the main comparison, about whether the router leaks task identity in a way that changes the problem setting, and about the correctness of Proposition~1. I do not think the central claim is supported yet, but I think it could be with additional experiments that are within reach. I recommend major revision.
+
+\section{Strengths}
+
+\begin{enumerate}[label=S\arabic*.]
+  \item The method is simple to describe and to implement, and the authors promise to release code.
+  \item The ablation over $k$ (number of active adapters per token) and adapter rank in Table~4 is informative. The finding that $k = 2$ is close to optimal across all three benchmarks is useful for practitioners.
+  \item The paper reports parameter counts and wall-clock training time alongside accuracy, which many competing papers omit.
+  \item The routing visualizations in Figure~5 are a good way to show that later tasks reuse earlier adapters.
+\end{enumerate}
+
+\section{Major comments}
+
+\begin{enumerate}[label=\textbf{M\arabic*.}]
+
+  \item \textbf{Comparison with baselines is not like-for-like.} According to Appendix~B, \paper{} uses a ViT-B/16 pre-trained on ImageNet-21k and fine-tuned on ImageNet-1k, whereas the L2P and DualPrompt \citep{wang2022dualprompt} numbers in Table~2 are copied from the original papers, which used the ImageNet-21k checkpoint without the 1k fine-tuning. ImageNet-R and ImageNet-1k share label semantics, so the 1k-fine-tuned backbone is a substantially stronger starting point for this benchmark. Please rerun all prompt-based baselines with the same backbone, or report \paper{} with the original backbone. Without this, the 4.3-point gain cannot be attributed to the method.
+
+  \item \textbf{The router may act as a task-identity oracle.} In class-incremental learning the model must not know which task a test input came from. The router in \paper{} is trained on each task's data and then frozen, and Figure~5 shows that tokens from task $i$ are routed overwhelmingly to adapters from task $i$. This means the router is effectively performing task identification, which is the hard part of the class-incremental problem. That is legitimate if the router never sees task labels, but Section~3.2 says the router logits for task-$t$ adapters are ``initialized from the task prototype,'' and it is not clear whether prototypes are computed using task labels at test time. Please (a) state precisely what information is available at inference, and (b) report the task-identification accuracy of the router on held-out data. If it is high, compare with a simple baseline that predicts the task with a nearest-prototype classifier and then applies a per-task adapter.
+
+  \item \textbf{Variance and statistical significance.} Table~2 reports single numbers. The differences between \paper{} and CODA-Prompt on Split CIFAR-100 (86.9 vs.\ 86.3) are well within the seed-to-seed variation reported in the CODA-Prompt paper. Please report mean and standard deviation over at least five seeds and five class orderings, and avoid bolding differences that are not significant.
+
+  \item \textbf{Hyperparameter selection.} The paper states that $\lambda_\text{bal}$ and $\lambda_\perp$ in \eqref{eq:loss} were ``selected on the validation set,'' but in the continual setting the validation set for later tasks is not available when earlier tasks are trained. If the values were tuned using the final average accuracy $\bar{A}_T$, this is a form of test-time information leakage across tasks. Please describe the protocol, and ideally tune only on the first task or on a separate held-out task sequence.
+
+  \item \textbf{Proposition 1 appears to be incorrect as stated.} The proposition claims that if $\lVert A_t^\top A_{t'} \rVert_F \le \epsilon$ for all $t' < t$, then the change in the output of any earlier adapter is bounded by $\epsilon \lVert x \rVert$. But earlier adapters are frozen, so their \emph{own} outputs do not change at all. What can change is the input they receive, because adapters at layer $\ell$ alter the representations seen by every adapter at layers $\ell' > \ell$. The proof in Appendix~A considers a single layer and does not account for this composition. A correct bound would need to track the propagation through depth, and would likely grow with the number of layers and the operator norms of the frozen backbone blocks. I would either fix the statement and proof or present the orthogonality penalty as a heuristic supported by the ablation in Table~4.
+
+  \item \textbf{Parameter growth.} The number of adapters grows linearly with the number of tasks. With 10 tasks this is 3.1\% of backbone parameters, which is modest, but the paper's motivation (Section~1) emphasizes long task sequences. Please include an experiment with a longer sequence, for example ImageNet-R split into 20 or 50 tasks, and show how accuracy, parameter count, and routing cost scale.
+
+  \item \textbf{Missing baselines.} Two simple baselines would help calibrate the results: (i) a linear classifier trained incrementally on frozen backbone features with class-mean prototypes, which is known to be strong when the backbone is pre-trained on related data; and (ii) a single shared LoRA adapter trained sequentially with EWC \citep{kirkpatrick2017}. If \paper{} beats (i) by only a small margin, the contribution of routing is less clear than the paper suggests.
+
+\end{enumerate}
+
+\section{Minor comments}
+
+\begin{enumerate}[label=m\arabic*., start=1]
+  \item The forgetting metric in \eqref{eq:forget} is defined with the maximum over $t \in \{i, \dots, T-1\}$, but the text in Section~4.1 describes it as ``the drop from the accuracy immediately after learning task $i$.'' These are different. Please use one consistently.
+  \item In Table~3, the ``Memory'' column mixes megabytes of stored parameters with number of exemplars for replay methods such as GEM \citep{lopezpaz2017}. Split this into two columns or convert to a common unit.
+  \item The load-balancing loss $\mathcal{L}_\text{bal}$ is described only in words. Please give the formula; there are several variants in the mixture-of-experts literature and they behave differently.
+  \item Figure~3 has no axis labels on the right panel.
+  \item The related work section does not discuss adapter-based continual learning that predates LoRA, starting from \citet{houlsby2019}. A short paragraph would help position the contribution.
+  \item Equation~(7) in the submission uses $k$ both for the top-$k$ routing parameter and as a summation index.
+  \item ``Catastrophic forgetting is completely eliminated'' in the abstract is too strong, given that Table~2 reports nonzero forgetting for every method including \paper{}.
+  \item Several references in the bibliography are to arXiv preprints of papers that have since appeared in peer-reviewed venues; please update them.
+\end{enumerate}
+
+\section{Questions for the authors}
+
+\begin{enumerate}[label=Q\arabic*.]
+  \item What fraction of tokens in a test image from task $i$ is routed to adapters from task $i$, on average? How does this vary by layer?
+  \item How sensitive is the method to the order of tasks? Is there a task ordering for which routing degrades badly?
+  \item What happens if the router is allowed to keep training (with old adapters frozen) instead of being frozen after each task?
+  \item Have you tried the method in the domain-incremental setting (e.g.\ CORe50 with new sessions), where task identification is less informative?
+\end{enumerate}
+
+\section{Recommendation}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{@{}lc@{}}
+    \toprule
+    Criterion & Score (1--5) \\
+    \midrule
+    Originality & 3 \\
+    Technical quality & 2 \\
+    Clarity & 4 \\
+    Significance (if claims hold) & 4 \\
+    Reproducibility & 3 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Major revision.} The idea is sound and the paper is well presented. Acceptance depends mainly on M1 (matched backbones), M2 (what the router knows at test time), and M5 (the correctness of Proposition~1). If the gains survive a like-for-like comparison and the setting is confirmed to be genuinely class-incremental, I would be glad to support acceptance.
+
+\bibliographystyle{plainnat}
+\bibliography{15-references}
+
+\end{document}

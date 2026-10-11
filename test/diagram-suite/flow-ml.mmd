@@ -1,0 +1,12 @@
+graph LR
+    raw[Raw data] --> clean[Clean & dedupe]
+    clean --> split{Train/test split}
+    split -->|80%| train[Train model]
+    split -->|20%| test[Hold-out set]
+    train --> eval[Evaluate]
+    test --> eval
+    eval -->|"accuracy < 0.9"| tune[Tune hyperparameters]
+    tune --> train
+    eval -->|"accuracy ≥ 0.9"| deploy[Deploy to production]
+    deploy --> monitor[Monitor drift]
+    monitor -.->|drift detected| raw

@@ -1,0 +1,65 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{fancyvrb}
+\usepackage{verbatim}
+\usepackage{xcolor}
+\usepackage{url}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    numbers=left,
+    tabsize=2
+}
+\lstset{style=mystyle}
+\renewcommand{\lstlistingname}{Code}
+
+\begin{document}
+\section{Code samples}
+
+\begin{lstlisting}[language=Python, caption={Fibonacci in Python}, label={lst:fib}]
+def fib(n):
+    # iterative version
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+\end{lstlisting}
+
+Listing~\ref{lst:fib} uses \lstinline|range|, and \verb|a, b = b, a+b| swaps. Inline minted: \mintinline{python}{print("hi")}.
+
+\begin{minted}[linenos, frame=lines, fontsize=\small]{rust}
+fn main() {
+    println!("Hello, world!");
+}
+\end{minted}
+
+\begin{listing}[ht]
+\begin{minted}{javascript}
+const x = [1, 2, 3].map((v) => v * 2);
+\end{minted}
+\caption{Doubling in JavaScript}
+\label{lst:js}
+\end{listing}
+
+\begin{Verbatim}[frame=single, fontsize=\small]
+$ make all
+gcc -O2 main.c -o main
+\end{Verbatim}
+
+\begin{verbatim}
+raw text   with spaces
+\end{verbatim}
+
+\begin{comment}
+This should not appear.
+\end{comment}
+
+Paths like \path{/usr/local/bin} and URLs like \url{https://example.com/a_b?c=1&d=2}.
+The file \texttt{config\_file.yaml} and the command \texttt{git commit -m "msg"}.
+\lstlistoflistings
+\end{document}

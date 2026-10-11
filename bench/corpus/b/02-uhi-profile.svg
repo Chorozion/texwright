@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 380" width="660" height="380" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect width="660" height="380" fill="#ffffff"/>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444444"/>
+    </marker>
+  </defs>
+
+  <!-- axes -->
+  <line x1="70" y1="250" x2="620" y2="250" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="70" y1="250" x2="70" y2="30" stroke="#333333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="40" y="150" transform="rotate(-90 40 150)" text-anchor="middle" fill="#333333">Near-surface air temperature</text>
+  <text x="345" y="372" text-anchor="middle" fill="#333333">Distance across the city</text>
+
+  <!-- rural reference level -->
+  <line x1="70" y1="226" x2="610" y2="226" stroke="#999999" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="608" y="220" text-anchor="end" fill="#777777" font-size="11">rural reference</text>
+
+  <!-- temperature profile -->
+  <path d="M70,226 L140,226 C152,226 156,166 170,160 L250,148 C262,146 268,148 276,164 C284,184 296,188 304,174 C312,158 318,144 330,138 C360,124 390,68 420,66 C450,64 470,118 500,138 L530,148 C544,152 548,226 560,226 L610,226"
+        fill="none" stroke="#c0392b" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- intensity arrow -->
+  <line x1="420" y1="66" x2="585" y2="66" stroke="#999999" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="580" y1="224" x2="580" y2="69" stroke="#444444" stroke-width="1.3" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <text x="588" y="150" fill="#333333">ΔT</text>
+  <text x="608" y="155" fill="#333333" font-size="10">u−r</text>
+
+  <!-- feature labels -->
+  <text x="112" y="180" fill="#333333">Cliff</text>
+  <line x1="140" y1="184" x2="157" y2="190" stroke="#444444" stroke-width="1" marker-end="url(#arr)"/>
+  <text x="196" y="136" fill="#333333">Plateau</text>
+  <text x="270" y="212" fill="#333333">Park</text>
+  <line x1="288" y1="200" x2="290" y2="190" stroke="#444444" stroke-width="1" marker-end="url(#arr)"/>
+  <text x="420" y="54" text-anchor="middle" fill="#333333">Peak</text>
+
+  <!-- land-use strip -->
+  <g>
+    <rect x="70" y="290" width="80" height="14" fill="#9ccc65"/>
+    <rect x="150" y="282" width="110" height="22" fill="#d7ccc8"/>
+    <rect x="260" y="290" width="54" height="14" fill="#66bb6a"/>
+    <rect x="314" y="276" width="20" height="28" fill="#a1887f"/>
+    <rect x="336" y="266" width="18" height="38" fill="#8d6e63"/>
+    <rect x="356" y="258" width="16" height="46" fill="#795548"/>
+    <rect x="374" y="262" width="18" height="42" fill="#8d6e63"/>
+    <rect x="394" y="256" width="20" height="48" fill="#6d4c41"/>
+    <rect x="416" y="260" width="16" height="44" fill="#795548"/>
+    <rect x="434" y="266" width="18" height="38" fill="#8d6e63"/>
+    <rect x="454" y="272" width="18" height="32" fill="#a1887f"/>
+    <rect x="474" y="278" width="20" height="26" fill="#a1887f"/>
+    <rect x="494" y="282" width="52" height="22" fill="#d7ccc8"/>
+    <rect x="546" y="290" width="64" height="14" fill="#9ccc65"/>
+  </g>
+  <g font-size="11" fill="#444444" text-anchor="middle">
+    <text x="110" y="322">Rural</text>
+    <text x="205" y="322">Suburban</text>
+    <text x="287" y="322">Park</text>
+    <text x="404" y="322">Commercial core</text>
+    <text x="520" y="322">Suburban</text>
+    <text x="578" y="322">Rural</text>
+  </g>
+</svg>

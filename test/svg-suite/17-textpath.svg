@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="220" viewBox="0 0 400 220">
+  <defs><path id="arc" d="M 40 180 A 160 160 0 0 1 360 180"/></defs>
+  <use href="#arc" fill="none" stroke="#dfe6e9" stroke-width="2"/>
+  <text font-family="Georgia, serif" font-size="26" fill="#2d3436"><textPath xlink:href="#arc" startOffset="50%" text-anchor="middle">Text that follows a curve</textPath></text>
+</svg>

@@ -1,0 +1,46 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usecolortheme{beaver}
+\title{Introduction to Graph Neural Networks}
+\author{T. Nguyen}
+\institute{Example University}
+\date{\today}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+\section{Motivation}
+\begin{frame}
+\frametitle{Why graphs?}
+\begin{itemize}
+\item<1-> Molecules
+\item<2-> Social networks
+\pause
+\item Citation networks
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Message passing}
+\begin{block}{Update rule}
+$h_v^{(k+1)} = \sigma\left(W \sum_{u \in N(v)} h_u^{(k)}\right)$
+\end{block}
+\begin{alertblock}{Caveat}
+Over-smoothing.
+\end{alertblock}
+\begin{exampleblock}{Example}
+GCN, GAT.
+\end{exampleblock}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+Left column.
+\end{column}
+\begin{column}{0.5\textwidth}
+Right column.
+\end{column}
+\end{columns}
+\end{frame}
+\end{document}

@@ -1,0 +1,55 @@
+\documentclass[11pt]{article}
+\usepackage[round,authoryear]{natbib}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{dcolumn}
+\usepackage{rotating}
+\usepackage{pdflscape}
+\usepackage{appendix}
+\bibliographystyle{plainnat}
+
+\title{Minimum Wages and Employment: New Evidence}
+\author{J. Card\thanks{University of Somewhere. Email: card@example.edu} \and A. Krueger\footnotemark[1]}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent We estimate employment effects using a border-county design. \\
+\textbf{JEL codes:} J23, J38. \textbf{Keywords:} minimum wage, employment.
+\end{abstract}
+
+\section{Introduction}
+\citet{smith2020} find small effects, while \citep{lee2019} and \citep[p.~5]{knuth1984} disagree.
+See \citealp{smith2020} and \citealt{lee2019}; \citeauthor{smith2020} (\citeyear{smith2020}); \citep[see][]{smith2020}.
+
+\section{Empirical Strategy}
+We estimate
+\begin{equation}
+  \ln E_{ct} = \alpha_c + \gamma_t + \beta \ln MW_{ct} + X_{ct}'\delta + \varepsilon_{ct}.
+\end{equation}
+
+\begin{sidewaystable}
+\centering
+\caption{Main estimates}
+\begin{tabular}{lD{.}{.}{2.3}D{.}{.}{2.3}}
+\toprule
+ & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} \\
+\midrule
+$\ln MW$ & 0.012 & -0.034 \\
+ & (0.021) & (0.025) \\
+\bottomrule
+\end{tabular}
+\end{sidewaystable}
+
+\begin{landscape}
+A landscape page with notes.
+\end{landscape}
+
+\bibliography{refs}
+
+\begin{appendices}
+\section{Data Sources}
+Data come from the QCEW.
+\end{appendices}
+\end{document}

@@ -1,0 +1,45 @@
+\documentclass[addpoints,answers]{exam}
+\usepackage{amsmath,amssymb}
+\usepackage{cancel}
+\pagestyle{headandfoot}
+\firstpageheader{MATH 101}{Midterm Exam}{Fall 2024}
+\runningfooter{}{Page \thepage\ of \numpages}{}
+
+\begin{document}
+\begin{center}
+\fbox{\parbox{0.8\textwidth}{\centering Answer all questions. Show your work. Total: \numpoints\ points.}}
+\end{center}
+
+\vspace{0.5cm}
+\makebox[\textwidth]{Name:\enspace\hrulefill}
+
+\begin{questions}
+\question[10] Simplify $\dfrac{x^2 - 1}{x - 1}$.
+\begin{solution}
+$\dfrac{(x-1)(x+1)}{x-1} = \dfrac{\cancel{(x-1)}(x+1)}{\cancel{(x-1)}} = x + 1$.
+\end{solution}
+
+\question Answer the following.
+\begin{parts}
+\part[5] Compute $\binom{5}{2}$.
+\begin{solution}[1in]
+$\dbinom{5}{2} = 10$.
+\end{solution}
+\part[5] Is $\sqrt{2}$ rational? \fillin[No][1in]
+\end{parts}
+
+\question[4] Which is prime?
+\begin{choices}
+\choice 4
+\CorrectChoice 7
+\choice 9
+\end{choices}
+
+\question[6] Solve $x \equiv 3 \pmod{7}$ and $y = 10 \bmod 3$.
+\begin{solutionorlines}[1in]
+$x = 3 + 7k$.
+\end{solutionorlines}
+\end{questions}
+
+\gradetable[h][questions]
+\end{document}
