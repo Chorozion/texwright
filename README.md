@@ -1,32 +1,57 @@
 # texwright
 
-Markdown and LaTeX to PDF and HTML, with real math, numbered equations, cross-references, citations, footnotes and a table of contents. texwright has its own typesetting engine, so it needs no TeX installation, no browser and no runtime dependencies. It is built so AI agents can write documents, check them, and fix what's wrong without a human reading a LaTeX log.
+**Markdown and LaTeX to PDF for AI agents.** A TypeScript document engine with TeX-style mathematics, citations, cross-references, diagrams, footnotes, and a stdio Model Context Protocol (MCP) server. It also accepts a structured JSON document tree and writes self-contained HTML.
 
-```
-npm install -g texwright
-texwright paper.md                 # paper.pdf
-texwright paper.tex -o paper.html  # LaTeX in, standalone HTML out
-texwright check paper.md --diagnostics json
-texwright preview paper.md --page 2   # paper-p2.png, to look at the result
-```
+No TeX installation. No browser. No runtime npm dependencies. Requires **Node.js 20+**.
+
+[Documentation](docs/README.md) · [Agent guide](docs/agent-guide.md) · [llms.txt](llms.txt) · [Writing reference](AGENTS.md) · [MIT license](LICENSE)
+
+![texwright pipeline: Markdown, LaTeX, or JSON passes through checking and repair, then typesetting to PDF or HTML](docs/images/pipeline.svg)
+
+## See what texwright produces
+
+These are actual page images rendered by texwright from the included Markdown sources. Each guide has a PDF download, a self-contained HTML edition, and editable source.
 
 <p align="center">
-  <img src="docs/showcase-page1.png" width="45%" alt="First page of the showcase PDF: title, abstract, contents with page numbers, numbered align equations and a footnote">
-  <img src="docs/showcase-page2.png" width="45%" alt="Second page of the showcase PDF: a theorem and proof, a numbered equation, a vector figure and a tip callout">
+  <a href="docs/overview.pdf"><img src="docs/previews/overview-p1.png" width="31%" alt="Project overview page with the native document workflow diagram"></a>
+  <a href="docs/cookbook.pdf"><img src="docs/previews/cookbook-p1.png" width="31%" alt="Cookbook page with a numbered equation, geometric-series table, and pgfplots chart"></a>
+  <a href="docs/cookbook.pdf"><img src="docs/previews/cookbook-p2.png" width="31%" alt="Cookbook page with a Mermaid sequence diagram and document delivery checklist"></a>
 </p>
 
-These pages come from [examples/showcase/showcase.md](examples/showcase/showcase.md), plain Markdown with a little LaTeX ([PDF](examples/showcase/showcase.pdf)). [examples/latex/article.tex](examples/latex/article.tex) is an ordinary LaTeX article rendered the same way ([PDF](examples/latex/article.pdf)). The paper in [paper/](paper/) describes how it all works, and texwright typeset it.
+| Guide | Read source | Download | Web edition |
+|---|---|---|---|
+| Project overview | [Markdown](docs/overview.md) | [PDF](docs/overview.pdf) | [HTML](docs/overview.html) |
+| Agent integration | [Markdown](docs/agent-guide.md) | [PDF](docs/agent-guide.pdf) | [HTML](docs/agent-guide.html) |
+| Visual cookbook | [Markdown](docs/cookbook.md) | [PDF](docs/cookbook.pdf) | [HTML](docs/cookbook.html) |
 
+Also explore the [research showcase source](examples/showcase/showcase.md) and [PDF](examples/showcase/showcase.pdf), the [LaTeX article](examples/latex/article.tex) and [PDF](examples/latex/article.pdf), and the [architecture paper](paper/texwright.pdf).
+
+## Install from source
+
+This repository is the installation source for version 0.3.4. The unscoped npm package is not currently published; use the commands below.
+
+~~~sh
+git clone https://github.com/Chorozion/texwright.git
+cd texwright
+npm ci
+npm run build
+node dist/cli.mjs new report -o report.md
+node dist/cli.mjs check report.md --diagnostics compact
+node dist/cli.mjs report.md -o report.pdf
+node dist/cli.mjs preview report.md --page 1
+~~~
+
+After building, optionally run npm link to make the texwright command available on your PATH. The examples below use that command. Rebuild all documentation with npm run docs.
 ## Why another document tool
 
-Pandoc converts almost anything, but to make a PDF it hands your document to LaTeX, a multi-gigabyte install whose error messages few people can read and no program can act on. LaTeX itself is the gold standard for typesetting and the hardest tool to automate. KaTeX typesets math beautifully, but only math.
+Agent workflows benefit from precise source diagnostics, predictable dependencies, and page previews they can inspect. texwright brings parsing, mathematics, layout, and document output into one Node.js engine, with a repair loop that tools can drive directly.
 
 texwright does the whole job in one small package:
 
 - **Its own engine.** Paragraphs are broken with the Knuth–Plass algorithm, math is laid out by the rules of Appendix G of *The TeXbook*, pages are built the way TeX builds them (footnotes at the foot of their page, figures that float, headings kept with their text), and the PDF is written directly with subset fonts. Everything runs on Node's standard library.
 - **LaTeX semantics where they matter.** `align` numbers each row and honours `\nonumber`; `\label`, `\ref`, `\eqref`, `\pageref` and `\cref` work in Markdown and LaTeX alike; `\newtheorem` counters are shared the way amsthm shares them; the table of contents and `\pageref` get exact page numbers from repeated layout passes, the way LaTeX's `.aux` file works.
 - **Diagnostics a program can act on.** Every problem has a stable code, a severity, a file, line and column, the offending line and a hint. An undefined reference suggests the nearest labels; an unknown citation key suggests the nearest keys; a formula that won't parse says where and why; a line that sticks into the margin says which paragraph. `--diagnostics json` gives one machine-readable report.
-- **Made for agents.** Diagnostics carry fixes in the shape of an edit (replace this text with that, here), and `texwright check --fix` applies the unambiguous ones. `--diagnostics compact` puts each problem on one line to save tokens. `texwright outline` tells an agent what is where in a long document without it reading the whole file. `texwright preview` draws the PDF's pages as PNG images with texwright's own rasterizer, so a model can look at what it made, and a PDF render reports the page every heading, figure and table landed on. `texwright mcp` offers all of this as tools (`render_document`, `preview_page`, `check_document`, `fix_document`, `outline_document`, `new_document`, `get_schema`, `get_guide`). A document can also be emitted directly as JSON against a published schema (`texwright schema`). [AGENTS.md](AGENTS.md) is a one-page writing guide aimed at models.
+- **Made for agents.** Diagnostics carry fixes in the shape of an edit (replace this text with that, here), and `texwright check --fix` applies the unambiguous ones. `--diagnostics compact` puts each problem on one line to save tokens. `texwright outline` tells an agent what is where in a long document without it reading the whole file. `texwright preview` draws the PDF's pages as PNG images with texwright's own rasterizer, so a model can look at what it made, and a PDF render reports the page every heading, figure and table landed on. `texwright mcp` offers all of this as tools (`render_document`, `preview_page`, `check_document`, `fix_document`, `repair_document`, `outline_document`, `new_document`, `get_schema`, `get_guide`). A document can also be emitted directly as JSON against a published schema (`texwright schema`). [AGENTS.md](AGENTS.md) is a full writing guide for people and models.
 - **Reads what models write.** Models asked for a PDF reach for siunitx, mhchem and physics commands, `thebibliography`, `algorithmic`, the `letter` and `exam` classes, tcolorbox, pandoc's front matter and chat-style Markdown. texwright takes all of these as they are written. [bench/](bench/) holds 80 documents that models wrote for a PDF and the runner that measures how many come out clean on the first try.
 - **Safe with untrusted input.** Agent-written documents are untrusted, so raw HTML is sanitized, nothing is fetched from the network, every expansion mechanism has a budget, and images are read only from the document's folder unless you widen that explicitly.
 
@@ -109,22 +134,22 @@ BibTeX (including biblatex dates and `journaltitle`, `@string`, accents and corp
 
 ## Using it from an AI agent
 
-texwright speaks MCP. To give Claude Code or another MCP client its eight tools (`render_document`, `preview_page`, `check_document`, `fix_document`, `outline_document`, `new_document`, `get_schema`, `get_guide`):
+texwright exposes nine MCP tools: render_document, preview_page, check_document, fix_document, repair_document, outline_document, new_document, get_schema, and get_guide.
 
-```
-claude mcp add texwright -- npx -y texwright mcp --root /path/to/your/documents
-```
+Build from source, then configure an MCP client to start the local bundle with Node. Use absolute paths; this illustrates the common mcpServers format:
 
-or, in a client's JSON config:
-
-```json
+~~~json
 {
   "mcpServers": {
-    "texwright": { "command": "npx", "args": ["-y", "texwright", "mcp", "--root", "/path/to/your/documents"] }
+    "texwright": {
+      "command": "node",
+      "args": ["/absolute/path/to/texwright/dist/cli.mjs", "mcp", "--root", "/absolute/path/to/documents"]
+    }
   }
 }
-```
+~~~
 
+On Windows, JSON paths can use forward slashes (for example D:/texwright/dist/cli.mjs). See the [agent integration guide](docs/agent-guide.md) for tool arguments and the [generated MCP catalog](docs/reference/mcp-tools.json) for exact schemas.
 The server reads and writes only inside `--root` (default: the folder it starts in), and each request runs in its own worker thread with a time limit (`--timeout`, default 120 s), so a hostile document can't reach other files or stall the server. Agents that prefer a shell can use the CLI the same way: `texwright check doc.md --diagnostics json`, fix, repeat.
 
 ## Library
@@ -139,6 +164,22 @@ if (!res.ok) for (const d of res.diagnostics) console.error(`${d.line}:${d.col} 
 ## Limits
 
 texwright is not a TeX engine. It draws what documents use TikZ, pgfplots (2D and 3D), forest, circuitikz and PSTricks for, but not every package built on them: a picture it cannot draw at all is reported (LTX004), so export that figure as SVG or PNG. PSTricks' `psmatrix` is not supported. tikz-cd diagrams are drawn approximately, with straight arrows on a grid. PDF files can't yet be used as figures (IMG003). Hyphenation patterns are bundled for English only. Scripts that need complex shaping (Arabic, the Indic scripts) and right-to-left text aren't supported, and the PDF is not tagged for screen readers yet. In SVG figures, lighting, turbulence and displacement filters are left out (their input passes through), and HTML inside `foreignObject` is drawn as labels (text, fonts, colours, line breaks, centring) rather than with general CSS layout. Colour emoji come out in one colour.
+
+## For LLMs and retrieval tools
+
+Start with [llms.txt](llms.txt), then fetch only the linked references needed for the task. The [agent guide](docs/agent-guide.md) covers the complete document workflow. [Document JSON Schema](docs/reference/document.schema.json) and [MCP tool schemas](docs/reference/mcp-tools.json) are generated from this implementation. [Structured project metadata](project.jsonld) records the canonical repository, version, license, and contributors.
+
+All important instructions are ordinary Markdown; the page images have descriptive alt text and link to editable sources or PDFs. Public discovery requires a public repository. An llms.txt index assists tools that read it; it does not guarantee search ranking or inclusion in model training.
+
+## Common questions
+
+**Can an LLM generate a PDF without LaTeX installed?** Yes. Give texwright Markdown, LaTeX source in its supported subset, or a JSON document tree; it performs typesetting itself.
+
+**Does this use a browser or a hosted rendering service?** No. PDF, HTML, diagram rendering, and page previews run locally in Node.js.
+
+**How should an agent handle a failed render?** Read the diagnostics and exit status, apply safe fixes or revise the source, then render and inspect pages again. A PDF file can exist even when the render reports errors.
+
+**Is this a complete TeX distribution?** No. See the supported syntax in [AGENTS.md](AGENTS.md) and the limits above. Unsupported commands and drawing features produce diagnostics.
 
 ## Contributors
 

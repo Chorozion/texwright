@@ -1,0 +1,37 @@
+# texwright
+
+> A Node.js document typesetting engine for AI agents: Markdown, LaTeX, or structured JSON to PDF and self-contained HTML, with equations, citations, cross-references, figures, and footnotes.
+
+Canonical repository: https://github.com/Chorozion/texwright
+Source version: 0.3.4. Requires Node.js 20 or later. MIT license.
+Contributors: Sophia, Xe5, and Thomas Garren (SOPHIA XT LLC).
+
+Install from the repository: clone it, run npm ci, then npm run build. Invoke node dist/cli.mjs. Do not assume the unscoped npm package has been published.
+
+The engine has no runtime npm dependencies and requires neither TeX nor a browser. Development dependencies are required to build and test. It supports CLI, JavaScript API, and nine stdio MCP tools. Its drawing interpreters support documented subsets, not arbitrary LaTeX packages.
+
+For a document task: read the guide, start from a template, check, repair safe fixes, render, inspect diagnostics, and preview the pages. A best-effort PDF can exist even when ok is false. Keep local assets next to the document.
+
+## Start here
+
+- [Project overview](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/overview.md): capabilities, architecture, source installation, and limitations.
+- [Agent integration guide](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/agent-guide.md): exact MCP setup, nine tools, example arguments, and error handling.
+- [Visual cookbook](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/cookbook.md): working mathematics, tables, pgfplots, and Mermaid.
+- [Repository README](https://raw.githubusercontent.com/Chorozion/texwright/main/README.md): primary entry point, examples, and navigation.
+
+## Reference
+
+- [Full writing guide](https://raw.githubusercontent.com/Chorozion/texwright/main/AGENTS.md): supported Markdown, LaTeX, diagrams, layout, and diagnostics.
+- [Cheat sheet](https://raw.githubusercontent.com/Chorozion/texwright/main/CHEATSHEET.md): concise authoring syntax.
+- [MCP tool catalog](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/reference/mcp-tools.json): names and input schemas generated from the running implementation.
+- [Document schema](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/reference/document.schema.json): machine-readable JSON document format.
+- [Project metadata](https://raw.githubusercontent.com/Chorozion/texwright/main/project.jsonld): identity, licensing, version, and contributor names.
+
+## Implementation and evidence
+
+- [Architecture](https://raw.githubusercontent.com/Chorozion/texwright/main/DESIGN.md): module organization and engine internals.
+- [Research showcase](https://raw.githubusercontent.com/Chorozion/texwright/main/examples/showcase/showcase.md): equations, theorem, bibliography, figures, and references.
+- [Benchmark methodology](https://raw.githubusercontent.com/Chorozion/texwright/main/bench/README.md): corpus and evaluation procedure; consult measured results before quoting performance.
+- [Security policy](https://raw.githubusercontent.com/Chorozion/texwright/main/SECURITY.md): trust boundaries and reporting.
+- [Contributors](https://raw.githubusercontent.com/Chorozion/texwright/main/CONTRIBUTORS.md): Sophia, Xe5, and Thomas Garren.
+- [Third-party notices](https://raw.githubusercontent.com/Chorozion/texwright/main/THIRD-PARTY-NOTICES.md): licenses for bundled fonts, data, and adapted material.

@@ -1,0 +1,479 @@
+{
+  "version": "0.3.4",
+  "tools": [
+    {
+      "name": "render_document",
+      "title": "Render a document",
+      "description": "Convert Markdown, LaTeX or a texwright JSON document to PDF, HTML or JSON and write it to a file in the workspace. LaTeX math, numbered equations/figures/tables, cross-references (@fig:x, \\ref{}), citations ([@key], \\cite{}) and a table of contents are supported. Returns the output path and diagnostics; when ok is false, fix the reported lines and call again. Call get_guide once for the syntax.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Document text. Give this or `path`."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of a .md, .tex or .json file inside the workspace. Give this or `source`."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "latex",
+              "json"
+            ],
+            "description": "Input format; inferred from the path extension, default markdown"
+          },
+          "base_dir": {
+            "type": "string",
+            "description": "Folder inside the workspace that images, \\input files and bibliographies resolve against when using `source`"
+          },
+          "files": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "In-memory files for `source` input, e.g. {\"refs.bib\": \"@article{...}\"}"
+          },
+          "bibliography": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bibliography files (.bib or CSL-JSON), relative to the document"
+          },
+          "citation_style": {
+            "type": "string",
+            "enum": [
+              "numeric",
+              "author-year"
+            ]
+          },
+          "strict": {
+            "type": "boolean",
+            "description": "Treat warnings as errors"
+          },
+          "compact": {
+            "type": "boolean",
+            "description": "Return diagnostics as one line each (file:line:col severity code message | hint | fix) to save tokens"
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "pdf",
+              "html",
+              "json"
+            ],
+            "default": "pdf"
+          },
+          "output_path": {
+            "type": "string",
+            "description": "Where to write the result, inside the workspace; default next to `path`, or a fresh temporary folder for `source`"
+          },
+          "theme": {
+            "type": "string",
+            "enum": [
+              "article",
+              "modern",
+              "compact"
+            ]
+          },
+          "toc": {
+            "type": "boolean"
+          },
+          "number_sections": {
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "paper": {
+            "type": "string",
+            "enum": [
+              "letter",
+              "a4",
+              "a5",
+              "legal",
+              "b5"
+            ]
+          },
+          "max_pages": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Tighten margins, then the body size, until the PDF fits in this many pages"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "preview_page",
+      "title": "Look at pages",
+      "description": "Typeset the document exactly as the PDF would be and return pages as PNG images, so you can see the result: layout, figures, tables, math, what overflows. Also returns the page count and the page each heading, figure, table and numbered equation landed on, to decide which pages to look at. `pages` defaults to [1], at most 4 per call; `dpi` defaults to 100 (a letter page is then 850 x 1100 pixels).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Document text. Give this or `path`."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of a .md, .tex or .json file inside the workspace. Give this or `source`."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "latex",
+              "json"
+            ],
+            "description": "Input format; inferred from the path extension, default markdown"
+          },
+          "base_dir": {
+            "type": "string",
+            "description": "Folder inside the workspace that images, \\input files and bibliographies resolve against when using `source`"
+          },
+          "files": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "In-memory files for `source` input, e.g. {\"refs.bib\": \"@article{...}\"}"
+          },
+          "bibliography": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bibliography files (.bib or CSL-JSON), relative to the document"
+          },
+          "citation_style": {
+            "type": "string",
+            "enum": [
+              "numeric",
+              "author-year"
+            ]
+          },
+          "strict": {
+            "type": "boolean",
+            "description": "Treat warnings as errors"
+          },
+          "compact": {
+            "type": "boolean",
+            "description": "Return diagnostics as one line each (file:line:col severity code message | hint | fix) to save tokens"
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "1-based page numbers, default [1]; at most 4"
+          },
+          "dpi": {
+            "type": "integer",
+            "minimum": 40,
+            "maximum": 200,
+            "description": "Resolution, default 100"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "check_document",
+      "title": "Check a document",
+      "description": "Validate a document without rendering: parses it, numbers everything, typesets every formula, resolves references, citations and images. Returns diagnostics with stable codes, line, column and a hint; many carry a `fix` ({line, col, old, new, safe}) you can apply as an edit. Fast; use it after every edit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Document text. Give this or `path`."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of a .md, .tex or .json file inside the workspace. Give this or `source`."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "latex",
+              "json"
+            ],
+            "description": "Input format; inferred from the path extension, default markdown"
+          },
+          "base_dir": {
+            "type": "string",
+            "description": "Folder inside the workspace that images, \\input files and bibliographies resolve against when using `source`"
+          },
+          "files": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "In-memory files for `source` input, e.g. {\"refs.bib\": \"@article{...}\"}"
+          },
+          "bibliography": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bibliography files (.bib or CSL-JSON), relative to the document"
+          },
+          "citation_style": {
+            "type": "string",
+            "enum": [
+              "numeric",
+              "author-year"
+            ]
+          },
+          "strict": {
+            "type": "boolean",
+            "description": "Treat warnings as errors"
+          },
+          "compact": {
+            "type": "boolean",
+            "description": "Return diagnostics as one line each (file:line:col severity code message | hint | fix) to save tokens"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "fix_document",
+      "title": "Apply safe fixes",
+      "description": "Check the file at `path`, apply every safe fix (typos in labels, keys, commands and image names; missing closers; broken front matter) to it and the files it includes, and check again. Returns the fixes written and the remaining diagnostics. Writes files in the workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path of a .md, .tex or .json file inside the workspace. Give this or `source`."
+          },
+          "bibliography": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bibliography files (.bib or CSL-JSON), relative to the document"
+          },
+          "compact": {
+            "type": "boolean",
+            "description": "Return diagnostics as one line each (file:line:col severity code message | hint | fix) to save tokens"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "repair_document",
+      "title": "Repair and render",
+      "description": "One call for the whole fix loop: check the file at `path`, apply every safe fix (typos in labels, keys, commands, environment and image names and option values; missing } \\right \\end{...}; broken front matter) until nothing more applies, taking back any round that makes it worse, then render it when no errors are left. Returns what was fixed (line, old -> new), what is left (each with a hint and, where known, a fix marked safe or not: apply the unsafe ones after a look), the output path, page count and where headings, figures and tables landed. With `compact` (default true) the report is a few short text lines. Writes the file and the output in the workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path of a .md, .tex or .json file inside the workspace. Give this or `source`."
+          },
+          "bibliography": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bibliography files (.bib or CSL-JSON), relative to the document"
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "pdf",
+              "html",
+              "json"
+            ],
+            "default": "pdf"
+          },
+          "output_path": {
+            "type": "string",
+            "description": "Where to write the result, inside the workspace; default next to `path`"
+          },
+          "compact": {
+            "type": "boolean",
+            "description": "Short text lines instead of JSON (default true)"
+          },
+          "budget": {
+            "type": "integer",
+            "minimum": 200,
+            "description": "Most characters of the compact report (default 4000); the rest is counted, not listed"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "outline_document",
+      "title": "Outline a document",
+      "description": "What is where in a document, without reading all of it: headings, figures, tables, equations, theorems and listings in order, with numbers, labels, source lines and how often each is referenced, plus cited keys and a word count. Use it to navigate long documents and to find unreferenced figures or tables.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Document text. Give this or `path`."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of a .md, .tex or .json file inside the workspace. Give this or `source`."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "latex",
+              "json"
+            ],
+            "description": "Input format; inferred from the path extension, default markdown"
+          },
+          "base_dir": {
+            "type": "string",
+            "description": "Folder inside the workspace that images, \\input files and bibliographies resolve against when using `source`"
+          },
+          "files": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "In-memory files for `source` input, e.g. {\"refs.bib\": \"@article{...}\"}"
+          },
+          "bibliography": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bibliography files (.bib or CSL-JSON), relative to the document"
+          },
+          "citation_style": {
+            "type": "string",
+            "enum": [
+              "numeric",
+              "author-year"
+            ]
+          },
+          "strict": {
+            "type": "boolean",
+            "description": "Treat warnings as errors"
+          },
+          "compact": {
+            "type": "boolean",
+            "description": "Return diagnostics as one line each (file:line:col severity code message | hint | fix) to save tokens"
+          },
+          "text": {
+            "type": "boolean",
+            "description": "Return the outline as short text lines instead of JSON"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_schema",
+      "title": "Document JSON Schema",
+      "description": "JSON Schema of the texwright document tree. Use it to emit documents as JSON instead of Markdown or LaTeX.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_guide",
+      "title": "Writing guide",
+      "description": "How to write documents for texwright: Markdown and LaTeX syntax, math, references, citations, figures, tables, layout keys, diagnostics and the fix-and-retry workflow. Pass short: true for a one-page cheat sheet.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "short": {
+            "type": "boolean",
+            "description": "The one-page cheat sheet instead of the full guide"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "new_document",
+      "title": "Start from a template",
+      "description": "A complete, valid starter document to fill in. Kinds: paper (Research paper: abstract, numbered sections, equations, theorem and proof, results table, citations); report (Report: summary first, findings with a table, footnote, callout, recommendations, contents); homework (Problem set solutions: unnumbered problems, derivations, an induction proof, matrices); notes (Lecture notes: definitions, lemmas, theorems with proofs, examples, exercises); cv (One-page résumé (max-pages: 1, compact theme)); letter (Formal letter on one page: addresses, subject line, body, closing); memo (Decision memo: header table, decision needed, options table, next steps); proposal (Project proposal: problem, solution, timeline and budget tables, measures, risks). With `path`, writes it (and any files it uses, such as refs.bib) into the workspace; existing files are not overwritten.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "paper",
+              "report",
+              "homework",
+              "notes",
+              "cv",
+              "letter",
+              "memo",
+              "proposal"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "Where to write the document inside the workspace, e.g. report.md"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ]
+}

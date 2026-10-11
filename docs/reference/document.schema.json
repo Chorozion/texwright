@@ -1,0 +1,2557 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "texwright document",
+  "description": "A texwright document tree. Every input format parses into this; it can also be written directly.",
+  "type": "object",
+  "properties": {
+    "texwright": {
+      "type": "integer",
+      "const": 1,
+      "description": "Format version"
+    },
+    "meta": {
+      "type": "object",
+      "description": "Document metadata",
+      "properties": {
+        "title": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Inline"
+          }
+        },
+        "subtitle": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Inline"
+          }
+        },
+        "author": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/Inline"
+            }
+          },
+          "description": "One inline run per author"
+        },
+        "affiliation": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Inline"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": "Each author's affiliation, by position in author (null for none)"
+        },
+        "date": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Inline"
+          }
+        },
+        "abstract": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Block"
+          }
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lang": {
+          "type": "string",
+          "description": "Language tag, e.g. \"en-GB\""
+        },
+        "bibliography": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Bibliography files (BibTeX .bib or CSL-JSON), relative to the document"
+        },
+        "citationStyle": {
+          "type": "string",
+          "enum": [
+            "numeric",
+            "author-year"
+          ]
+        },
+        "macros": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Math macros, e.g. {\"\\\\R\": \"\\\\mathbb{R}\"}"
+        },
+        "toc": {
+          "type": "boolean",
+          "description": "Print a table of contents"
+        },
+        "tocDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "numberSections": {
+          "type": "boolean"
+        },
+        "numberWithin": {
+          "type": "integer",
+          "enum": [
+            0,
+            1
+          ],
+          "description": "Section depth prefixed to equation and figure numbers: 0 gives 3, 1 gives 2.3"
+        },
+        "extra": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Anything else from front matter, kept for templates and agents"
+        }
+      },
+      "additionalProperties": false
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Block"
+      }
+    }
+  },
+  "required": [
+    "texwright",
+    "meta",
+    "blocks"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Inline": {
+      "description": "An inline node; `t` names its type",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Plain text",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Text"
+            },
+            "text": {
+              "type": "string"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A line break in the source; rendered as a space",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "SoftBreak"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A hard line break",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "LineBreak"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Emphasis (italics)",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Emph"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Strong emphasis (bold)",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Strong"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Underlined text",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Underline"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Struck-through text",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Strike"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Small capitals",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "SmallCaps"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Superscript",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Superscript"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Subscript",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Subscript"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Inline code",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Code"
+            },
+            "text": {
+              "type": "string"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Inline math",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Math"
+            },
+            "tex": {
+              "type": "string",
+              "description": "TeX source without delimiters"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "tex"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A hyperlink",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Link"
+            },
+            "url": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "url",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "An inline image",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Image"
+            },
+            "src": {
+              "type": "string",
+              "description": "Path relative to the document, or a URL"
+            },
+            "alt": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              },
+              "description": "Alternative text; becomes the caption of a figure"
+            },
+            "title": {
+              "type": "string"
+            },
+            "width": {
+              "type": "string",
+              "description": "CSS length or percentage, e.g. \"60%\""
+            },
+            "height": {
+              "type": "string"
+            },
+            "attr": {
+              "type": "object",
+              "description": "Identifier, classes and key-value attributes, as written {#id .class key=value}",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "classes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "attrs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "src",
+            "alt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A cross-reference to a label; the text is filled in after numbering",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Ref"
+            },
+            "label": {
+              "type": "string",
+              "description": "Label of the target, e.g. \"fig:plot\""
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "number",
+                "auto",
+                "eq",
+                "page"
+              ],
+              "description": "\"auto\" prints \"Figure 3\", \"number\" prints \"3\", \"eq\" prints \"(3)\", \"page\" prints the page"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "label",
+            "style"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A citation",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Cite"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Bibliography entry key"
+                  },
+                  "prefix": {
+                    "type": "string"
+                  },
+                  "locator": {
+                    "type": "string",
+                    "description": "Page or section locator, e.g. \"p. 4\" or \"ch. 2\""
+                  },
+                  "suffix": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "paren",
+                "text",
+                "author",
+                "year",
+                "nocite"
+              ],
+              "description": "\"paren\" renders [1] or (Doe 2020); \"text\" renders Doe [1] or Doe (2020); \"author\" and \"year\" render one part; \"nocite\" only adds to the bibliography"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "items",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A footnote; its body is block content",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Note"
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Block"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "blocks"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Inline content with attributes",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Span"
+            },
+            "attr": {
+              "type": "object",
+              "description": "Identifier, classes and key-value attributes, as written {#id .class key=value}",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "classes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "attrs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "attr",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Raw HTML or LaTeX passed through",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "RawInline"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "html",
+                "latex"
+              ]
+            },
+            "text": {
+              "type": "string"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "format",
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Block": {
+      "description": "A block node; `t` names its type",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "A section heading",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Heading"
+            },
+            "level": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "numbered": {
+              "type": "boolean",
+              "description": "false for \\section* and headings with the .unnumbered class"
+            },
+            "label": {
+              "type": "string",
+              "description": "Cross-reference key, e.g. \"fig:plot\""
+            },
+            "id": {
+              "type": "string",
+              "description": "HTML anchor; derived from the label when absent"
+            },
+            "number": {
+              "type": "string",
+              "description": "Filled in by texwright"
+            },
+            "attr": {
+              "type": "object",
+              "description": "Identifier, classes and key-value attributes, as written {#id .class key=value}",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "classes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "attrs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "level",
+            "content",
+            "numbered"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A paragraph",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Para"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A run of inlines without paragraph spacing (list items, cells)",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Plain"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A code block",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "CodeBlock"
+            },
+            "text": {
+              "type": "string"
+            },
+            "lang": {
+              "type": "string",
+              "description": "Language for highlighting, e.g. \"python\""
+            },
+            "attr": {
+              "type": "object",
+              "description": "Identifier, classes and key-value attributes, as written {#id .class key=value}",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "classes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "attrs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Display math",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "MathBlock"
+            },
+            "tex": {
+              "type": "string",
+              "description": "Body of the environment exactly as written, \\label commands included"
+            },
+            "env": {
+              "type": "string",
+              "description": "LaTeX environment: \"equation\", \"align\", \"gather\", \"multline\"... or omitted for plain display math"
+            },
+            "numbered": {
+              "type": "boolean"
+            },
+            "label": {
+              "type": "string",
+              "description": "Cross-reference key, e.g. \"fig:plot\""
+            },
+            "id": {
+              "type": "string",
+              "description": "HTML anchor; derived from the label when absent"
+            },
+            "number": {
+              "type": "string",
+              "description": "Filled in by texwright"
+            },
+            "lineLabels": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "description": "Per-row labels of multi-row environments"
+            },
+            "lineNumbers": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "description": "Per-row numbers, filled in by texwright"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "tex",
+            "numbered"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A block quotation",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "BlockQuote"
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Block"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "blocks"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A bulleted or numbered list",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "List"
+            },
+            "ordered": {
+              "type": "boolean"
+            },
+            "start": {
+              "type": "integer"
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "decimal",
+                "lower-alpha",
+                "upper-alpha",
+                "lower-roman",
+                "upper-roman"
+              ]
+            },
+            "delim": {
+              "type": "string",
+              "enum": [
+                ".",
+                ")",
+                "()"
+              ],
+              "description": "How numbers are set off: \"1.\" (default), \"1)\" or \"(1)\""
+            },
+            "tight": {
+              "type": "boolean",
+              "description": "Items without paragraph spacing"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/Block"
+                }
+              }
+            },
+            "task": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "description": "Task list checkboxes per item: true done, false open, null none"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "ordered",
+            "tight",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A definition list",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "DefList"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "term": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Inline"
+                    }
+                  },
+                  "defs": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/Block"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "term",
+                  "defs"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A table",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Table"
+            },
+            "caption": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "label": {
+              "type": "string",
+              "description": "Cross-reference key, e.g. \"fig:plot\""
+            },
+            "id": {
+              "type": "string",
+              "description": "HTML anchor; derived from the label when absent"
+            },
+            "number": {
+              "type": "string",
+              "description": "Filled in by texwright"
+            },
+            "align": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "left",
+                  "center",
+                  "right",
+                  null
+                ]
+              },
+              "description": "Column alignments"
+            },
+            "widths": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "description": "Relative column widths that sum to 1, when the source gave them"
+            },
+            "head": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/Inline"
+                      }
+                    },
+                    "colspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "rowspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "align": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "left",
+                        "center",
+                        "right",
+                        null
+                      ]
+                    }
+                  },
+                  "required": [
+                    "content"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "body": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/Inline"
+                      }
+                    },
+                    "colspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "rowspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "align": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "left",
+                        "center",
+                        "right",
+                        null
+                      ]
+                    }
+                  },
+                  "required": [
+                    "content"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "foot": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/Inline"
+                      }
+                    },
+                    "colspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "rowspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "align": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "left",
+                        "center",
+                        "right",
+                        null
+                      ]
+                    }
+                  },
+                  "required": [
+                    "content"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "plainHead": {
+              "type": "boolean",
+              "description": "Header rows set like the body, not bold"
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "Body rows with a rule above them (indexes into body)"
+            },
+            "attr": {
+              "type": "object",
+              "description": "Identifier, classes and key-value attributes, as written {#id .class key=value}",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "classes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "attrs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "align",
+            "head",
+            "body"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A figure",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Figure"
+            },
+            "content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Block"
+              }
+            },
+            "caption": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              }
+            },
+            "label": {
+              "type": "string",
+              "description": "Cross-reference key, e.g. \"fig:plot\""
+            },
+            "id": {
+              "type": "string",
+              "description": "HTML anchor; derived from the label when absent"
+            },
+            "number": {
+              "type": "string",
+              "description": "Filled in by texwright"
+            },
+            "numbered": {
+              "type": "boolean",
+              "description": "false for figures without a caption, or with the .unnumbered class"
+            },
+            "attr": {
+              "type": "object",
+              "description": "Identifier, classes and key-value attributes, as written {#id .class key=value}",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "classes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "attrs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "content",
+            "numbered"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A container: fenced divs, callouts (class note, tip, warning...), the abstract",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Div"
+            },
+            "attr": {
+              "type": "object",
+              "description": "Identifier, classes and key-value attributes, as written {#id .class key=value}",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "classes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "attrs": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Block"
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "attr",
+            "blocks"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Raw HTML or LaTeX passed through",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "RawBlock"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "html",
+                "latex"
+              ]
+            },
+            "text": {
+              "type": "string"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "format",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A horizontal rule",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "HorizontalRule"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A page break",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "PageBreak"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Where the table of contents goes",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "TOC"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Where the bibliography goes",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Bibliography"
+            },
+            "items": {
+              "type": "array",
+              "description": "A reference list written out by hand (LaTeX thebibliography): cited by key, numbered in this order",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/Inline"
+                    }
+                  }
+                },
+                "required": [
+                  "key",
+                  "content"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "A theorem-like environment (theorem, lemma, definition, proof...)",
+          "properties": {
+            "t": {
+              "type": "string",
+              "const": "Theorem"
+            },
+            "kind": {
+              "type": "string",
+              "description": "Environment name as written: \"theorem\", \"lemma\", \"thm\", \"proof\""
+            },
+            "name": {
+              "type": "string",
+              "description": "Display name: \"Theorem\", \"Lemma\"; defaults to the capitalized kind"
+            },
+            "counter": {
+              "type": "string",
+              "description": "Counter shared by several kinds; defaults to the kind"
+            },
+            "withinSection": {
+              "type": "boolean",
+              "description": "Number within the top-level section (\"2.3\")"
+            },
+            "title": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Inline"
+              },
+              "description": "Optional note in parentheses"
+            },
+            "blocks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Block"
+              }
+            },
+            "numbered": {
+              "type": "boolean"
+            },
+            "label": {
+              "type": "string",
+              "description": "Cross-reference key, e.g. \"fig:plot\""
+            },
+            "id": {
+              "type": "string",
+              "description": "HTML anchor; derived from the label when absent"
+            },
+            "number": {
+              "type": "string",
+              "description": "Filled in by texwright"
+            },
+            "pos": {
+              "type": "object",
+              "description": "Source position, for diagnostics",
+              "properties": {
+                "file": {
+                  "type": "string"
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based line"
+                },
+                "col": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "1-based column"
+                },
+                "endLine": {
+                  "type": "integer"
+                },
+                "endCol": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "line",
+                "col"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "t",
+            "kind",
+            "blocks",
+            "numbered"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

@@ -35,7 +35,10 @@
     "THIRD-PARTY-NOTICES.md",
     "templates",
     "CHEATSHEET.md",
-    "AGENTS.md"
+    "AGENTS.md",
+    "llms.txt",
+    "project.jsonld",
+    "docs/reference/*.json"
   ],
   "engines": {
     "node": ">=20"
@@ -45,7 +48,9 @@
     "test": "npm run build && node scripts/test.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "bench": "npm run build && node bench/run.mjs",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "docs": "npm run build && node scripts/docs.mjs",
+    "docs:check": "node scripts/docs.mjs --check"
   },
   "keywords": [
     "markdown",
@@ -60,7 +65,14 @@
     "bibtex",
     "mcp",
     "ai-agents",
-    "documents"
+    "documents",
+    "model-context-protocol",
+    "llm",
+    "markdown-to-pdf",
+    "latex-to-pdf",
+    "mermaid",
+    "tikz",
+    "document-generation"
   ],
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",

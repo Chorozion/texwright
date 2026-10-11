@@ -1,0 +1,38 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "texwright",
+  "version": "0.3.4",
+  "description": "Markdown, LaTeX, and structured JSON to PDF and HTML with a self-contained TeX-style engine, structured diagnostics, and an MCP server for AI document workflows.",
+  "codeRepository": "https://github.com/Chorozion/texwright",
+  "url": "https://github.com/Chorozion/texwright",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "TypeScript"
+  },
+  "runtimePlatform": "Node.js >=20",
+  "license": "https://github.com/Chorozion/texwright/blob/main/LICENSE",
+  "keywords": "markdown, latex, pdf, typesetting, tex, knuth-plass, mathml, pandoc, citations, bibtex, mcp, ai-agents, documents, model-context-protocol, llm, markdown-to-pdf, latex-to-pdf, mermaid, tikz, document-generation",
+  "author": {
+    "@type": "Person",
+    "name": "Thomas Garren"
+  },
+  "contributor": [
+    {
+      "name": "Sophia"
+    },
+    {
+      "name": "Xe5"
+    },
+    {
+      "@type": "Person",
+      "name": "Thomas Garren"
+    }
+  ],
+  "maintainer": {
+    "@type": "Organization",
+    "name": "SOPHIA XT LLC"
+  },
+  "readme": "https://github.com/Chorozion/texwright/blob/main/README.md",
+  "softwareRequirements": "Node.js 20 or later; development dependencies to build. No runtime npm dependencies, browser, or TeX installation required."
+}
