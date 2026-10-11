@@ -8,6 +8,7 @@
  */
 
 import { relative } from "node:path";
+import { realPath } from "./util/paths.js";
 import type { Diagnostic, Fix } from "./diagnostics.js";
 import type { ConvertOptions, OutputFormat, Placement } from "./index.js";
 import type { IsolatedRequest, IsolatedResult } from "./isolate.js";
@@ -68,7 +69,14 @@ function clip(s: string, n = 60): string {
  * landed, page by page. Past `budget` characters the rest is counted, not listed.
  */
 export function formatRepair(r: RepairReport, input: string, budget = 4000): string {
-  const name = (f: string | undefined) => (f ? relative(process.cwd(), f) || f : input);
+  const name = (f: string | undefined): string => {
+    if (!f) return input;
+    try {
+      return relative(realPath(process.cwd()), realPath(f)) || f;
+    } catch {
+      return relative(process.cwd(), f) || f;
+    }
+  };
   const lines: string[] = [];
   let used = 0;
   let dropped = 0;

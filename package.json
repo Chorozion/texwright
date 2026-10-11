@@ -77,7 +77,7 @@
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
     "@types/node": "^22.20.5",
-    "pdfjs-dist": "^6.4.299",
+    "pdfjs-dist": "4.10.38",
     "typescript": "^5.9.3"
   },
   "contributors": [

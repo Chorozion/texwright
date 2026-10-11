@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Keep the PDF verification dependency compatible with Node 20; all PDF readback tests still run on both supported CI runtimes.
+- Resolve the existing ancestors of new output paths before checking workspace containment. MCP document creation now works under directory aliases such as macOS temporary folders, while symlink escapes and dangling links remain blocked.
+- Use canonical paths in repair summaries so directory aliases do not turn local filenames into long relative paths.
+
 ## 0.3.4
 
 Faster, steadier output, and a one-call repair loop.

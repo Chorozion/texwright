@@ -7,7 +7,7 @@
  * extensions, and never from the network unless --allow-net is set.
  */
 
-import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Pos } from "../ast.js";
@@ -16,6 +16,7 @@ import { closestFix } from "../fixes.js";
 import { fontsDir } from "../font/registry.js";
 import { toWoff } from "../font/woff.js";
 import { noteRead } from "../util/reads.js";
+import { realPath } from "../util/paths.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -171,15 +172,6 @@ export interface ResolvedImage {
   blocked?: boolean;
 }
 
-/** Real path when the file exists, so a symlink can't point outside the allowed folders. */
-function real(path: string): string {
-  try {
-    return realpathSync(path);
-  } catch {
-    return resolve(path);
-  }
-}
-
 /** A UNC or other network path (\\host\share, //host/share, \\?\UNC\...): never touched. */
 export function isNetworkPath(path: string): boolean {
   return /^[\\/]{2}/.test(path);
@@ -204,8 +196,18 @@ export function isInsideLexically(file: string, roots: string[]): boolean {
  */
 export function isInside(file: string, roots: string[]): boolean {
   if (!isInsideLexically(file, roots)) return false;
-  const target = real(file);
-  return roots.some((r) => contained(real(r), target));
+  try {
+    const target = realPath(file);
+    return roots.some((r) => {
+      try {
+        return contained(realPath(r), target);
+      } catch {
+        return false;
+      }
+    });
+  } catch {
+    return false;
+  }
 }
 
 function insideAllowed(file: string, policy: ImagePolicy): boolean {

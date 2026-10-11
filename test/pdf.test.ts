@@ -1140,7 +1140,8 @@ describe("vector graphics", () => {
     for (const op of ["save", "restore", "transform", "setFillRGBColor", "setStrokeRGBColor", "setLineWidth", "setDash", "setLineCap", "setLineJoin", "constructPath", "eoClip"]) {
       assert.ok(seen.has(op), `${op} in ${[...seen].join(" ")}`);
     }
-    for (const paint of ["fill", "eoFill", "stroke", "fillStroke", "endPath"]) assert.ok(seen.has(`paint:${paint}`), paint);
+    // PDF.js 4 emits painting as separate operators; newer readers fold it into constructPath.
+    for (const paint of ["fill", "eoFill", "stroke", "fillStroke", "endPath"]) assert.ok(seen.has(paint) || seen.has(`paint:${paint}`), paint);
   });
 
   it("closes unbalanced saves and ignores unmatched restores with a warning", () => {
@@ -1686,7 +1687,7 @@ describe("metadata", () => {
     w.setInfo({ subject: "Testing ✓" });
     const bytes = finish(w, "metadata");
     const doc = await open(bytes);
-    const { info } = (await doc.getMetadata()) as { info: Record<string, unknown> };
+    const { info } = (await doc.getMetadata()) as unknown as { info: Record<string, unknown> };
     assert.equal(info.Title, "A Title (with parens)");
     assert.equal(info.Author, "Ada Lovelace");
     assert.equal(info.Subject, "Testing ✓");

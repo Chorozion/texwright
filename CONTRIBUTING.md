@@ -9,7 +9,7 @@ npm install
 npm test
 ```
 
-`npm test` compiles with `tsc` and runs every suite in `test/` with Node's built-in runner. The PDF tests read the output back with pdf.js, a development dependency; nothing else is needed. A few font tests use fonts that ship with Windows and skip themselves elsewhere.
+`npm test` compiles with `tsc` and runs every suite in `test/` with Node's built-in runner. The PDF tests read the output back with pdf.js, a development dependency pinned to 4.10.38 so the complete suite runs on Node 20 as well as Node 22. Newer PDF.js major versions require newer Node runtimes; keep the reader compatible with the full CI matrix when updating it. A few font tests use fonts that ship with Windows and skip themselves elsewhere.
 
 The package has no runtime dependencies, and it should stay that way: new code uses Node's standard library. Development tools (TypeScript, test helpers) are fine as `devDependencies`.
 
