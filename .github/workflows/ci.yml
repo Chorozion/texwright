@@ -24,6 +24,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Test the installable release package
+        if: runner.os == 'Linux'
+        run: node scripts/prepare-release.mjs
 
   docs:
     runs-on: ubuntu-latest

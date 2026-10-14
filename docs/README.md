@@ -18,6 +18,7 @@ These guides are written in Markdown and rendered by texwright itself. The PDF, 
 
 ## For LLMs and tool builders
 
+- [Distribution and installation](distribution.md): ready-built releases and npm/MCP publication status.
 - [llms.txt](../llms.txt): a concise map to the most useful source documents.
 - [AGENTS.md](../AGENTS.md): the full document-writing reference.
 - [CHEATSHEET.md](../CHEATSHEET.md): a compact syntax reminder.
@@ -47,4 +48,4 @@ A public repository can be read without authentication. GitHub topics help categ
 
 The [llms.txt proposal](https://llmstxt.org/) supplies a convention for a concise documentation index. This file helps agents that read it find relevant sources; it does not promise search placement, model training inclusion, or automatic ingestion. Keep useful facts in ordinary Markdown as well as in the index.
 
-The repository was initially created private. Its current GitHub visibility determines whether public crawlers can access these documents.
+This repository is public. Public access makes the documentation available to crawlers and retrieval tools; individual services decide whether and when to index it.

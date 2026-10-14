@@ -26,9 +26,46 @@ These are actual page images rendered by texwright from the included Markdown so
 
 Also explore the [research showcase source](examples/showcase/showcase.md) and [PDF](examples/showcase/showcase.pdf), the [LaTeX article](examples/latex/article.tex) and [PDF](examples/latex/article.pdf), and the [architecture paper](paper/texwright.pdf).
 
-## Install from source
+## Install a ready-built release
 
-This repository is the installation source for version 0.3.4. The unscoped npm package is not currently published; use the commands below.
+Requires Node.js 20+. The versioned GitHub release includes the CLI, MCP server, fonts, themes, and templates. No compiler or source build is needed:
+
+~~~sh
+npm install -g https://github.com/Chorozion/texwright/releases/download/v0.3.4/texwright-0.3.4.tgz
+texwright --version
+texwright new report -o report.md
+texwright repair report.md -o report.pdf
+texwright preview report.md --page 1
+~~~
+
+Download the package and SHA-256 checksum from [release v0.3.4](https://github.com/Chorozion/texwright/releases/tag/v0.3.4). The unscoped npm package and official MCP Registry listing are pending publication; use this GitHub release or build from source. [Distribution status and publishing guide](docs/distribution.md).
+
+### Connect an MCP client
+
+After installing, configure the client to launch the installed command:
+
+~~~json
+{
+  "mcpServers": {
+    "texwright": {
+      "command": "texwright",
+      "args": ["mcp", "--root", "/absolute/path/to/documents"]
+    }
+  }
+}
+~~~
+
+The documents folder must exist. GUI clients may not inherit the terminal PATH; use an absolute path to the installed command, or the portable Node configuration in the [agent guide](docs/agent-guide.md). On Windows, use that Node configuration if the client cannot launch command shims.
+
+### When to choose texwright
+
+- Research reports, technical notes, and papers with numbered equations, citations, tables, and cross-references.
+- Local document generation in Node.js environments without TeX or a browser.
+- Agent workflows that need structured diagnostics, safe typo repairs, and page images for review.
+
+Use a full TeX distribution when exact publisher class files or unsupported packages are required. Use a browser renderer when the deliverable depends on a web page's CSS or JavaScript. The [writing reference](AGENTS.md) documents supported syntax and approximations.
+
+## Install from source
 
 ~~~sh
 git clone https://github.com/Chorozion/texwright.git

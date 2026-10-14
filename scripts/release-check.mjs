@@ -7,6 +7,8 @@ import { tmpdir } from "node:os";
 import { inflateSync } from "node:zlib";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const tgz = resolve(process.argv[2] ?? "");
@@ -97,6 +99,26 @@ const tz = (f) => {
   return false;
 };
 expect("microtype expands glyphs, and microtype: false does not", tz("mt1.pdf") && !tz("mt0.pdf"));
+
+// Drive the installed package over real stdio, including its separately shipped worker.
+const installedRoot = process.platform === "win32" ? join(prefix, "node_modules", "texwright") : join(prefix, "lib", "node_modules", "texwright");
+const client = new Client({ name: "texwright-release-check", version: "1" });
+const transport = new StdioClientTransport({ command: process.execPath, args: [join(installedRoot, "dist", "cli.mjs"), "mcp", "--root", work], stderr: "pipe" });
+try {
+  await client.connect(transport);
+  const tools = await client.listTools();
+  expect("installed MCP advertises nine tools", tools.tools.length === 9);
+  const checked = await client.callTool({ name: "check_document", arguments: { source: "# Test\n\nHello from an installed package.\n", format: "markdown" } });
+  expect("installed MCP checks a document", !checked.isError && JSON.parse(checked.content.find(c => c.type === "text").text).ok === true, JSON.stringify(checked));
+  const rendered = await client.callTool({ name: "render_document", arguments: { path: "d1.md", to: "pdf", output_path: "mcp.pdf" } });
+  expect("installed MCP worker renders PDF", !rendered.isError && JSON.parse(rendered.content.find(c => c.type === "text").text).ok === true && readFileSync(join(work, "mcp.pdf")).subarray(0, 5).toString() === "%PDF-", JSON.stringify(rendered));
+  const previewed = await client.callTool({ name: "preview_page", arguments: { path: "d1.md", pages: [1], dpi: 72 } });
+  expect("installed MCP previews a page", !previewed.isError && previewed.content.some(c => c.type === "image" && c.mimeType === "image/png"), JSON.stringify(previewed).slice(0, 300));
+} catch (error) {
+  expect("installed MCP protocol", false, String(error));
+} finally {
+  await client.close();
+}
 
 console.log(failed ? `\n${failed} check(s) failed: do not publish this tarball` : "\nall release checks passed");
 process.exit(failed ? 1 : 0);

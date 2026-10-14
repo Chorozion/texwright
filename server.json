@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Chorozion/texwright",
+  "title": "texwright",
+  "description": "Create PDF and HTML from Markdown, LaTeX or JSON, with math, citations, diagrams and page previews.",
+  "version": "0.3.4",
+  "repository": {
+    "url": "https://github.com/Chorozion/texwright",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/Chorozion/texwright",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "texwright",
+      "version": "0.3.4",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        },
+        {
+          "type": "named",
+          "name": "--root",
+          "description": "Absolute path to the existing folder containing documents the server may read and write.",
+          "format": "filepath",
+          "isRequired": true
+        }
+      ]
+    }
+  ]
+}

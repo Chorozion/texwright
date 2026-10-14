@@ -38,7 +38,9 @@
     "AGENTS.md",
     "llms.txt",
     "project.jsonld",
-    "docs/reference/*.json"
+    "docs/reference/*.json",
+    "server.json",
+    "docs/distribution.md"
   ],
   "engines": {
     "node": ">=20"
@@ -50,7 +52,8 @@
     "bench": "npm run build && node bench/run.mjs",
     "prepublishOnly": "npm test",
     "docs": "npm run build && node scripts/docs.mjs",
-    "docs:check": "node scripts/docs.mjs --check"
+    "docs:check": "node scripts/docs.mjs --check",
+    "release:check": "npm test && npm run docs:check && node scripts/prepare-release.mjs"
   },
   "keywords": [
     "markdown",
@@ -92,5 +95,6 @@
   "homepage": "https://github.com/Chorozion/texwright#readme",
   "bugs": {
     "url": "https://github.com/Chorozion/texwright/issues"
-  }
+  },
+  "mcpName": "io.github.Chorozion/texwright"
 }

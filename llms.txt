@@ -6,11 +6,13 @@ Canonical repository: https://github.com/Chorozion/texwright
 Source version: 0.3.4. Requires Node.js 20 or later. MIT license.
 Contributors: Sophia, Xe5, and Thomas Garren (SOPHIA XT LLC).
 
-Install from the repository: clone it, run npm ci, then npm run build. Invoke node dist/cli.mjs. Do not assume the unscoped npm package has been published.
+Ready-built installation: npm install -g https://github.com/Chorozion/texwright/releases/download/v0.3.4/texwright-0.3.4.tgz. Then run texwright. Alternatively clone, npm ci, npm run build, and invoke node dist/cli.mjs. The unscoped npm package and MCP Registry listing are pending publication.
 
 The engine has no runtime npm dependencies and requires neither TeX nor a browser. Development dependencies are required to build and test. It supports CLI, JavaScript API, and nine stdio MCP tools. Its drawing interpreters support documented subsets, not arbitrary LaTeX packages.
 
 For a document task: read the guide, start from a template, check, repair safe fixes, render, inspect diagnostics, and preview the pages. A best-effort PDF can exist even when ok is false. Keep local assets next to the document.
+
+Choose texwright for local technical reports with mathematics, references, and diagnostics. Full TeX is needed for unsupported packages or exact publisher class fidelity; browser-dependent HTML/CSS requires a browser renderer.
 
 ## Start here
 
@@ -18,6 +20,8 @@ For a document task: read the guide, start from a template, check, repair safe f
 - [Agent integration guide](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/agent-guide.md): exact MCP setup, nine tools, example arguments, and error handling.
 - [Visual cookbook](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/cookbook.md): working mathematics, tables, pgfplots, and Mermaid.
 - [Repository README](https://raw.githubusercontent.com/Chorozion/texwright/main/README.md): primary entry point, examples, and navigation.
+
+- [Distribution and MCP registration](https://raw.githubusercontent.com/Chorozion/texwright/main/docs/distribution.md): working release installation, publication status, and maintainer steps.
 
 ## Reference
 

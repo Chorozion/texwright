@@ -52,7 +52,7 @@ if (!checkOnly) {
   write("docs/images/pipeline.svg", diagram.svg);
 }
 // Check repository-local Markdown links, including the raw URLs in the LLM index.
-for (const file of ["README.md", "llms.txt", "docs/README.md", ...names.map(n => "docs/" + n + ".md")]) {
+for (const file of ["README.md", "llms.txt", "docs/README.md", "docs/distribution.md", ...names.map(n => "docs/" + n + ".md")]) {
   const text = readFileSync(file, "utf8").replace(/~~~[\s\S]*?~~~/g, "").replace(new RegExp(String.fromCharCode(96).repeat(3) + "[\\s\\S]*?" + String.fromCharCode(96).repeat(3), "g"), "");
   for (const match of text.matchAll(/\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g)) {
     let href = match[1];
